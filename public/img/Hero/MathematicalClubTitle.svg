@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="47.5mm"
+   viewBox="0 0 210 47.5"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (2aeb623e1d, 2025-05-12)"
+   sodipodi:docname="MathematicalClubTitle.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.75675135"
+     inkscape:cx="290.71636"
+     inkscape:cy="317.80584"
+     inkscape:window-width="1840"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="display:none;fill:#f26868;fill-opacity:1;stroke-width:0.264583"
+       id="rect2"
+       width="312.91928"
+       height="123.06992"
+       x="-56.989765"
+       y="-27.271177" />
+    <text
+       xml:space="preserve"
+       style="font-size:42.3026px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.220326"
+       x="-0.76143128"
+       y="36.676346"
+       id="text1"
+       transform="scale(0.98987963,1.0102238)"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:42.3026px;font-family:'Noto Serif CJK JP';-inkscape-font-specification:'Noto Serif CJK JP Heavy';fill:#ffffff;fill-opacity:1;stroke-width:0.220326"
+         x="-0.76143128"
+         y="36.676346">数理同好会</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke-width:0.200096"
+       id="rect1"
+       width="210"
+       height="5"
+       x="0"
+       y="42.5" />
+  </g>
+</svg>

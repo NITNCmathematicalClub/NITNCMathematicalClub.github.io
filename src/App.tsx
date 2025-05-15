@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Activities from "./pages/Activities";
-import Members from "./pages/Members";
 import React from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Introduce from "./pages/Introduce";
+import ClubMagazine from "./pages/ClubMagazine";
+import Exams from "./pages/Exams";
+import Contact from "./pages/Contact";
 
 const App = () => {
   return (
@@ -13,15 +16,14 @@ const App = () => {
         <Navbar />
         
         {/* メインコンテンツ：flex-1で残り全体を占める */}
-        <main className="flex-1 px-4 py-6">
+        <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/introduce" element={<Activities />} />
-            <Route path="/schedule" element={<Members />} />
-            <Route path="/activities" element={<Members />} />
-            <Route path="/report" element={<Members />} />
-            {/* <Route path="/members" element={<Members />} /> */}
-            {/* <Route path="/members" element={<Members />} /> */}
+            <Route path="/introduce" element={<Introduce />} />
+            <Route path="/activities" element={<Activities />} />
+            <Route path="/clubmagazine" element={<ClubMagazine />} />
+            <Route path="/exams" element={<Exams />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
 

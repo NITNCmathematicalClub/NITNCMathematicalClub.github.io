@@ -1,30 +1,67 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import React, { useState } from "react";
 
 const Navbar = () => {
-  return(
-    // <nav className="bg-accent text-white p-4 shadow-md">
-    //   <div className="countainer mx-auto flex justify-between items-center">
-    //     <Link to="/" className="text-white text-lg font-bold">数理同好会</Link>
-    //     <div className="space-x-4">
-    //       <Link to="/" className="hover:text-bfbase-light font-semibold">ホーム</Link>
-    //       <Link to="/activities" className="hover:text-bfbase-light font-semibold">活動内容</Link>
-    //       <Link to="/members" className="hover:text-bfbase-light font-semibold">会員紹介</Link>
-    //     </div>
-    //   </div>
-    // </nav>
-    <nav className="bg-header text-text-hfbase p-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-text-hfbase text-lg font-bold">数理同好会</Link>
-        <div className="space-x-4">
-          {/* <Link to="/" className="hover:underline">ホーム</Link> */}
-          <Link to="/introduce" className="hover:underline">数理同好会とは</Link>
-          <Link to="/schedule" className="hover:underline">活動計画</Link>
-          <Link to="/activities" className="hover:underline">活動報告</Link>
-          <Link to="/report" className="hover:underline">部誌</Link>
-          {/* <Link to="/members" className="hover:underline">会員紹介</Link> */}
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <nav className="bg-header text-text-hfbase font-serif">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center relative">
+        {/* 左: ロゴ */}
+        <Link to="/" className="text-xl font-extrabold font-serif">
+          数理同好会
+        </Link>
+
+        {/* 中央: メニュー（PC表示時） */}
+        <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-8 font-semibold">
+          <Link to="/introduce" className="">
+            数理同好会って何？
+          </Link>
+          <Link to="/activities" className="">
+            活動報告
+          </Link>
+          <Link to="/clubmagazine" className="">
+            部誌
+          </Link>
+          <Link to="/exams" className="">
+            過去問解説
+          </Link>
+          <Link to="/contact" className="">
+            お問い合わせ
+          </Link>
+        </div>
+
+        {/* ハンバーガー: モバイル表示時 */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-text-hfbase"
+          >
+            ☰
+          </button>
         </div>
       </div>
+
+      {/* モバイルメニュー表示（中央揃え） */}
+      {isOpen && (
+        <div className="flex flex-col items-center gap-4 md:hidden pb-4">
+          <Link to="/introduce" className="">
+            数理同好会って何？
+          </Link>
+          <Link to="/activities" className="">
+            活動報告
+          </Link>
+          <Link to="/clubmagazine" className="">
+            部誌
+          </Link>
+          <Link to="/exams" className="">
+            過去問解説
+          </Link>
+          <Link to="/contact" className="">
+            お問い合わせ
+          </Link>
+        </div>
+      )}
     </nav>
   );
 };

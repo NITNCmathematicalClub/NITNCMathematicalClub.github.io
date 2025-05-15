@@ -1,34 +1,33 @@
+import React from 'react';
+import HeroSlider from '../components/HeroSlider';
+
 const Home = () => {
   return (
-    // <div className="text-center mt-10">
-    //   <h1 className="text-4xl font-bold mb-4">数理同好会 公式サイト</h1>
-    //   <p className="text-lg text-gray-700">沼津高専 数理同好会の活動を紹介しています。</p>
-    // </div>
-    // <section className="space-y-8">
-      // <div className="bg-background shadow-md p-6 rounded-lg">
-      //   <h1 className="text-3xl font-bold text-text-accent mb-4">数理同好会とは？</h1>
-      //   <p className="text-lg text-text-accent leading-relaxed">
-      //     数理同好会は、数学を中心とした学術的な探究を行う学生の集まりです。<br />
-      //     日々の活動では、数学の講演会、研究発表、勉強会などを通して、知的好奇心を深めています。
-      //   </p>
-      // </div>
+    <div className="bg-background text-text-base">
+      <HeroSlider />
 
-    //   <div className="bg-white shadow-md p-6 rounded-lg">
-    //     <h2 className="text-2xl font-semibold text-blue-600 mb-2">主な活動内容</h2>
-    //     <ul className="list-disc pl-5 text-gray-700">
-    //       <li>定期的な数学勉強会</li>
-    //       <li>外部講師による特別講演</li>
-    //       <li>部誌の作成・配布</li>
-    //       <li>学内外イベントへの参加</li>
-    //     </ul>
-    //   </div>
-    // </section>
-    <div className="bf-background">
-      <h1 className="text-2xl font-bold text-text-accent">ホーム</h1>
-      <span className="text-text-base">
-        I love C++.
-      </span>
+      {/* 以下に続くセクション */}
+      <section className="py-16 px-4 text-center">
+        <h2 className="text-3xl font-semibold mb-4">活動内容</h2>
+        <p className="text-lg">
+          数理同好会は数学と情報科学を楽しく学び、研究・制作を行っています。
+        </p>
+      </section>
     </div>
+    // <div className="bg-background text-text-base">
+    //   {/* Hero Section */}
+    //   <section className="text-center py-24 px-4">
+    //     <h1 className="text-5xl md:text-6xl font-bold mb-6">
+    //       数理の力を、もっと自由に。
+    //     </h1>
+    //     <span className="tex-xl md:text-2xl max-w-2xl mx-auto mb-8">
+    //       数学・情報・プログラミングで、世界の見え方が変わる。
+    //     </span>
+    //     <button className="bg-blue text-text-hfbase px-6 py-3 rounded-full fond-medium hover:opacity-90 transition">
+    //       詳しく見る
+    //     </button>
+    //   </section>  
+    // </div>
   );
 };
 
