@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Activities from "./pages/Activities";
-import React from 'react';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import React from "react";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Introduce from "./pages/Introduce";
 import ClubMagazine from "./pages/ClubMagazine";
 import Exams from "./pages/Exams";
@@ -14,9 +14,9 @@ const App = () => {
     <Router>
       <div className="min-h-screen flex flex-col bg-background text-text-base font-sans">
         <Navbar />
-        
+
         {/* メインコンテンツ：flex-1で残り全体を占める */}
-        <main className="flex-1">
+        <main className="flex-1 pt-10">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/introduce" element={<Introduce />} />

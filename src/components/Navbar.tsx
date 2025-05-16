@@ -5,7 +5,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-header text-text-hfbase font-serif">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-header text-text-hfbase font-serif">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center relative">
         {/* 左: ロゴ */}
         <Link to="/" className="text-xl font-extrabold font-serif">

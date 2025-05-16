@@ -27,25 +27,25 @@ const HeroSlider = () => {
         {images.map((src, idx) => (
           <div key={idx} className="keen-slider__slide">
             <div
-              className="h-full w-full bg-cover bg-center filter blur-sm brightness-75 scale-110 mix-blend-overlay"
+              className="h-full w-full bg-cover bg-center filter blur-sm brightness-50 scale-110 mix-blend-overlay"
               style={{ backgroundImage: `url(${src})` }}
             ></div>
           </div>
         ))}
       </div>
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <img
           src="/MathematicalClubIcon.svg"
           // alt="数理同好会ロゴ"
           className="w-1/4 md:w-1/6 select-none pointer-events-none"
           draggable="false"
         />
-      </div>
+      </div> */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <img
           src="/img/Hero/MathematicalClubTitle.svg"
           // alt="数理同好会ロゴ"
-          className="w-2/3 md:w-1/3 h-auto brightness-100 select-none pointer-events-none mix-blend-normal filter drop-shadow-md"
+          className="w-2/3 md:w-2/5 h-auto brightness-100 select-none pointer-events-none mix-blend-normal filter drop-shadow-md"
           draggable="false"
         />
       </div>

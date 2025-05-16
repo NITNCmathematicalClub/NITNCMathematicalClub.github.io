@@ -3,17 +3,17 @@
 
 <svg
    width="210mm"
-   height="47.5mm"
-   viewBox="0 0 210 47.5"
+   height="80mm"
+   viewBox="0 0 210 80"
    version="1.1"
    id="svg1"
    inkscape:version="1.4.2 (2aeb623e1d, 2025-05-12)"
    sodipodi:docname="MathematicalClubTitle.svg"
+   xml:space="preserve"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
      id="namedview1"
      pagecolor="#ffffff"
      bordercolor="#000000"
@@ -24,45 +24,68 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.75675135"
-     inkscape:cx="290.71636"
-     inkscape:cy="317.80584"
+     inkscape:cx="282.78773"
+     inkscape:cy="149.98321"
      inkscape:window-width="1840"
      inkscape:window-height="1011"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
-  <defs
-     id="defs1" />
-  <g
+     inkscape:current-layer="layer1"
+     showguides="false"><inkscape:page
+       x="0"
+       y="0"
+       width="210"
+       height="80"
+       id="page1"
+       margin="0"
+       bleed="0" /><inkscape:page
+       x="220"
+       y="0"
+       width="33.513889"
+       height="35.277775"
+       id="page2"
+       margin="0"
+       bleed="0" /></sodipodi:namedview><defs
+     id="defs1"><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1"><path
+         d="M 0,0 H 595.28 V 841.89 H 0 Z"
+         transform="matrix(1,0,0,-1,-81.142002,736.76102)"
+         id="path1" /></clipPath></defs><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
-    <rect
-       style="display:none;fill:#f26868;fill-opacity:1;stroke-width:0.264583"
+     id="layer1"><rect
+       style="display:none;fill:#000000;fill-opacity:1;stroke-width:0.264583"
        id="rect2"
        width="312.91928"
        height="123.06992"
-       x="-56.989765"
-       y="-27.271177" />
-    <text
+       x="-58.388287"
+       y="-28.320068" /><path
+       d="M 41.941984,53.204359 6.5747969,96.927016 c -0.796875,0.996093 -0.890625,1.195312 -0.890625,1.59375 0,1.101562 0.890625,1.101562 2.6835937,1.101562 H 90.949797 l 8.578125,-24.808594 h -2.496094 c -2.496094,7.476563 -9.164062,13.546875 -17.636719,16.441407 -1.59375,0.492187 -8.460937,2.882812 -23.109375,2.882812 H 13.945891 L 48.516203,51.411391 c 0.691406,-0.902344 0.890625,-1.195313 0.890625,-1.59375 0,-0.410157 -0.09375,-0.503907 -0.691406,-1.40625 L 16.336516,3.9856094 h 39.457031 c 11.355469,0 34.265625,0.703125 41.238281,19.3242186 h 2.496094 L 90.949797,0.00123438 H 8.3677656 c -2.6835937,0 -2.7890625,0.10546875 -2.7890625,3.18750002 z m 0,0"
+       style="fill:#cea152;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       aria-label="∑"
+       transform="matrix(0.74508336,0,0,0.74508336,65.843401,2.8860602)"
+       clip-path="url(#clipPath1)"
+       id="path2" /><text
        xml:space="preserve"
        style="font-size:42.3026px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.220326"
        x="-0.76143128"
-       y="36.676346"
+       y="52.761887"
        id="text1"
-       transform="scale(0.98987963,1.0102238)"><tspan
+       transform="scale(0.98987966,1.0102238)"><tspan
          sodipodi:role="line"
          id="tspan1"
          style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:42.3026px;font-family:'Noto Serif CJK JP';-inkscape-font-specification:'Noto Serif CJK JP Heavy';fill:#ffffff;fill-opacity:1;stroke-width:0.220326"
          x="-0.76143128"
-         y="36.676346">数理同好会</tspan></text>
-    <rect
+         y="52.761887">数理同好会</tspan></text><rect
        style="fill:#ffffff;fill-opacity:1;stroke-width:0.200096"
        id="rect1"
        width="210"
        height="5"
        x="0"
-       y="42.5" />
-  </g>
-</svg>
+       y="58.75" /></g><g
+     id="g1"
+     inkscape:groupmode="layer"
+     inkscape:label="1"
+     transform="matrix(0.26458333,0,0,0.26458333,220.00001,0)" /></svg>
