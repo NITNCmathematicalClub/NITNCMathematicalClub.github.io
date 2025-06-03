@@ -33,14 +33,6 @@ const HeroSlider = () => {
           </div>
         ))}
       </div>
-      {/* <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <img
-          src="/MathematicalClubIcon.svg"
-          // alt="数理同好会ロゴ"
-          className="w-1/4 md:w-1/6 select-none pointer-events-none"
-          draggable="false"
-        />
-      </div> */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <img
           src="/img/Hero/MathematicalClubTitle.svg"

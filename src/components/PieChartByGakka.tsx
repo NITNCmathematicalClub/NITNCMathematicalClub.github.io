@@ -104,45 +104,4 @@ const PieChartByGrade = () => {
   );
 };
 
-// const PieChartByGrade = () => {
-//   return (
-//     <div className="relative w-full md:w-2/3 h-100 mx-auto">
-//       <ResponsiveContainer width="100%" height="100%">
-//         <PieChart>
-//           <Pie
-//             data={data}
-//             dataKey="value"
-//             nameKey="name"
-//             cx="50%"
-//             cy="50%"
-//             startAngle={90}
-//             endAngle={-270}
-//             outerRadius={120}
-//             innerRadius={70}
-//             label={renderCustomizedLabel}
-//             labelLine={false}
-//           >
-//             {data.map((entry, index) => (
-//               <Cell
-//                 key={`cell-${index}`}
-//                 fill={entry.fill}
-//                 stroke="var(--color-background)"
-//                 strokeWidth={3}
-//               />
-//             ))}
-//           </Pie>
-//           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-//             <span className="text-lg font-bold text-text-base">
-//               合計: {total}人
-//             </span>
-//           </div>
-//           <Tooltip content={CustomTooltip} />
-//           <Legend verticalAlign="bottom" content={<CustomLegend />} />
-//         </PieChart>
-//       </ResponsiveContainer>
-//       {/* absolute inset-0 flex items-center justify-center */}
-//     </div>
-//   );
-// };
-
 export default PieChartByGrade;

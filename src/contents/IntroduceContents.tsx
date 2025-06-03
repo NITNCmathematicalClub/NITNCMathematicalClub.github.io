@@ -17,6 +17,10 @@ const IntroduceContents = () => {
         1日体験入学での過去問解説や中学生のための体験授業の補助,
         高専祭での部誌配布と数学クイズなど学校行事のサポートもしています.
       </p>
+      <img
+        className="w-full max-w-2xl mx-auto my-6"
+        src="/img/Introduce/books.jpg"
+      ></img>
       <h2 className="h2-style">構成員</h2>
       <p>
         数理同好会には以前まで, 幅広い学科の学生が所属していました.
