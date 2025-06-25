@@ -37,7 +37,7 @@ const TableOfContents = () => {
   }, []);
 
   return (
-    <aside className="hidden lg:block w-1/5 pl-6 sticky top-20 text-sm font-serif">
+    <aside className="hidden lg:block w-1/5 pl-6 sticky top-20 text-sm font-sans border-t border-gray-white pt-6">
       <h4 className="font-extrabold mb-3 text-text-accent">目次</h4>
       <ul className="space-y-1">
         {items.map((item) => (

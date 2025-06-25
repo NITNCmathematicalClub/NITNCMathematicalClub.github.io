@@ -27,7 +27,7 @@ const HeroSlider = () => {
         {images.map((src, idx) => (
           <div key={idx} className="keen-slider__slide">
             <div
-              className="h-full w-full bg-cover bg-center filter blur-sm brightness-50 scale-110 mix-blend-overlay"
+              className="h-full w-full bg-cover bg-center filter blur-sm brightness-75 scale-110 mix-blend-overlay"
               style={{ backgroundImage: `url(${src})` }}
             ></div>
           </div>

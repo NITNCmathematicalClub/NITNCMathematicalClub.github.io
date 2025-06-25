@@ -1,3 +1,4 @@
+// src/components/Navbar.tsx
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 
@@ -5,15 +6,16 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-header text-text-hfbase font-serif">
+    // ここに border-b と border-gray-300 を追加
+    <nav className="fixed top-0 left-0 w-full z-50 bg-background text-text-base font-serif border-b border-gray-white">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center relative">
         {/* 左: ロゴ */}
-        <Link to="/" className="text-xl font-extrabold font-serif">
+        <Link to="/" className="text-xl font-extrabold font-serif text-yellow">
           数理同好会
         </Link>
 
         {/* 中央: メニュー（PC表示時） */}
-        <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-8 font-semibold">
+        <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-8 font-sans">
           <Link to="/introduce" className="">
             数理同好会って何？
           </Link>

@@ -2,7 +2,7 @@
 @import "keen-slider/keen-slider.min.css";
 
 @theme {
-  --color-background: #fff2e6;
+  --color-background: #ffffff;
   --color-text-base: #1a1614;
   --color-text-accent: #403732;
   --color-text-hfbase: #fffde4;
@@ -10,8 +10,10 @@
   --color-header: #1a1614;
   --color-green: #468254;
   --color-yellow: #CEA152;
+  /* --color-yellow: #fcbc4c; */
   --color-blue: #27455C;
-  --color-gray: #8A8A8D;
+  --color-gray: #777777;
+  --color-gray-white: #DDDDDD;
 }
 
 body{
@@ -20,13 +22,17 @@ body{
 }
 
 .page-title {
-  @apply text-4xl font-black text-text-accent border-b-4 border-yellow pb-2 mb-6;
+  @apply text-4xl font-black text-text-accent border-b-4 border-yellow pb-2 mb-6 font-serif;
 }
 .h2-style {
-  @apply flex items-center text-text-base text-2xl font-bold mt-6 mb-6;
+  @apply flex items-center text-text-base text-2xl font-bold mt-6 mb-6 font-serif;
 }
 
 .h2-style::before {
   content: "";
-  @apply w-2 h-10 bg-yellow mr-4 block;
+  @apply w-2 h-10 bg-yellow mr-4 block font-serif;
+}
+
+.h3-style {
+  @apply flex items-center text-text-base text-xl font-bold mt-6 mb-6 font-sans;
 }
