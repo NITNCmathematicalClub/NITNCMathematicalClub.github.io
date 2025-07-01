@@ -8,7 +8,7 @@ import {
   type TooltipProps,
   type LegendProps,
 } from "recharts";
-import type { getLegendProps } from "recharts/types/util/getLegendProps";
+// import type { getLegendProps } from "recharts/types/util/getLegendProps";
 
 const data = [
   { name: "機械工学科", value: 0, fill: "#e60012" },

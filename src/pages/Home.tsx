@@ -7,7 +7,7 @@ const Home = () => {
     <div className="bg-gray text-text-base">
       <HeroSlider />
 
-      <div className="relative py-8 px-4 bg-blue text-text-hfbase text-center font-serif font-bold text-3xl">
+      <div className="relative py-8 px-4 bg-blue text-white text-center font-serif font-bold text-3xl">
         数理科学が大好きな, 学生たちの同好会.
       </div>
 

@@ -8,6 +8,7 @@ import Introduce from "./pages/Introduce";
 import ClubMagazine from "./pages/ClubMagazine";
 import Exams from "./pages/Exams";
 import Contact from "./pages/Contact";
+import Note from "./pages/Note";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="/clubmagazine" element={<ClubMagazine />} />
             <Route path="/exams" element={<Exams />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/note" element={<Note />} />
           </Routes>
         </main>
 

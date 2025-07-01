@@ -7,10 +7,13 @@ const Navbar = () => {
 
   return (
     // ここに border-b と border-gray-300 を追加
-    <nav className="fixed top-0 left-0 w-full z-50 bg-background text-text-base font-serif border-b border-gray-white">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-blue text-white font-serif">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center relative">
         {/* 左: ロゴ */}
-        <Link to="/" className="text-xl font-extrabold font-serif text-yellow">
+        <Link
+          to="/"
+          className="text-xl font-extrabold font-serif text-text-hfbase"
+        >
           数理同好会
         </Link>
 
@@ -27,6 +30,9 @@ const Navbar = () => {
           </Link>
           <Link to="/exams" className="">
             過去問解説
+          </Link>
+          <Link to="/note" className="">
+            雑記帳
           </Link>
           <Link to="/contact" className="">
             お問い合わせ
