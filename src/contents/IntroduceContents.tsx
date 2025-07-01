@@ -36,6 +36,13 @@ const IntroduceContents = () => {
         そのため固定された活動場所というのは存在しませんが,
         もはや部室となりかけている部屋とサブの部屋があります.
       </p>
+      <div className="">
+        <img
+          src={"/img/Introduce/room.jpg"}
+          // alt={`${activity.title} 画像 3`}
+          className="inset-0 md:w-1/2 w-full object-center" // 全体を覆い、中央でトリミング
+        />
+      </div>
     </div>
   );
 };

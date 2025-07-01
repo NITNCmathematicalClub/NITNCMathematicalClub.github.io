@@ -22,7 +22,8 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   });
 
   return (
-    <div className="max-w-full bg-white border-t border-gray-white">
+    // ここにmb-8クラスを追加して、下方向に間隔をあけます
+    <div className="max-w-full bg-white border-t border-gray-white mb-8">
       <h3 className="h3-style mb-4 text-xl font-semibold text-gray-800">
         {activity.title}
       </h3>
