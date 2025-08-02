@@ -1,25 +1,9 @@
-// import { fileURLToPath, URL } from "node:url";
-// import { defineConfig } from "vite";
-// import vue from "@vitejs/plugin-vue";
-// import vueJsx from "@vitejs/plugin-vue-jsx";
-import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueJsx(), // もしJSXを使用する場合はこのプラグインも追加
-  ],
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
-  },
-  // base: "/~m-suzuki/mathclub/", // ベースパスを設定
-
+  plugins: [tailwindcss(), react()],
   base: "./",
-  // base: "/~m-suzuki/mathclub/",
 });
