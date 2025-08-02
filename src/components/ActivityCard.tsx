@@ -1,5 +1,5 @@
 // src/components/ActivityCard.tsx
-import React from "react";
+// import React from "react";
 
 interface Activity {
   // id: number;
@@ -24,16 +24,14 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   return (
     // ここにmb-8クラスを追加して、下方向に間隔をあけます
     <div className="max-w-full bg-white border-t border-gray-white mb-8">
-      <h3 className="h3-style mb-4 text-xl font-semibold text-gray-800">
+      <h3 className="h3-style mb-4 text-xl font-sans font-semibold text-gray-800">
         {activity.title}
       </h3>
 
-      <table className="w-full text-text-base font-sans mb-6">
+      <table className="w-full text-text-base font-semibold font-serif mb-6">
         <tbody>
           <tr className="last:border-b-0">
-            <th className="py-3 text-left font-semibold text-text-accent w-1/5">
-              日時
-            </th>
+            <th className="py-3 text-left text-text-accent w-1/5">日時</th>
             <td className="py-3 text-left text-text-base w-4/5">
               {formattedDate}
             </td>

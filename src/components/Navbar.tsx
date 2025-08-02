@@ -1,6 +1,6 @@
-// src/components/Navbar.tsx
+// src / components / Navbar.tsx;
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

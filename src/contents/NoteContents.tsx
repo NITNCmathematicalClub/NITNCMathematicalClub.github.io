@@ -1,6 +1,6 @@
-import React from "react";
-import { InlineMath } from "react-katex";
-import PieChartByGakka from "../components/PieChartByGakka";
+// import React from "react";
+// import { InlineMath } from "react-katex";
+// import PieChartByGakka from "../components/PieChartByGakka";
 
 const IntroduceContents = () => {
   return (

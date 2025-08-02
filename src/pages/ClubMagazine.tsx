@@ -1,5 +1,5 @@
 import PageTitle from "../components/PageTitle";
-import TableOfContents from "../components/TableOfContenst";
+import TableOfContents from "../components/TableOfContents";
 import ClubMagazineContents from "../contents/ClubMagazineContents";
 
 const ClubMagazine = () => {

@@ -37,18 +37,24 @@ const NoteBubble: React.FC<NoteBubbleProps> = ({
   onClose,
 }) => {
   useEffect(() => {
-    const handleClickOutside = () => onClose();
+    const handleClickOutside = (event: MouseEvent) => {
+      const bubble = document.getElementById("note-bubble-container");
+      if (bubble && !bubble.contains(event.target as Node)) {
+        onClose();
+      }
+    };
     const timer = setTimeout(() => {
-      document.addEventListener("click", handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }, 0);
     return () => {
       clearTimeout(timer);
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
   return (
     <div
+      id="note-bubble-container" // IDを追加して、クリックイベントの判定に使用
       style={{
         ...styles.bubbleContainer,
         top: `${position.top}px`,
@@ -59,7 +65,14 @@ const NoteBubble: React.FC<NoteBubbleProps> = ({
       <div style={styles.bubbleTail}></div>
       <div style={styles.notesContainer}>
         {notes.map((note, index) => (
-          <div key={index} style={styles.noteItem}>
+          // 修正点: 最後の要素以外にボーダーを適用するロジック
+          <div
+            key={index}
+            style={{
+              ...styles.noteItem,
+              ...(index < notes.length - 1 ? styles.noteItemBorder : {}),
+            }}
+          >
             <p style={styles.noteContent}>{note.content}</p>
             <p style={styles.noteAuthor}>- {note.author}</p>
           </div>
@@ -73,7 +86,7 @@ const NoteBubble: React.FC<NoteBubbleProps> = ({
 // 3. メインのカレンダーコンポーネント
 // --------------------------------
 const NoteCalendar: React.FC = () => {
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1));
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [notesForSelectedDate, setNotesForSelectedDate] = useState<Note[]>([]);
 
@@ -132,15 +145,27 @@ const NoteCalendar: React.FC = () => {
       return;
     }
 
-    // 新しい formatDateToYYYYMMDD ヘルパー関数を使用
     const dateString = formatDateToYYYYMMDD(day);
     const foundNotes = allNotes.filter((note) => note.date === dateString);
 
     if (foundNotes.length > 0) {
       const targetRect = event.currentTarget.getBoundingClientRect();
+      const bubbleMaxWidth = 350; // styles.bubbleContainer.maxWidth と同じ値
+      const padding = 10;
+      const windowWidth = window.innerWidth;
+      let left = targetRect.left + window.scrollX;
+
+      // 吹き出しの最大幅を考慮して、はみ出さないようにleft位置を調整
+      if (left + bubbleMaxWidth > windowWidth - padding) {
+        left = windowWidth - bubbleMaxWidth - padding;
+      }
+      if (left < padding) {
+        left = padding;
+      }
+
       setBubblePosition({
         top: targetRect.bottom + window.scrollY + 8,
-        left: targetRect.left + window.scrollX,
+        left: left,
       });
       setSelectedDate(day);
       setNotesForSelectedDate(foundNotes);
@@ -199,18 +224,16 @@ const NoteCalendar: React.FC = () => {
           </div>
         ))}
         {calendarDays.map((day, index) => {
-          // 該当日の雑記の数を取得
           const notesOnThisDay =
             day &&
-            allNotes.filter((note) => note.date === formatDateToYYYYMMDD(day)); // ここでもヘルパー関数を使用
+            allNotes.filter((note) => note.date === formatDateToYYYYMMDD(day));
           const numberOfNotes = notesOnThisDay ? notesOnThisDay.length : 0;
 
           return (
-            // dayCellを正方形にするための調整
             <div
               key={index}
               style={{
-                ...styles.dayCellWrapper, // 新しいラッパースタイル
+                ...styles.dayCellWrapper,
                 ...(day ? styles.activeDayCell : styles.emptyDayCell),
                 ...(day &&
                 selectedDate &&
@@ -221,12 +244,9 @@ const NoteCalendar: React.FC = () => {
               onClick={(e) => handleDateClick(day, e)}
             >
               <div style={styles.dayCellContent}>
-                {" "}
-                {/* 日付とインジケーターをFlexboxで中央配置するためのコンテナ */}
                 {day && (
                   <>
                     <span style={styles.dayNumber}>{day.getDate()}</span>
-                    {/* 雑記の数だけインジケーターを表示 */}
                     {numberOfNotes > 0 && (
                       <div style={styles.noteIndicatorsContainer}>
                         {[...Array(numberOfNotes)].map((_, i) => (
@@ -258,7 +278,7 @@ const NoteCalendar: React.FC = () => {
 // --------------------------------
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    fontFamily: "sans-serif",
+    fontFamily: "serif extrabold",
     width: "90%",
     maxWidth: "600px",
     margin: "20px auto",
@@ -272,71 +292,64 @@ const styles: { [key: string]: React.CSSProperties } = {
   navButton: {
     padding: "5px 15px",
     fontSize: "1em",
-    backgroundColor: "#f0f0f0",
-    border: "1px solid #ccc",
+    backgroundColor: "white",
+    border: "1px solid #cea152",
     borderRadius: "4px",
     cursor: "pointer",
   },
   calendarGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(7, 1fr)",
-    border: "1px solid #ccc",
+    border: "1px solid #DDDDDD",
   },
   weekDayHeader: {
     fontWeight: "bold",
     textAlign: "center",
     padding: "10px 5px",
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#403732",
     borderBottom: "1px solid #ccc",
+    color: "white",
   },
-  // 修正点: dayCellをラップするスタイルとしてdayCellWrapperを導入し、正方形にする
   dayCellWrapper: {
-    position: "relative", // contentのabsolute配置の基準
-    width: "100%", // グリッドのセル幅いっぱいに
-    paddingBottom: "100%", // 幅と同じ高さにして正方形にする
+    position: "relative",
+    width: "100%",
+    paddingBottom: "100%",
     borderRight: "1px solid #eee",
     borderBottom: "1px solid #eee",
-    overflow: "hidden", // 内容がはみ出ないように
+    overflow: "hidden",
   },
-  // 修正点: dayCellの中身を配置するためのコンテナ
   dayCellContent: {
-    position: "absolute", // dayCellWrapperの中で絶対位置
+    position: "absolute",
     top: 0,
     left: 0,
     width: "100%",
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center", // 垂直方向中央
-    alignItems: "center", // 水平方向中央
-    padding: "8px", // 元々のパディングを保持
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "8px",
   },
   activeDayCell: { cursor: "pointer", transition: "background-color 0.2s" },
   emptyDayCell: { backgroundColor: "#fafafa" },
-  selectedDayCell: { backgroundColor: "#d0e8ff", fontWeight: "bold" },
-
-  // 修正点: 複数インジケーターのためのコンテナと、各インジケーターのスタイル
+  selectedDayCell: {
+    backgroundColor: "#F4D35E",
+    fontWeight: "bold",
+  },
   noteIndicatorsContainer: {
-    display: "flex", // インジケーターを横に並べる
-    gap: "3px", // インジケーター間のスペース
-    position: "absolute", // セル内で絶対位置
-    bottom: "5px", // 下からの位置
-    left: "50%", // 水平方向中央
-    transform: "translateX(-50%)", // 自身の中央を基準にずらす
+    display: "flex",
+    gap: "3px",
+    position: "absolute",
+    bottom: "5px",
+    left: "50%",
+    transform: "translateX(-50%)",
   },
   noteIndicator: {
     width: "6px",
     height: "6px",
     borderRadius: "50%",
-    backgroundColor: "#007bff",
-    // 各インジケーターにはmarginRightを不要にしたため削除
+    backgroundColor: "#cea152",
   },
-  dayNumber: {
-    fontSize: "1.5em",
-    fontWeight: "bold",
-    marginBottom: "4px", // インジケーターコンテナとの間隔
-  },
-
   bubbleContainer: {
     position: "absolute",
     backgroundColor: "#fff",
@@ -365,8 +378,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     overflowY: "auto",
   },
   noteItem: {
-    borderBottom: "1px solid #eee",
     padding: "10px 0",
+  },
+  noteItemBorder: {
+    borderBottom: "1px solid #eee",
   },
   noteContent: {
     margin: 0,

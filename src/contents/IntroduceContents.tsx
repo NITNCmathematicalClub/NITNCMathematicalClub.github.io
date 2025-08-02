@@ -1,13 +1,10 @@
-import React from "react";
+// import React from "react";
 import { InlineMath } from "react-katex";
 import PieChartByGakka from "../components/PieChartByGakka";
 
 const IntroduceContents = () => {
   return (
-    <div
-      className="text-text-base font-sans border-t border-gray-white"
-      id="introduce-content"
-    >
+    <div className="text">
       {/* <h1 className="page-title">数理同好会って何？</h1> */}
       <h2 className="h2-style">概要</h2>
       <p>
@@ -40,7 +37,7 @@ const IntroduceContents = () => {
         <img
           src={"/img/Introduce/room.jpg"}
           // alt={`${activity.title} 画像 3`}
-          className="inset-0 md:w-1/2 w-full object-center" // 全体を覆い、中央でトリミング
+          className="block mx-auto md:w-1/2 w-full" // 中央に配置するための修正
         />
       </div>
     </div>

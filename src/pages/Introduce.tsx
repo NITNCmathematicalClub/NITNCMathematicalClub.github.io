@@ -1,5 +1,5 @@
-import React from "react";
-import TableOfContents from "../components/TableOfContenst";
+// import React from "react";
+import TableOfContents from "../components/TableOfContents.js";
 import IntroduceContents from "../contents/IntroduceContents.js";
 import PageTitle from "../components/PageTitle.js";
 
