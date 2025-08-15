@@ -1,10 +1,11 @@
 // import React, { useState } from 'react';
 import { useKeenSlider } from "keen-slider/react";
+import getBase from "./getBaseURL";
 
 const images = [
-  "./img/Hero/slide1.jpg",
-  "./img/Hero/slide2.jpg",
-  "./img/Hero/slide3.jpg",
+  getBase("img/Hero/slide1.jpg"),
+  getBase("img/Hero/slide2.jpg"),
+  getBase("img/Hero/slide3.jpg"),
 ];
 
 const HeroSlider = () => {
@@ -35,7 +36,7 @@ const HeroSlider = () => {
       </div>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <img
-          src="./img/Hero/MathematicalClubTitle.svg"
+          src={getBase("img/Hero/MathematicalClubTitle.svg")}
           // alt="数理同好会ロゴ"
           className="w-2/3 md:w-2/5 h-auto brightness-100 select-none pointer-events-none mix-blend-normal filter drop-shadow-md"
           draggable="false"

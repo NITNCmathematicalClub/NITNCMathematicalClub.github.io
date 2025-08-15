@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import getBase from "./getBaseURL";
 
 // --------------------------------
 // 1. 型定義
@@ -98,7 +99,7 @@ const NoteCalendar: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/notes.json")
+    fetch(getBase("/notes.json"))
       .then((response) => {
         if (!response.ok) {
           throw new Error("ネットワーク応答がありませんでした");

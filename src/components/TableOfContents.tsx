@@ -41,7 +41,7 @@ const TableOfContents = () => {
       <h4 className="font-extrabold mb-3 text-text-accent">目次</h4>
       <ul className="space-y-1">
         {items.map((item) => (
-          <li key={item.id} className={item.level === 1 ? "ml-4" : ""}>
+          <li key={item.text} className={item.level === 1 ? "ml-4" : ""}>
             <a
               href={`#${item.id}`}
               className="hover:underline text-gray block font-bold"

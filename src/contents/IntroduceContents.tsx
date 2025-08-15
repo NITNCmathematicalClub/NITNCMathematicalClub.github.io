@@ -1,6 +1,7 @@
 // import React from "react";
 import { InlineMath } from "react-katex";
 import PieChartByGakka from "../components/PieChartByGakka";
+import getBase from "../components/getBaseURL";
 
 const IntroduceContents = () => {
   return (
@@ -35,7 +36,7 @@ const IntroduceContents = () => {
       </p>
       <div className="">
         <img
-          src={"./img/Introduce/room.jpg"}
+          src={getBase("img/Introduce/room.jpg")}
           // alt={`${activity.title} 画像 3`}
           className="block mx-auto md:w-1/2 w-full" // 中央に配置するための修正
         />

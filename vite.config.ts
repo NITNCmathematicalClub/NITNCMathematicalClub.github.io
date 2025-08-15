@@ -7,6 +7,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   // plugins: [tailwindcss(), react(), viteSingleFile()],
-  // base: "/~m-suzuki/mathclub/",
-  base: "./",
+
+  // base must end with '/'
+  base: "/~m-suzuki/mathclub/",
+
+  // base: "./",
 });
