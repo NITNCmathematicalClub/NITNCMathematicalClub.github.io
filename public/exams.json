@@ -1,34 +1,34 @@
 [
   {
     "name": "令和7(2025)年度 追試",
-    "pdfUrl": "/docs/exams/20252.pdf"
+    "pdfUrl": "./docs/exams/20252.pdf"
   },
   {
     "name": "令和7(2025)年度 本試",
-    "pdfUrl": "/docs/exams/20251.pdf"
+    "pdfUrl": "./docs/exams/20251.pdf"
   },
   {
     "name": "令和6(2024)年度 追試",
-    "pdfUrl": "/docs/exams/20242.pdf"
+    "pdfUrl": "./docs/exams/20242.pdf"
   },
   {
     "name": "令和6(2024)年度 本試",
-    "pdfUrl": "/docs/exams/20241.pdf"
+    "pdfUrl": "./docs/exams/20241.pdf"
   },
   {
     "name": "令和5(2023)年度 追試",
-    "pdfUrl": "/docs/exams/20232.pdf"
+    "pdfUrl": "./docs/exams/20232.pdf"
   },
   {
     "name": "令和4(2022)年度 追試",
-    "pdfUrl": "/docs/exams/20222.pdf"
+    "pdfUrl": "./docs/exams/20222.pdf"
   },
   {
     "name": "令和2(2020)年度 本試",
-    "pdfUrl": "/docs/exams/20201.pdf"
+    "pdfUrl": "./docs/exams/20201.pdf"
   },
   {
     "name": "平成31(2019)年度 本試",
-    "pdfUrl": "/docs/exams/20191.pdf"
+    "pdfUrl": "./docs/exams/20191.pdf"
   }
 ]

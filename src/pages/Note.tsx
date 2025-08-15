@@ -6,7 +6,7 @@ import TableOfContents from "../components/TableOfContents.tsx";
 const Note = () => {
   return (
     <div>
-      <PageTitle title="雑記帳" imageUrl="/img/Note/cover.jpg" />
+      <PageTitle title="雑記帳" imageUrl="./img/Note/cover.jpg" />
       <div className="flex flex-col md:flex-row-reverse px-4 py-12 gap-6 max-w-screen-xl mx-auto bg-color-gray">
         <TableOfContents />
         <main className="w-full lg:w-4/5">

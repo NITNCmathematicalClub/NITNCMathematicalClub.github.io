@@ -19,8 +19,8 @@ const IntroduceContents = () => {
       </p>
       {/* <img
         className="w-full max-w-2xl mx-auto my-6"
-        src="/img/Introduce/books.jpg"
-      ></img> */}
+        src="./img/Introduce/books.jpg"
+      ><./img> */}
       <h2 className="h2-style">構成員</h2>
       <p>
         数理同好会には以前まで, 幅広い学科の学生が所属していました.
@@ -35,7 +35,7 @@ const IntroduceContents = () => {
       </p>
       <div className="">
         <img
-          src={"/img/Introduce/room.jpg"}
+          src={"./img/Introduce/room.jpg"}
           // alt={`${activity.title} 画像 3`}
           className="block mx-auto md:w-1/2 w-full" // 中央に配置するための修正
         />

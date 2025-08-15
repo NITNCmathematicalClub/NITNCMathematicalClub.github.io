@@ -8,7 +8,7 @@ interface HeroSectionProps {
 
 const PageTitle: React.FC<HeroSectionProps> = ({
   title,
-  imageUrl = "/img/Introduce/books.jpg", // デフォルトの画像URLを設定
+  imageUrl = "./img/Introduce/books.jpg", // デフォルトの画像URLを設定
 }) => {
   return (
     // ヘッダーの高さ分、コンテンツ全体を下にずらすdivは、
