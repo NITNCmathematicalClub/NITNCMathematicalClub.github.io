@@ -10,11 +10,6 @@ type Note = {
   author: string;
 };
 
-type BubblePosition = {
-  top: number;
-  left: number;
-};
-
 // 日付をローカルタイムゾーンで YYYY-MM-DD 形式にフォーマットするヘルパー関数
 const formatDateToYYYYMMDD = (date: Date): string => {
   const year = date.getFullYear();
@@ -26,62 +21,7 @@ const formatDateToYYYYMMDD = (date: Date): string => {
 // --------------------------------
 // 2. 吹き出しコンポーネント
 // --------------------------------
-type NoteBubbleProps = {
-  notes: Note[];
-  position: BubblePosition;
-  onClose: () => void;
-};
-
-const NoteBubble: React.FC<NoteBubbleProps> = ({
-  notes,
-  position,
-  onClose,
-}) => {
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const bubble = document.getElementById("note-bubble-container");
-      if (bubble && !bubble.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-    const timer = setTimeout(() => {
-      document.addEventListener("mousedown", handleClickOutside);
-    }, 0);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      id="note-bubble-container" // IDを追加して、クリックイベントの判定に使用
-      style={{
-        ...styles.bubbleContainer,
-        top: `${position.top}px`,
-        left: `${position.left}px`,
-      }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div style={styles.bubbleTail}></div>
-      <div style={styles.notesContainer}>
-        {notes.map((note, index) => (
-          // 修正点: 最後の要素以外にボーダーを適用するロジック
-          <div
-            key={index}
-            style={{
-              ...styles.noteItem,
-              ...(index < notes.length - 1 ? styles.noteItemBorder : {}),
-            }}
-          >
-            <p style={styles.noteContent}>{note.content}</p>
-            <p style={styles.noteAuthor}>- {note.author}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+// NoteBubble component removed because it was defined but never used.
 
 // --------------------------------
 // 3. メインのカレンダーコンポーネント
@@ -92,30 +32,33 @@ const NoteCalendar: React.FC = () => {
   const [notesForSelectedDate, setNotesForSelectedDate] = useState<Note[]>([]);
 
   const [allNotes, setAllNotes] = useState<Note[]>([]);
-  const [bubblePosition, setBubblePosition] = useState<BubblePosition | null>(
-    null
-  );
+  // const [bubblePosition, setBubblePosition] = useState<BubblePosition | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch notes from backend when component mounts
   useEffect(() => {
-    fetch(getBase("/notes.json"))
-      .then((response) => {
+    const fetchNotes = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(getBase("notes.json"));
         if (!response.ok) {
-          throw new Error("ネットワーク応答がありませんでした");
+          throw new Error("データの取得に失敗しました");
         }
-        return response.json();
-      })
-      .then((data: Note[]) => {
+        const data: Note[] = await response.json();
         setAllNotes(data);
-      })
-      .catch((err) => {
-        console.error("データの読み込みに失敗しました:", err);
-        setError("雑記データの読み込みに失敗しました。");
-      })
-      .finally(() => {
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("不明なエラーが発生しました");
+        }
+      } finally {
         setIsLoading(false);
-      });
+      }
+    };
+    fetchNotes();
   }, []);
 
   const calendarDays = useMemo(() => {
@@ -135,64 +78,37 @@ const NoteCalendar: React.FC = () => {
     return days;
   }, [currentDate]);
 
-  const handleDateClick = (
-    day: Date | null,
-    event: React.MouseEvent<HTMLDivElement>
-  ) => {
+  const handleDateClick = (day: Date | null) => {
     if (!day) return;
 
+    // 既に選択されている日付を再度クリックした場合、枠を閉じる
     if (selectedDate && day.getTime() === selectedDate.getTime()) {
-      handleCloseBubble();
+      setSelectedDate(null);
+      setNotesForSelectedDate([]);
       return;
     }
 
     const dateString = formatDateToYYYYMMDD(day);
     const foundNotes = allNotes.filter((note) => note.date === dateString);
 
-    if (foundNotes.length > 0) {
-      const targetRect = event.currentTarget.getBoundingClientRect();
-      const bubbleMaxWidth = 350; // styles.bubbleContainer.maxWidth と同じ値
-      const padding = 10;
-      const windowWidth = window.innerWidth;
-      let left = targetRect.left + window.scrollX;
-
-      // 吹き出しの最大幅を考慮して、はみ出さないようにleft位置を調整
-      if (left + bubbleMaxWidth > windowWidth - padding) {
-        left = windowWidth - bubbleMaxWidth - padding;
-      }
-      if (left < padding) {
-        left = padding;
-      }
-
-      setBubblePosition({
-        top: targetRect.bottom + window.scrollY + 8,
-        left: left,
-      });
-      setSelectedDate(day);
-      setNotesForSelectedDate(foundNotes);
-    } else {
-      handleCloseBubble();
-    }
-  };
-
-  const handleCloseBubble = () => {
-    setSelectedDate(null);
-    setBubblePosition(null);
-    setNotesForSelectedDate([]);
+    setSelectedDate(day);
+    setNotesForSelectedDate(foundNotes);
   };
 
   const goToPrevMonth = () => {
     setCurrentDate(
       new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
     );
-    handleCloseBubble();
+    setSelectedDate(null);
+    setNotesForSelectedDate([]);
   };
 
   const goToNextMonth = () => {
     setCurrentDate(
       new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
     );
-    handleCloseBubble();
+    setSelectedDate(null);
+    setNotesForSelectedDate([]);
   };
 
   const monthName = `${currentDate.getFullYear()}年 ${
@@ -242,7 +158,7 @@ const NoteCalendar: React.FC = () => {
                   ? styles.selectedDayCell
                   : {}),
               }}
-              onClick={(e) => handleDateClick(day, e)}
+              onClick={() => handleDateClick(day)}
             >
               <div style={styles.dayCellContent}>
                 {day && (
@@ -263,12 +179,24 @@ const NoteCalendar: React.FC = () => {
         })}
       </div>
 
-      {bubblePosition && notesForSelectedDate.length > 0 && (
-        <NoteBubble
-          notes={notesForSelectedDate}
-          position={bubblePosition}
-          onClose={handleCloseBubble}
-        />
+      {/* クリックしたセルの真下に雑記の枠を絶対配置で表示 */}
+      {notesForSelectedDate.length > 0 && (
+        <div style={styles.noteBox}>
+          {notesForSelectedDate.map((note, index) => (
+            <div
+              key={index}
+              style={{
+                ...styles.noteItem,
+                ...(index < notesForSelectedDate.length - 1
+                  ? styles.noteItemBorder
+                  : {}),
+              }}
+            >
+              <p style={styles.noteContent}>{note.content}</p>
+              <p style={styles.noteAuthor}>- {note.author}</p>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -283,6 +211,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "90%",
     maxWidth: "600px",
     margin: "20px auto",
+    position: "relative",
   },
   calendarHeader: {
     display: "flex",
@@ -331,6 +260,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     padding: "8px",
   },
+  dayNumber: {
+    fontWeight: "bold", // ここで数字を太くする
+  },
   activeDayCell: { cursor: "pointer", transition: "background-color 0.2s" },
   emptyDayCell: { backgroundColor: "#fafafa" },
   selectedDayCell: {
@@ -351,32 +283,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "50%",
     backgroundColor: "#cea152",
   },
-  bubbleContainer: {
+  noteBox: {
     position: "absolute",
-    backgroundColor: "#fff",
-    padding: "15px 20px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     zIndex: 1000,
-    width: "auto",
-    minWidth: "250px",
-    maxWidth: "350px",
-  },
-  bubbleTail: {
-    content: '""',
-    position: "absolute",
-    top: "-10px",
-    left: "20px",
-    width: 0,
-    height: 0,
-    borderLeft: "10px solid transparent",
-    borderRight: "10px solid transparent",
-    borderBottom: "10px solid white",
-    filter: "drop-shadow(0 -1px 1px rgba(0,0,0,0.1))",
-  },
-  notesContainer: {
-    maxHeight: "250px",
-    overflowY: "auto",
+    width: "90%",
+    maxWidth: "500px",
+    padding: "20px",
+    border: "2px solid #cea152",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.5)",
   },
   noteItem: {
     padding: "10px 0",

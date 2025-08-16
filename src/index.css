@@ -22,21 +22,49 @@ body{
 }
 
 .page-title {
-  @apply text-4xl font-black text-text-accent border-b-4 border-yellow pb-2 mb-6 font-serif;
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 900; /* font-black */
+  color: var(--color-text-accent); /* text-text-accent */
+  border-bottom-width: 4px; /* border-b-4 */
+  border-bottom-color: var(--color-yellow); /* border-yellow */
+  padding-bottom: 0.5rem; /* pb-2 */
+  margin-bottom: 1.5rem; /* mb-6 */
+  font-family: serif; /* font-serif */
 }
 .h2-style {
-  @apply flex items-center text-text-base text-2xl font-bold mt-6 mb-6 font-serif;
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  color: var(--color-text-base); /* text-text-base */
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700; /* font-bold */
+  margin-top: 1.5rem; /* mt-6 */
+  margin-bottom: 1.5rem; /* mb-6 */
+  font-family: sans-serif; /* font-sans */
 }
 
 .h2-style::before {
   content: "";
-  @apply w-2 h-10 bg-yellow mr-4 block font-serif;
+  width: 0.5rem; /* w-2 */
+  height: 2.5rem; /* h-10 */
+  background-color: var(--color-yellow); /* bg-yellow */
+  margin-right: 1rem; /* mr-4 */
+  display: block; /* block */
+  font-family: serif; /* font-serif */
 }
 
 .h3-style {
-  @apply flex items-center text-text-base text-xl font-bold mt-6 mb-6 font-sans;
+  display: flex; /* flex */
+  align-items: center; /* items-center */
+  color: var(--color-text-base); /* text-text-base */
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 700; /* font-bold */
+  margin-top: 1.5rem; /* mt-6 */
+  margin-bottom: 1.5rem; /* mb-6 */
+  font-family: sans-serif; /* font-sans */
 }
 
 .text{
-  @apply text-text-base font-serif font-semibold border-t border-gray-white;
+  color: var(--color-text-base); /* text-text-base */
+  font-family: sans-serif; /* font-sans */
+  border-top: 1px solid var(--color-gray-white); /* border-t border-gray-white */
 }
