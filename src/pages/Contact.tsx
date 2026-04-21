@@ -65,13 +65,10 @@ const Contact = () => {
                   メールアドレス
                 </h3>
                 <p className="text-text-base mb-4">顧問に届きます.</p>
-                <a
-                  href="mailto:m-suzuki@numazu.konsen-ac.jp" // ここに実際のメールアドレスを入力
-                  className="flex items-center justify-center p-4 bg-blue rounded-lg text-lg font-sans font-semibold text-white border-white border-1"
-                >
+                <div className="flex items-center justify-center p-4 bg-blue rounded-lg text-lg font-sans font-semibold text-white border-white border-1 select-none cursor-default">
                   <FaEnvelope className="w-4 h-4 mr-2" />
                   m-suzuki@numazu.kosen-ac.jp
-                </a>
+                </div>
               </div>
             </div>
           </div>
