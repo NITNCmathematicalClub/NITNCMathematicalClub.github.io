@@ -9,5 +9,5 @@ export default defineConfig({
   // plugins: [tailwindcss(), react(), viteSingleFile()],
 
   // base must end with '/'
-  base: "./",
+  base: "/",
 });
