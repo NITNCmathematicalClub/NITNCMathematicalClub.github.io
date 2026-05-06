@@ -9,24 +9,23 @@ import ClubMagazine from "./pages/ClubMagazine";
 import Exams from "./pages/Exams";
 import Contact from "./pages/Contact";
 import Note from "./pages/Note";
-import getBase from "./components/getBaseURL";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="min-h-screen flex flex-col bg-background text-text-base font-sans">
         <Navbar />
 
         {/* メインコンテンツ：flex-1で残り全体を占める */}
         <main className="flex-1 pt-10">
           <Routes>
-            <Route path={getBase("")} element={<Home />} />
-            <Route path={getBase("introduce")} element={<Introduce />} />
-            <Route path={getBase("activities")} element={<Activities />} />
-            <Route path={getBase("clubmagazine")} element={<ClubMagazine />} />
-            <Route path={getBase("exams")} element={<Exams />} />
-            <Route path={getBase("contact")} element={<Contact />} />
-            <Route path={getBase("note")} element={<Note />} />
+            <Route path={"/"} element={<Home />} />
+            <Route path={"/introduce"} element={<Introduce />} />
+            <Route path={"/activities"} element={<Activities />} />
+            <Route path={"/clubmagazine"} element={<ClubMagazine />} />
+            <Route path={"/exams"} element={<Exams />} />
+            <Route path={"/contact"} element={<Contact />} />
+            <Route path={"/note"} element={<Note />} />
           </Routes>
         </main>
 

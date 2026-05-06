@@ -1,6 +1,5 @@
 import ActivityCard from "../components/ActivityCard";
 import React, { useState, useEffect, type JSX } from "react";
-import getBase from "../components/getBaseURL";
 
 // Activityの型定義（以前のコードから変更なし）
 interface Activity {
@@ -29,7 +28,7 @@ const ActivitiesContents: React.FC = () => {
 
   // コンポーネントがマウントされたときに一度だけデータをフェッチ
   useEffect(() => {
-    fetch(getBase("activities.json")) // publicディレクトリにあるJSONファイルを指定
+    fetch("/activities.json") // publicディレクトリにあるJSONファイルを指定
       .then((response) => {
         if (!response.ok) {
           throw new Error("ネットワーク応答がありませんでした");

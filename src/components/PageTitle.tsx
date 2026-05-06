@@ -1,5 +1,4 @@
 import React from "react";
-import getBase from "./getBaseURL";
 
 // Propsの型定義
 interface HeroSectionProps {
@@ -9,7 +8,7 @@ interface HeroSectionProps {
 
 const PageTitle: React.FC<HeroSectionProps> = ({
   title,
-  imageUrl = getBase("img/Introduce/books.jpg"), // デフォルトの画像URLを設定
+  imageUrl = "/img/Introduce/books.jpg", // デフォルトの画像URLを設定
 }) => {
   return (
     // ヘッダーの高さ分、コンテンツ全体を下にずらすdivは、

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import getBase from "../components/getBaseURL";
 
 // PDFデータの型をJSONファイルに合わせて修正
 interface Exam {
@@ -13,7 +12,7 @@ const ExamsContents = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(getBase("exams.json"))
+    fetch("/exams.json")
       .then((response) => {
         if (!response.ok) {
           throw new Error("ネットワーク応答がありませんでした");

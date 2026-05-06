@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from "react";
-import getBase from "./getBaseURL";
 
 // --------------------------------
 // 1. 型定義
@@ -42,7 +41,7 @@ const NoteCalendar: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(getBase("notes.json"));
+        const response = await fetch("/notes.json");
         if (!response.ok) {
           throw new Error("データの取得に失敗しました");
         }

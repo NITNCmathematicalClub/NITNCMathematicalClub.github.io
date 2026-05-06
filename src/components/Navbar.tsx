@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import getBase from "./getBaseURL";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +17,7 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center relative">
           {/* Left: Logo */}
           <Link
-            to={getBase("")}
+            to={"/"}
             className="text-xl font-extrabold font-serif text-white"
           >
             数理同好会
@@ -27,37 +26,37 @@ const Navbar = () => {
           {/* Center: Desktop Menu (PC view) */}
           <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-8 font-sans">
             <Link
-              to={getBase("introduce")}
+              to={"/introduce"}
               className="text-white hover:text-gray-400 transition-colors"
             >
               数理同好会って何？
             </Link>
             <Link
-              to={getBase("activities")}
+              to={"/activities"}
               className="text-white hover:text-gray-400 transition-colors"
             >
               活動報告
             </Link>
             <Link
-              to={getBase("clubmagazine")}
+              to={"/clubmagazine"}
               className="text-white hover:text-gray-400 transition-colors"
             >
               部誌
             </Link>
             <Link
-              to={getBase("exams")}
+              to={"/exams"}
               className="text-white hover:text-gray-400 transition-colors"
             >
               過去問解説
             </Link>
             <Link
-              to={getBase("note")}
+              to={"/note"}
               className="text-white hover:text-gray-400 transition-colors"
             >
               雑記帳
             </Link>
             <Link
-              to={getBase("contact")}
+              to={"/contact"}
               className="text-white hover:text-gray-400 transition-colors"
             >
               お問い合わせ
@@ -104,7 +103,7 @@ const Navbar = () => {
         >
           {/* Use conditional classes to control the staggered animation */}
           <Link
-            to={getBase("introduce")}
+            to={"/introduce"}
             onClick={() => setIsOpen(false)}
             className={`transition-all duration-500 ease-in-out transform ${
               isOpen
@@ -116,7 +115,7 @@ const Navbar = () => {
             数理同好会って何？
           </Link>
           <Link
-            to={getBase("activities")}
+            to={"/activities"}
             onClick={() => setIsOpen(false)}
             className={`transition-all duration-500 ease-in-out transform ${
               isOpen
@@ -128,7 +127,7 @@ const Navbar = () => {
             活動報告
           </Link>
           <Link
-            to={getBase("clubmagazine")}
+            to={"/clubmagazine"}
             onClick={() => setIsOpen(false)}
             className={`transition-all duration-500 ease-in-out transform ${
               isOpen
@@ -140,7 +139,7 @@ const Navbar = () => {
             部誌
           </Link>
           <Link
-            to={getBase("exams")}
+            to={"/exams"}
             onClick={() => setIsOpen(false)}
             className={`transition-all duration-500 ease-in-out transform ${
               isOpen
@@ -152,7 +151,7 @@ const Navbar = () => {
             過去問解説
           </Link>
           <Link
-            to={getBase("note")}
+            to={"/note"}
             onClick={() => setIsOpen(false)}
             className={`transition-all duration-500 ease-in-out transform ${
               isOpen
@@ -164,7 +163,7 @@ const Navbar = () => {
             雑記帳
           </Link>
           <Link
-            to={getBase("contact")}
+            to={"/contact"}
             onClick={() => setIsOpen(false)}
             className={`transition-all duration-500 ease-in-out transform ${
               isOpen
