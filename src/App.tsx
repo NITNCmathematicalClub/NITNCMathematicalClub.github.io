@@ -9,10 +9,13 @@ import ClubMagazine from "./pages/ClubMagazine";
 import Exams from "./pages/Exams";
 import Contact from "./pages/Contact";
 import Note from "./pages/Note";
+import NotFound from "./pages/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-background text-text-base font-sans">
         <Navbar />
 
@@ -26,6 +29,7 @@ const App = () => {
             <Route path={"/exams"} element={<Exams />} />
             <Route path={"/contact"} element={<Contact />} />
             <Route path={"/note"} element={<Note />} />
+            <Route path={"*"} element={<NotFound />} />
           </Routes>
         </main>
 
