@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 使い方が分からないとき
+    url: https://github.com/NITNCmathematicalClub/NITNCMathematicalClub.github.io/blob/main/CONTRIBUTING.md
+    about: まず CONTRIBUTING（運用ルール）を確認してください

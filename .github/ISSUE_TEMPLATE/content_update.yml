@@ -1,0 +1,39 @@
+name: コンテンツ追加・修正依頼
+description: 部誌・過去問・活動報告・お知らせなどの掲載依頼（コードを書かない人向け）
+title: "[content] "
+labels: ["type:content"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 種別
+      options:
+        - お知らせ（news.json）
+        - 活動報告（activities.json）
+        - 過去問解説（exams.json / PDF追加）
+        - 部誌ページ
+        - 雑記帳（notes.json）
+        - その他のページの文言・画像
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: 掲載・修正したい内容
+      description: 日付・タイトル・本文など、決まっている内容を書いてください。ファイルは下の欄に添付できます
+    validations:
+      required: true
+  - type: input
+    id: deadline
+    attributes:
+      label: 希望公開日（あれば）
+      placeholder: 例 2026-11-01（高専祭前）
+    validations:
+      required: false
+  - type: textarea
+    id: files
+    attributes:
+      label: 添付ファイル・素材
+      description: 画像やPDFをここにドラッグ＆ドロップできます。画像は YYYY-MM-DD-連番.jpg の名前だと助かります
+    validations:
+      required: false
