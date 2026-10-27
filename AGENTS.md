@@ -57,14 +57,14 @@ JSON の形式は [docs/data-schema.md](docs/data-schema.md) を参照してく�
 
 1. **直接URLの404（Issue #4）**: SPA＋静的配信のため、トップ以外のURLを直接開くと
    GitHub Pages の404になる既知の問題がある。ルーティング変更時は必ず確認すること。
-   `vercel.json` と `public/.htaccess` は Pages では無効（削除予定、Issue #10）。
+   `vercel.json` と `public/.htaccess` は Pages では無効なため Issue #10 で削除済み。
 2. **JSON の date は文字列**: `news.json` / `activities.json` の `date` は
    `"2026-04-22"` 形式の文字列。一部コードの型定義が `number` になっているのは
    既知のバグ（Issue #11）。日付の並び替えは文字列を引き算せず、Date として比較すること。
 3. **アセットパスは絶対パスで**: 画像やJSONの参照は `"/img/..."` のように
    先頭スラッシュの絶対パスに統一する。`"./img/..."` は表示中URLで解決先が変わる。
 4. **デプロイはマージだけ**: 公開は「PRを main にマージ」で自動で行われる。
-   `npm run deploy`（gh-pages 方式）は旧手順なので**使わない**（Issue #10 で削除予定）。
+   `npm run deploy`（gh-pages 方式）は Issue #10 で削除済み。スクリプト自体が存在しない。
 5. **Tailwind は v4**: 色やフォントのカスタマイズは `src/index.css` の `@theme` で行う。
    `tailwind.config.js` は v3 時代の残骸で、v4 では自動で読まれない（Issue #13）。
 6. **目次のアンカー（Issue #12）**: `TableOfContents` の slugify は日本語見出しで
