@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>数理同好会in沼津高専</title>
+    <!--
+      SPA を GitHub Pages で公開するためのリダイレクト（spa-github-pages 方式）。
+      存在しないパスへのアクセスでは Pages がこの 404.html を返すので、
+      本来のパスをクエリに変換してトップページへ転送する。
+      トップ側（index.html）のスクリプトが、転送時に元のURLへ復元する。
+      pathSegmentsToKeep = 0: ルート（カスタムドメイン直下）で公開しているため。
+    -->
+    <script type="text/javascript">
+      var pathSegmentsToKeep = 0;
+
+      var l = window.location;
+      l.replace(
+        l.protocol +
+          "//" +
+          l.hostname +
+          (l.port ? ":" + l.port : "") +
+          l.pathname
+            .split("/")
+            .slice(0, 1 + pathSegmentsToKeep)
+            .join("/") +
+          "/?/" +
+          l.pathname
+            .slice(1)
+            .split("/")
+            .slice(pathSegmentsToKeep)
+            .join("/")
+            .replace(/&/g, "~and~") +
+          (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+          l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
