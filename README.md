@@ -1,39 +1,43 @@
-# 沼津高専 数理同好会 公式サイト
+# Astro Starter Kit: Minimal
 
-沼津高専数理同好会の公式サイトのソースコードです。
-
-- 公開サイト: https://math.nitnc.club/
-- 技術構成: React + TypeScript + Vite（GitHub Pages で公開）
-
-## クイックスタート
-
-前提: Node.js 20。
-
-```bash
-npm ci        # 依存インストール
-npm run dev   # 開発サーバー http://localhost:5173/
-npm run build # 型チェック＋ビルド
-npm run lint  # ESLint
+```sh
+npm create astro@latest -- --template minimal
 ```
 
-公開は自動です。PR が `main` にマージされると GitHub Actions が
-ビルドして GitHub Pages へデプロイします（手動のデプロイ操作は不要です）。
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-## ドキュメント
+## 🚀 Project Structure
 
-| ドキュメント | 内容 |
-|---|---|
-| [AGENTS.md](AGENTS.md) | AIエージェント向け作業ガイド（構成・注意点の入口） |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | 参加方法と運用ルール（ブランチ・コミット・バージョン） |
-| [docs/architecture.md](docs/architecture.md) | サイトの構成・ルーティング・コンポーネント |
-| [docs/data-schema.md](docs/data-schema.md) | `public/*.json` のデータ形式（正本） |
-| [docs/content-guide.md](docs/content-guide.md) | コンテンツ（お知らせ・活動報告など）の更新手順 |
-| [docs/development.md](docs/development.md) | 開発の進め方・ページ追加チュートリアル |
-| [docs/operations.md](docs/operations.md) | デプロイ・バージョン・Issue/Project・権限の運用 |
-| [CHANGELOG.md](CHANGELOG.md) | 公開履歴 |
+Inside of your Astro project, you'll see the following folders and files:
 
-## コンテンツの更新だけしたい方へ
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
 
-お知らせや活動報告などの更新は、`public/` の JSON ファイルの編集だけで
-行えます。手順は [docs/content-guide.md](docs/content-guide.md) をご覧ください。
-作業の依頼は Issue の「コンテンツ追加・修正依頼」テンプレートからも可能です。
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+
+Any static assets, like images, can be placed in the `public/` directory.
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
