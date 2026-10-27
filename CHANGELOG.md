@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### Removed
+
+- 未使用ファイルの整理（Issue #13）: `src/App.css`、`src/assets/react.svg`、`src/components/HomeCard.tsx`、`src/contents/NoteContents.tsx`、`update_getbase.mjs` を削除
+- 未使用の依存を削除: `@vitejs/plugin-vue`、`@vitejs/plugin-vue-jsx`、`@tailwindcss/aspect-ratio`、`@tailwindcss/postcss`
+- Tailwind v3 時代の `tailwind.config.js` を削除（v4 では `@import "tailwindcss"` と `@theme` が正で、config は読み込まれていなかった）
+
 ### Fixed
 
 - 直接URLで各ページを開くと404になる問題（`public/404.html` によるリダイレクト方式を導入し、存在しないパス用の404ページを追加）

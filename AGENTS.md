@@ -66,7 +66,7 @@ JSON の形式は [docs/data-schema.md](docs/data-schema.md) を参照してく�
 4. **デプロイはマージだけ**: 公開は「PRを main にマージ」で自動で行われる。
    `npm run deploy`（gh-pages 方式）は旧手順なので**使わない**（Issue #10 で削除予定）。
 5. **Tailwind は v4**: 色やフォントのカスタマイズは `src/index.css` の `@theme` で行う。
-   `tailwind.config.js` は v3 時代の残骸で、v4 では自動で読まれない（Issue #13）。
+   v3 時代の `tailwind.config.js` は Issue #13 で削除済み（v4 では自動で読まれない）。
 6. **目次のアンカー（Issue #12）**: `TableOfContents` の slugify は日本語見出しで
    ID が衝突する既知の問題がある。見出し周りを触るときは注意する。
 7. **ワークフローファイル**: `.github/workflows/` の変更は権限の都合で
