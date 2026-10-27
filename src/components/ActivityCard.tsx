@@ -4,7 +4,7 @@
 interface Activity {
   // id: number;
   title: string;
-  date: number;
+  date: string;
   place: string;
   description: string;
   images: string[]; // imagesは必須と仮定（もし画像がない場合もあるならimages?: string[]; にする）

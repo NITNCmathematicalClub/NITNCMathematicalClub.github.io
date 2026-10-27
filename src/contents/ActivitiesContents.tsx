@@ -4,15 +4,15 @@ import React, { useState, useEffect, type JSX } from "react";
 // Activityの型定義（以前のコードから変更なし）
 interface Activity {
   title: string;
-  date: number;
+  date: string;
   place: string;
   description: string;
   images: string[];
 }
 
 // 活動データと年度を計算するヘルパー関数（変更なし）
-const getFiscalYear = (timestamp: number): number => {
-  const date = new Date(timestamp);
+const getFiscalYear = (dateString: string): number => {
+  const date = new Date(dateString);
   const year = date.getFullYear();
   const month = date.getMonth(); // 0-11 (0=1月, 3=4月)
   return month >= 3 ? year : year - 1;
@@ -38,7 +38,7 @@ const ActivitiesContents: React.FC = () => {
       .then((data: Activity[]) => {
         // 日付の降順にソート（新しい日付が上に来るように）
         // JSONファイル内でソート済みであれば不要ですが、安全策として入れておきます
-        const sortedData = data.sort((a, b) => b.date - a.date);
+        const sortedData = data.sort((a, b) => b.date.localeCompare(a.date));
         setActivities(sortedData);
       })
       .catch((err) => {
