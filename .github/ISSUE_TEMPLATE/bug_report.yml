@@ -1,0 +1,58 @@
+name: バグ報告
+description: サイトの表示崩れ・リンク切れ・動作のおかしさを報告する
+title: "[bug] "
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ありがとうございます。再現できる情報が多いほど早く直せます。
+        分かる範囲で大丈夫です。
+  - type: input
+    id: page
+    attributes:
+      label: 問題が起きたページ
+      description: URL を貼ってください（例 https://math.nitnc.club/exams）
+      placeholder: https://math.nitnc.club/
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: どう操作したら起きるかを順番に書いてください
+      placeholder: |
+        1. トップページを開く
+        2. ○○をタップする
+        3. 画像が表示されない
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 本来どうなってほしいか
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際どうなったか
+    validations:
+      required: true
+  - type: dropdown
+    id: env
+    attributes:
+      label: 確認した環境
+      options:
+        - PC（Windows）
+        - PC（Mac）
+        - スマートフォン（iPhone）
+        - スマートフォン（Android）
+        - その他・不明
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: スクリーンショット
+      description: 画像をここにドラッグ＆ドロップで貼れます
