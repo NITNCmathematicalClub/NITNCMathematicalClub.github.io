@@ -1,6 +1,16 @@
-# CONTRIBUTING — サイト運用ルール（ドラフト）
+# CONTRIBUTING — サイト運用ルール
 
 数理同好会公式サイト（https://math.nitnc.club/）の開発・運用ルールです。
+
+
+## ドキュメント
+
+作業の前に、目的に応じて以下を参照してください。
+
+- 全体像と注意点: `AGENTS.md`（AIエージェント向けガイドですが、人間にも有用です）
+- 設計: `docs/architecture.md` / データ形式: `docs/data-schema.md`
+- コンテンツ更新: `docs/content-guide.md` / 開発手順: `docs/development.md`
+- 運用（デプロイ・バージョン・権限）: `docs/operations.md`
 
 ## 開発環境
 
