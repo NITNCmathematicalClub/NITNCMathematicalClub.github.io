@@ -7,6 +7,9 @@
 
 ### Removed
 
+- 未使用ファイルの整理（Issue #13）: `src/App.css`、`src/assets/react.svg`、`src/components/HomeCard.tsx`、`src/contents/NoteContents.tsx`、`update_getbase.mjs` を削除
+- 未使用の依存を削除: `@vitejs/plugin-vue`、`@vitejs/plugin-vue-jsx`、`@tailwindcss/aspect-ratio`、`@tailwindcss/postcss`
+- Tailwind v3 時代の `tailwind.config.js` を削除（v4 では `@import "tailwindcss"` と `@theme` が正で、config は読み込まれていなかった）
 - デプロイ経路を GitHub Actions に一本化し、GitHub Pages では無効だった `vercel.json` と `public/.htaccess`、旧デプロイ手順の `npm run deploy`（gh-pages 方式）スクリプトと `gh-pages` パッケージを削除
 
 ### Fixed

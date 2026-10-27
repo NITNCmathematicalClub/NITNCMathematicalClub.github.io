@@ -2,7 +2,6 @@
 import { useEffect, useState, type FC } from "react";
 import HeroSlider from "../components/HeroSlider";
 // import { Link } from "react-router-dom";
-// import Card from "../components/HomeCard"; // Cardコンポーネントのインポート名は正しいですか？以前はCardとHomeCardが混在していました
 
 // 新しいレイアウトのCardコンポーネント
 interface CardData {

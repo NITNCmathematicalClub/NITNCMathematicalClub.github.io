@@ -30,8 +30,7 @@
 | `/contact` | Contact.tsx | （ページ内に実装） | — |
 | `/note` | Note.tsx | （ページ内に実装）※ | notes.json |
 
-※ `src/contents/NoteContents.tsx` は未使用の残骸ファイル（Issue #13 で整理予定）。
-Note ページの本文は Note.tsx 内にあり、カレンダーは `src/components/NoteCalendar.tsx`。
+※ Note ページの本文は Note.tsx 内にあり、カレンダーは `src/components/NoteCalendar.tsx`。
 
 ## 共通コンポーネント（src/components）
 
@@ -43,7 +42,6 @@ Note ページの本文は Note.tsx 内にあり、カレンダーは `src/compo
 | TableOfContents.tsx | `.h2-style` の見出しから目次を自動生成（日本語IDの既知問題あり、Issue #12） |
 | HeroSlider.tsx | トップのスライダー（keen-slider、5秒自動送り） |
 | ActivityCard.tsx | 活動報告のカード表示 |
-| HomeCard.tsx | 未使用（Home.tsx 内に同等実装あり、Issue #13） |
 | PieChartByGakka.tsx | 学科別構成の円グラフ（recharts） |
 | NoteCalendar.tsx | 雑記帳のカレンダー（インラインスタイルで実装） |
 
