@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### Removed
+
+- デプロイ経路を GitHub Actions に一本化し、GitHub Pages では無効だった `vercel.json` と `public/.htaccess`、旧デプロイ手順の `npm run deploy`（gh-pages 方式）スクリプトと `gh-pages` パッケージを削除
+
 ### Fixed
 
 - 直接URLで各ページを開くと404になる問題（`public/404.html` によるリダイレクト方式を導入し、存在しないパス用の404ページを追加）

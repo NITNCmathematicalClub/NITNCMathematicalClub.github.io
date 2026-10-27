@@ -9,8 +9,8 @@
 - カスタムドメイン `math.nitnc.club` は、リポジトリの **Settings > Pages** で
   設定されています。リポジトリ内に CNAME ファイルはないので、デプロイ方式を
   変えるときはドメイン設定が外れていないか必ず確認してください。
-- 旧手順（`npm run deploy` の gh-pages 方式）は廃止予定です（Issue #10）。
-  使わないでください。
+- 旧手順（`npm run deploy` の gh-pages 方式）は Issue #10 で廃止しました。
+  デプロイは GitHub Actions のみです。
 
 ## ブランチ保護
 
