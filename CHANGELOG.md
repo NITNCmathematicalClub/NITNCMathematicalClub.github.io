@@ -5,6 +5,9 @@
 
 ## [Unreleased]
 
+### Changed
+
+- サイト内の大きな画像8点を最適化（最大幅1920pxへのリサイズとJPEG再圧縮）。合計 約20.5MB → 約2.3MB
 ### Removed
 
 - 未使用ファイルの整理（Issue #13）: `src/App.css`、`src/assets/react.svg`、`src/components/HomeCard.tsx`、`src/contents/NoteContents.tsx`、`update_getbase.mjs` を削除
