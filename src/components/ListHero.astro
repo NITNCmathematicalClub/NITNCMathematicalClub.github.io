@@ -1,0 +1,17 @@
+---
+// 一覧ページのタイトル（Figma テンプレート: 紺の大見出し＋右に小さい説明＋ゴールドの短い線）
+interface Props {
+  title: string;
+  subtitle: string;
+}
+
+const { title, subtitle } = Astro.props;
+---
+
+<div class="mx-auto max-w-6xl px-5 pt-14">
+  <div class="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+    <h1 class="text-4xl font-bold text-navy md:text-[2.75rem] md:leading-tight">{title}</h1>
+    <p class="text-sm text-sub">{subtitle}</p>
+  </div>
+  <span class="mt-4 block h-1 w-12 bg-gold"></span>
+</div>

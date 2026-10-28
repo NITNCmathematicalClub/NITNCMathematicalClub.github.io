@@ -1,0 +1,29 @@
+---
+// ホーム「最近の記事」のカード（Figma テンプレート: 白い箱、罫線のフッターに著者と日付）
+import { fmtISO } from "../lib/date";
+
+interface Props {
+  slug: string;
+  title: string;
+  date: Date;
+  category: string;
+  description: string;
+  author: { department: string; grade: number };
+}
+
+const { slug, title, date, category, description, author } = Astro.props;
+---
+
+<article class="flex h-full flex-col border border-line bg-base p-6">
+  <p class="text-xs font-bold text-gold-text">{category}</p>
+  <h3 class="mt-2 text-lg font-bold leading-snug text-ink">
+    <a href={`/articles/${slug}`} class="hover:underline">{title}</a>
+  </h3>
+  <p class="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-sub">{description}</p>
+  <p class="mt-5 flex items-center justify-between border-t border-line pt-4 text-xs text-sub">
+    <span>
+      {author.department} {author.grade}年
+    </span>
+    <span>{fmtISO(date)}</span>
+  </p>
+</article>

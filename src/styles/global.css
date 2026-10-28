@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  /* カラートークン（仕様書 §12.10 の確定値） */
+  --color-navy: #27455c;
+  --color-gold: #cea152;
+  --color-gold-text: #a67f35;
+  --color-base: #faf9f6;
+  --color-band: #efebe2;
+  --color-ink: #1b2833;
+  --color-sub: #5a6b76;
+  --color-line: #dcd7ca;
+  --color-dark: #101d27;
+  --color-dark-band: #1b3245;
+  --color-dark-line: #33505f;
+  --color-hero-sub: #c9d4db;
+
+  /* フォント（仕様書 §12.10・§12.11）
+     英数字は Roboto を先に置き、和文は Noto Sans JP にフォールバックさせる */
+  --font-sans: "Roboto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  /* 大きな表示専用（見出しの英数字・大数字） */
+  --font-display: "Montserrat", "Roboto", "Noto Sans JP", sans-serif;
+  /* ロゴ文字専用 */
+  --font-logo: "Noto Serif JP", serif;
+}
+
+body {
+  @apply bg-base text-ink font-sans antialiased;
+}
+
+/* KaTeX（記事の数式）: 本文サイズに馴染ませる */
+.katex {
+  font-size: 1.06em;
+}
+
+/* 記事本文（Markdown）の組版 */
+.article-body {
+  line-height: 1.9;
+}
+.article-body h2 {
+  margin: 2.5em 0 0.8em;
+  padding-left: 0.6em;
+  border-left: 4px solid var(--color-gold);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-navy);
+}
+.article-body h3 {
+  margin: 2em 0 0.6em;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+.article-body p {
+  margin: 1em 0;
+}
+.article-body ul {
+  margin: 1em 0;
+  padding-left: 1.4em;
+  list-style: disc;
+}
+.article-body ol {
+  margin: 1em 0;
+  padding-left: 1.4em;
+  list-style: decimal;
+}
+.article-body blockquote {
+  margin: 1.2em 0;
+  padding: 0.2em 1em;
+  border-left: 3px solid var(--color-line);
+  color: var(--color-sub);
+}
+.article-body a {
+  color: var(--color-gold-text);
+  text-decoration: underline;
+}
+.article-body code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--color-band);
+  font-size: 0.9em;
+}
+.article-body pre {
+  margin: 1.2em 0;
+  padding: 1em;
+  border-radius: 6px;
+  background: var(--color-dark);
+  color: #edf2f5;
+  overflow-x: auto;
+}
+.article-body pre code {
+  background: transparent;
+  padding: 0;
+}
+/* 表はテンプレートどおり横罫のみ（情報の表） */
+.article-body table {
+  margin: 1.2em 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+.article-body th,
+.article-body td {
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.7em 0.8em 0.7em 0;
+  text-align: left;
+  vertical-align: top;
+}
+.article-body thead th {
+  border-bottom: 1px solid var(--color-line);
+  font-weight: 700;
+}
+.article-body img {
+  margin: 1.2em auto;
+  border-radius: 8px;
+}

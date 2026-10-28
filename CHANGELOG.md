@@ -11,10 +11,17 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 
 ### Added
 
+- 部員向けの執筆ガイド（`docs/content-guide.md`）を追加し、公開前レビューの当面の運用を明記
+- カテゴリ別・タグ別の記事一覧ページと、Pagefind によるサイト内検索（`/search`）を追加
+- 記事機能を実装（Content Collections による記事管理、記事一覧・詳細ページ、目次、関連記事、ホームへのお知らせ・最近の記事の表示。下書きは本番に含めない）
+- 数式表示（remark-math + rehype-katex）を導入し、記事の執筆テンプレート（`src/content/articles/_template.md`）を用意
+- 既存ページ（ホーム／概要／活動紹介／過去問解説／雑記帳／部誌／お問い合わせ／404）を Astro へ移行。データ JSON はビルド時読み込みに変更し、画像・PDF 資産を引き継いだ
+- Astro 移行基盤を整備（`@astrojs/react`・`@astrojs/mdx`・Tailwind CSS v4 の統合、`site` 設定、共通レイアウトとヘッダー／フッター、デザイントークンの CSS 化）
 - v2.0.0 のデザイン確定版を仕様書に記録（`docs/article-spec.md` §12.10）。Figma テンプレート18種（Desktop／Mobile）を作成し、見出しはゴシック（Noto Sans JP）で確定
 
 ### Changed
 
+- デザインを Figma テンプレートに全面準拠させて再実装（ホーム構成、一覧カード、記事詳細の目次・関連記事、お知らせ／活動報告の専用レイアウト、静的ページの組版）
 - 英字フォントを Roboto（基本）＋ Montserrat（大きな表示）に決定し、Figma のテンプレートとコンポーネントに適用（`docs/article-spec.md` §12.11）
 - サイトの基盤を React + Vite の SPA から Astro 7（静的生成）へ移行開始
 - CI / デプロイの Node.js を 24 に更新（Astro 7 の要件 22.23.4 以上に対応）

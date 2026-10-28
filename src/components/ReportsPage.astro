@@ -1,0 +1,55 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ListHero from "../components/ListHero.astro";
+import GridCard from "../components/GridCard.astro";
+import { getReports } from "../lib/reports";
+
+interface Props {
+  year?: number;
+}
+
+const { year } = Astro.props;
+const reports = await getReports();
+const years = [...new Set(reports.map((r) => r.fy))].sort((a, b) => b - a);
+const selected = year ?? years[0];
+const entries = reports.filter((r) => r.fy === selected);
+---
+
+<BaseLayout title="活動報告" description="数理同好会の活動報告を年度ごとにまとめています。">
+  <ListHero title="活動報告" subtitle="年度ごとに、活動の記録をまとめています" />
+  <div class="mx-auto max-w-6xl px-5 pb-20 pt-10">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="mr-1 text-sm font-bold text-navy">年度</span>
+      {
+        years.map((y) =>
+          y === selected ? (
+            <span class="rounded-full bg-navy px-4 py-1.5 text-sm font-bold text-white">{y}年度</span>
+          ) : (
+            <a
+              href={`/activities/year/${y}`}
+              class="rounded-full border border-navy/50 px-4 py-1.5 text-sm text-navy hover:bg-band"
+            >
+              {y}年度
+            </a>
+          ),
+        )
+      }
+    </div>
+    <div class="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        entries.map((r) => (
+          <GridCard
+            slug=""
+            href={r.href}
+            title={r.title}
+            date={r.date}
+            label={`${r.fy}年度`}
+            description={r.description}
+            image={r.image}
+          />
+        ))
+      }
+    </div>
+    {entries.length === 0 && <p class="mt-10 text-sub">この年度の活動報告はまだありません。</p>}
+  </div>
+</BaseLayout>

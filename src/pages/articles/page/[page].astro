@@ -1,0 +1,44 @@
+---
+import ArticleListPage from "../../../components/ArticleListPage.astro";
+import { getCollection } from "astro:content";
+import { CATEGORIES } from "../../../content.config";
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 9;
+  const all = (await getCollection("articles", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+  const total = Math.ceil(all.length / PAGE_SIZE);
+  return Array.from({ length: Math.max(0, total - 1) }, (_, i) => ({
+    params: { page: String(i + 2) },
+    props: {
+      entries: all.slice((i + 1) * PAGE_SIZE, (i + 2) * PAGE_SIZE),
+      current: i + 2,
+      total,
+    },
+  }));
+}
+
+const { entries, current, total } = Astro.props;
+---
+
+<ArticleListPage
+  title="記事"
+  subtitle="部員が書いた記事の一覧です"
+  pageTitle="記事"
+  description="数理同好会の部員による記事の一覧です。"
+  chips={[
+    { label: "すべて", active: true },
+    ...CATEGORIES.map((c) => ({
+      label: c,
+      href: `/articles/category/${encodeURIComponent(c)}`,
+    })),
+  ]}
+  entries={entries}
+  labelFor={(e) => e.data.category}
+  showAuthor
+  searchForm
+  current={current}
+  total={total}
+  hrefFor={(p) => (p === 1 ? "/articles" : `/articles/page/${p}`)}
+/>

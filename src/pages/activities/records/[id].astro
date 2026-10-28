@@ -1,0 +1,40 @@
+---
+import SimpleLayout from "../../../layouts/SimpleLayout.astro";
+import activities from "../../../data/activities.json";
+import { fiscalYearOf } from "../../../lib/reports";
+
+export async function getStaticPaths() {
+  return activities.map((a) => ({
+    params: { id: a.date },
+    props: { activity: a },
+  }));
+}
+
+const { activity } = Astro.props;
+const date = new Date(activity.date + "T00:00:00Z");
+const fy = fiscalYearOf(date);
+---
+
+<SimpleLayout
+  title={activity.title}
+  date={date}
+  label={`${fy}年度`}
+  description={activity.description}
+  backHref="/activities"
+  backLabel="活動報告一覧へ戻る"
+>
+  <p>{activity.description}</p>
+  <table>
+    <tbody>
+      <tr>
+        <th>実施日</th>
+        <td>{activity.date}</td>
+      </tr>
+      <tr>
+        <th>場所</th>
+        <td>{activity.place}</td>
+      </tr>
+    </tbody>
+  </table>
+  {activity.images.map((src) => <img src={src} alt={activity.title} loading="lazy" />)}
+</SimpleLayout>
