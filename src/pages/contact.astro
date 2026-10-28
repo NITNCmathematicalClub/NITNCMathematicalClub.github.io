@@ -1,16 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import SectionTitle from "../components/SectionTitle.astro";
+import StaticHero from "../components/StaticHero.astro";
 ---
 
 <BaseLayout title="お問い合わせ" description="数理同好会へのお問い合わせ先一覧です。">
-  <PageHero title="お問い合わせ" label="CONTACT" />
-  <div class="mx-auto max-w-3xl px-5 py-12">
-    <SectionTitle title="お問い合わせ先一覧" />
-    <p class="mt-5 leading-loose">
-      数理同好会へのお問い合わせは、以下のいずれかの方法でご連絡ください。ご質問など、お気軽にお問い合わせください。
-    </p>
+  <StaticHero title="お問い合わせ" />
+  <div class="mx-auto w-full max-w-[800px] px-5 pb-16 pt-4">
+    <div class="article-body">
+      <h2>お問い合わせ先一覧</h2>
+      <p>
+        数理同好会へのお問い合わせは、以下のいずれかの方法でご連絡ください。ご質問など、お気軽にお問い合わせください。
+      </p>
+    </div>
     <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
       <div class="rounded-lg border border-line bg-white p-6">
         <h3 class="text-xl font-bold text-navy">X（旧Twitter）</h3>

@@ -1,35 +1,32 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import SectionTitle from "../components/SectionTitle.astro";
+import StaticHero from "../components/StaticHero.astro";
 import exams from "../data/exams.json";
 ---
 
 <BaseLayout title="過去問解説" description="国立高専の数学の入試問題について、数理同好会オリジナルの解答・解説を掲載しています。">
-  <PageHero title="過去問解説" label="EXAMS" />
-  <div class="mx-auto max-w-3xl px-5 py-12">
-    <section>
-      <SectionTitle title="概要" />
-      <p class="mt-5 leading-loose">
+  <StaticHero title="過去問解説" />
+  <div class="mx-auto w-full max-w-[800px] px-5 pb-16 pt-4">
+    <div class="article-body">
+      <h2>概要</h2>
+      <p>
         こちらでは過去数年分の国立高専の数学の入試問題について, 数理同好会オリジナルの解答・解説を掲載しています。
       </p>
-    </section>
-    <section class="mt-14">
-      <SectionTitle title="入試問題・解答一覧" />
-      <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          exams.map((exam) => (
-            <a
-              href={exam.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center justify-center rounded-lg border border-gold bg-white p-4 text-center text-lg font-semibold text-navy transition hover:bg-band"
-            >
-              {exam.name}
-            </a>
-          ))
-        }
-      </div>
-    </section>
+      <h2>入試問題・解答一覧</h2>
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {
+        exams.map((exam) => (
+          <a
+            href={exam.pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center justify-center rounded-lg border border-gold bg-white p-4 text-center text-lg font-semibold text-navy transition hover:bg-band"
+          >
+            {exam.name}
+          </a>
+        ))
+      }
+    </div>
   </div>
 </BaseLayout>

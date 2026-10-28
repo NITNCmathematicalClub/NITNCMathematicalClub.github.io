@@ -93,6 +93,7 @@ body {
   background: transparent;
   padding: 0;
 }
+/* 表はテンプレートどおり横罫のみ（情報の表） */
 .article-body table {
   margin: 1.2em 0;
   border-collapse: collapse;
@@ -100,13 +101,16 @@ body {
 }
 .article-body th,
 .article-body td {
-  border: 1px solid var(--color-line);
-  padding: 0.5em 0.8em;
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.7em 0.8em 0.7em 0;
   text-align: left;
+  vertical-align: top;
 }
-.article-body th {
-  background: var(--color-band);
+.article-body thead th {
+  border-bottom: 1px solid var(--color-line);
+  font-weight: 700;
 }
 .article-body img {
   margin: 1.2em auto;
+  border-radius: 8px;
 }

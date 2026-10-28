@@ -1,0 +1,13 @@
+---
+// 静的ページのタイトル（Figma テンプレート: 黒の大見出し＋下に罫線、幅800の中央カラム）
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="mx-auto w-full max-w-[800px] px-5 pt-14">
+  <h1 class="text-3xl font-bold text-ink md:text-4xl">{title}</h1>
+  <hr class="mt-6 border-line" />
+</div>

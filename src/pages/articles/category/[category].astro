@@ -1,7 +1,5 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import PageHero from "../../../components/PageHero.astro";
-import ArticleCard from "../../../components/ArticleCard.astro";
+import ArticleListPage from "../../../components/ArticleListPage.astro";
 import { getCollection } from "astro:content";
 import { CATEGORIES } from "../../../content.config";
 
@@ -21,47 +19,20 @@ export async function getStaticPaths() {
 const { category, entries } = Astro.props;
 ---
 
-<BaseLayout title={`カテゴリ: ${category}`} description={`カテゴリ「${category}」の記事一覧です。`}>
-  <PageHero title={category} label="CATEGORY" />
-  <div class="mx-auto max-w-6xl px-5 py-12">
-    <nav aria-label="カテゴリ" class="flex flex-wrap gap-2">
-      <a
-        href="/articles"
-        class="rounded-full border border-line px-4 py-1.5 text-sm font-bold text-navy hover:bg-band"
-      >
-        すべて
-      </a>
-      {
-        CATEGORIES.map((c) =>
-          c === category ? (
-            <span class="rounded-full bg-navy px-4 py-1.5 text-sm font-bold text-white">{c}</span>
-          ) : (
-            <a
-              href={`/articles/category/${encodeURIComponent(c)}`}
-              class="rounded-full border border-line px-4 py-1.5 text-sm font-bold text-navy hover:bg-band"
-            >
-              {c}
-            </a>
-          ),
-        )
-      }
-    </nav>
-    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        entries.map((entry) => (
-          <ArticleCard
-            slug={entry.id}
-            title={entry.data.title}
-            date={entry.data.date}
-            category={entry.data.category}
-            tags={entry.data.tags}
-            description={entry.data.description}
-            author={entry.data.author}
-            image={entry.data.image}
-          />
-        ))
-      }
-    </div>
-    {entries.length === 0 && <p class="mt-10 text-sub">このカテゴリの記事はまだありません。</p>}
-  </div>
-</BaseLayout>
+<ArticleListPage
+  title={category}
+  subtitle="部員が書いた記事の一覧です"
+  pageTitle={`カテゴリ: ${category}`}
+  description={`カテゴリ「${category}」の記事一覧です。`}
+  chips={[
+    { label: "すべて", href: "/articles" },
+    ...CATEGORIES.map((c) => ({
+      label: c,
+      href: c === category ? undefined : `/articles/category/${encodeURIComponent(c)}`,
+      active: c === category,
+    })),
+  ]}
+  entries={entries}
+  labelFor={(e) => e.data.category}
+  showAuthor
+/>

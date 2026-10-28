@@ -1,0 +1,113 @@
+---
+// 一覧ページ共通レイアウト（ListHero＋チップ＋カードグリッド＋ページネーション）
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ListHero from "./ListHero.astro";
+import GridCard from "./GridCard.astro";
+import Pagination from "./Pagination.astro";
+
+interface Chip {
+  label: string;
+  href?: string;
+  active?: boolean;
+}
+
+interface Entry {
+  id: string;
+  data: {
+    title: string;
+    date: Date;
+    category: string;
+    tags: string[];
+    description: string;
+    author: { department: string; grade: number };
+    image?: string;
+  };
+}
+
+interface Props {
+  title: string;
+  subtitle: string;
+  pageTitle: string;
+  description: string;
+  chips: Chip[];
+  entries: Entry[];
+  labelFor: (entry: Entry) => string;
+  showAuthor?: boolean;
+  searchForm?: boolean;
+  current?: number;
+  total?: number;
+  hrefFor?: (page: number) => string;
+}
+
+const {
+  title,
+  subtitle,
+  pageTitle,
+  description,
+  chips,
+  entries,
+  labelFor,
+  showAuthor = false,
+  searchForm = false,
+  current = 1,
+  total = 1,
+  hrefFor = () => "#",
+} = Astro.props;
+---
+
+<BaseLayout title={pageTitle} description={description}>
+  <ListHero title={title} subtitle={subtitle} />
+  <div class="mx-auto max-w-6xl px-5 pb-20 pt-10">
+    <div class="flex flex-wrap items-center gap-2">
+      <nav aria-label="絞り込み" class="flex flex-wrap gap-2">
+        {
+          chips.map((chip) =>
+            chip.active || !chip.href ? (
+              <span class="rounded-full bg-navy px-4 py-1.5 text-sm font-bold text-white">
+                {chip.label}
+              </span>
+            ) : (
+              <a
+                href={chip.href}
+                class="rounded-full border border-navy/50 px-4 py-1.5 text-sm text-navy hover:bg-band"
+              >
+                {chip.label}
+              </a>
+            ),
+          )
+        }
+      </nav>
+      {
+        searchForm && (
+          <form action="/search" method="get" class="ml-auto">
+            <input
+              type="search"
+              name="q"
+              placeholder="キーワードで検索"
+              class="w-56 rounded-lg border border-line bg-white px-4 py-2 text-sm placeholder:text-sub focus:border-navy focus:outline-none"
+            />
+          </form>
+        )
+      }
+    </div>
+
+    <div class="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        entries.map((entry) => (
+          <GridCard
+            slug={entry.id}
+            title={entry.data.title}
+            date={entry.data.date}
+            label={labelFor(entry)}
+            description={entry.data.description}
+            author={showAuthor ? entry.data.author : undefined}
+            image={entry.data.image}
+          />
+        ))
+      }
+    </div>
+    {entries.length === 0 && <p class="mt-10 text-sub">記事はまだありません。</p>}
+
+    <Pagination current={current} total={total} hrefFor={hrefFor} />
+  </div>
+</BaseLayout>

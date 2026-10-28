@@ -1,23 +1,22 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import SectionTitle from "../components/SectionTitle.astro";
+import StaticHero from "../components/StaticHero.astro";
 import NoteCalendar from "../components/NoteCalendar.tsx";
 import notes from "../data/notes.json";
 ---
 
 <BaseLayout title="雑記帳" description="数理同好会の日々の雑記です。">
-  <PageHero title="雑記帳" label="NOTE" />
-  <div class="mx-auto max-w-6xl px-5 py-12">
-    <img src="/img/Note/cover.jpg" alt="雑記帳" class="aspect-[3/1] w-full object-cover" />
-    <section class="mt-12 max-w-3xl">
-      <SectionTitle title="概要" />
-      <p class="mt-5 leading-loose">
+  <StaticHero title="雑記帳" />
+  <div class="mx-auto w-full max-w-[800px] px-5 pb-16 pt-8">
+    <img src="/img/Note/cover.jpg" alt="雑記帳" class="aspect-[3/1] w-full rounded-lg object-cover" />
+    <div class="article-body mt-4">
+      <h2>概要</h2>
+      <p>
         その日にあったことを気軽に呟いているものです. 日々更新されていくので, 暇なときに見てみると面白いかもしれません.
       </p>
-    </section>
-    <section class="mt-12">
+    </div>
+    <div class="mt-10">
       <NoteCalendar client:load notes={notes} />
-    </section>
+    </div>
   </div>
 </BaseLayout>

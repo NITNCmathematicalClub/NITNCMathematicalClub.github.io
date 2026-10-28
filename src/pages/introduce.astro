@@ -1,51 +1,39 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageHero from "../components/PageHero.astro";
-import SectionTitle from "../components/SectionTitle.astro";
+import StaticHero from "../components/StaticHero.astro";
 import PieChartByGakka from "../components/PieChartByGakka.tsx";
 ---
 
 <BaseLayout title="概要" description="数理同好会の概要、構成員、活動場所について紹介します。">
-  <PageHero title="概要" label="INTRODUCE" />
-  <div class="mx-auto max-w-3xl px-5 py-12">
-    <section>
-      <SectionTitle title="概要" />
-      <p class="mt-5 leading-loose">
-        ここ数理同好会は2016年度に設立された, 沼津高専で3番目に新しい同好会です.
-      </p>
-      <p class="mt-4 leading-loose">
-        週2回の定期的な活動では, 各自が持ち寄った話題（≈課題）をみんなで考えたり,
-        難問を協力して解いたりしています. それに加え, 1日体験入学での過去問解説や中学生のための体験授業の補助,
-        高専祭での部誌配布と数学クイズなど学校行事のサポートもしています.
-      </p>
-    </section>
+  <StaticHero title="概要" />
+  <div class="article-body mx-auto w-full max-w-[800px] px-5 pb-16 pt-4">
+    <h2>概要</h2>
+    <p>
+      ここ数理同好会は2016年度に設立された, 沼津高専で3番目に新しい同好会です.
+    </p>
+    <p>
+      週2回の定期的な活動では, 各自が持ち寄った話題（≈課題）をみんなで考えたり,
+      難問を協力して解いたりしています. それに加え, 1日体験入学での過去問解説や中学生のための体験授業の補助,
+      高専祭での部誌配布と数学クイズなど学校行事のサポートもしています.
+    </p>
 
-    <section class="mt-14">
-      <SectionTitle title="構成員" />
-      <p class="mt-5 leading-loose">
-        数理同好会には以前まで, 幅広い学科の学生が所属していました. 2025年度現在の分布は以下のようになっています.
-      </p>
-      <PieChartByGakka client:visible />
-      <p class="leading-loose">
-        今年は大量の1年生が入荷され, なぜか制御情報工学科が多く入会したため割合が大きく変化しました.
-      </p>
-    </section>
+    <h2>構成員</h2>
+    <p>
+      数理同好会には以前まで, 幅広い学科の学生が所属していました. 2025年度現在の分布は以下のようになっています.
+    </p>
+    <PieChartByGakka client:visible />
+    <p>
+      今年は大量の1年生が入荷され, なぜか制御情報工学科が多く入会したため割合が大きく変化しました.
+    </p>
 
-    <section class="mt-14">
-      <SectionTitle title="活動場所" />
-      <p class="mt-5 leading-loose">
-        数理同好会に部室はありません. そのため固定された活動場所というのは存在しませんが,
-        もはや部室となりかけている部屋とサブの部屋があります.
-        メインの方の部屋が下の写真に載っている「多目的教室（共通棟2階）」です.
-        前後に黒板のような立ち位置のホワイトボードがあり, みんなで計算といったものを共有するのに便利です.
-      </p>
-      <p class="mt-4 leading-loose">サブの方の部屋は諸事情により写真がありません.</p>
-      <img
-        src="/img/Introduce/room.jpg"
-        alt="活動場所（多目的教室）"
-        class="mx-auto mt-8 w-full md:w-2/3"
-        loading="lazy"
-      />
-    </section>
+    <h2>活動場所</h2>
+    <p>
+      数理同好会に部室はありません. そのため固定された活動場所というのは存在しませんが,
+      もはや部室となりかけている部屋とサブの部屋があります.
+      メインの方の部屋が下の写真に載っている「多目的教室（共通棟2階）」です.
+      前後に黒板のような立ち位置のホワイトボードがあり, みんなで計算といったものを共有するのに便利です.
+    </p>
+    <p>サブの方の部屋は諸事情により写真がありません.</p>
+    <img src="/img/Introduce/room.jpg" alt="活動場所（多目的教室）" loading="lazy" />
   </div>
 </BaseLayout>

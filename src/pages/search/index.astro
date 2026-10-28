@@ -1,11 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import PageHero from "../../components/PageHero.astro";
+import StaticHero from "../../components/StaticHero.astro";
 ---
 
 <BaseLayout title="検索" description="サイト内検索です。">
   <link slot="head" rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-  <PageHero title="検索" label="SEARCH" />
+  <StaticHero title="検索" />
   <div class="mx-auto max-w-3xl px-5 py-12">
     <div id="search"></div>
     <p class="mt-6 text-sm text-sub">

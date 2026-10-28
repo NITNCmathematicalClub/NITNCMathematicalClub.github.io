@@ -28,14 +28,11 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
               <a
                 href={item.href}
                 aria-current={isActive(item.href) ? "page" : undefined}
-                class={`relative py-2 text-sm ${
+                class={`py-2 text-sm ${
                   isActive(item.href) ? "font-bold text-navy" : "text-ink hover:text-navy"
                 }`}
               >
                 {item.label}
-                {isActive(item.href) && (
-                  <span class="absolute inset-x-0 -bottom-[13px] h-0.5 bg-gold" />
-                )}
               </a>
             </li>
           ))
