@@ -1,37 +1,79 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroSlider from "../components/HeroSlider.tsx";
+import SectionTitle from "../components/SectionTitle.astro";
+import news from "../data/news.json";
+
+const latestNews = [...news].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+const fmtDate = (iso: string) => {
+  const d = new Date(iso + "T00:00:00");
+  return `${d.getFullYear()}年${String(d.getMonth() + 1).padStart(2, "0")}月${String(d.getDate()).padStart(2, "0")}日`;
+};
+
+const cards = [
+  {
+    title: "数理同好会って何？",
+    text: "実はあまり実態知られていない数理同好会.いつも何の活動をしているのか, 何をしているのか. その実態に迫ります.",
+    img: "/img/Introduce/books.jpg",
+    link: "/introduce",
+  },
+  {
+    title: "部誌",
+    text: "数理同好会が発行する部誌では, 部員それぞれの研究や数学に関する雑記を掲載しています.",
+    img: "/img/ClubMagazine/cover.jpg",
+    link: "/club-magazine",
+  },
+  {
+    title: "過去問解説",
+    text: "国立高専の入試問題（数学）の過去問を独自に解説しています. 受験生や数学好きの方はぜひご活用ください.",
+    img: "/img/Activities/2025-05-11-1.jpg",
+    link: "/exams",
+  },
+];
 ---
 
 <BaseLayout title="" description="沼津高専 数理同好会の公式サイトです。活動紹介や部誌、部員による数学記事を掲載しています。">
-  <section class="bg-navy text-white">
-    <div class="mx-auto max-w-6xl px-5 py-24 md:py-32">
-      <p class="text-xs font-bold tracking-[0.3em] text-hero-sub">NUMAZU KOSEN — MATHEMATICS CLUB</p>
-      <h1 class="mt-4 font-logo text-5xl font-bold md:text-6xl">数理同好会</h1>
-      <span class="mt-6 block h-1 w-12 bg-gold"></span>
-      <p class="mt-6 max-w-xl leading-relaxed text-hero-sub">
-        数学を楽しむ、沼津高専の同好会です。授業の補足や大学数学の入門まで、問題を解いたり、教え合ったり、数学の読みものを歓迎したりしています。
-      </p>
+  <HeroSlider client:load />
+
+  <div class="bg-navy py-8 text-center">
+    <p class="font-logo text-2xl font-bold text-white md:text-3xl">数理科学をこよなく愛そう</p>
+  </div>
+
+  <section class="mx-auto max-w-6xl px-5 py-14">
+    <div class="flex items-end justify-between">
+      <SectionTitle title="お知らせ" />
     </div>
+    <ul class="mt-6 divide-y divide-line border-y border-line">
+      {
+        latestNews.map((item) => (
+          <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
+            <span class="shrink-0 text-sm font-medium text-sub">{fmtDate(item.date)}</span>
+            <span>{item.text}</span>
+          </li>
+        ))
+      }
+    </ul>
   </section>
-  <section class="mx-auto max-w-6xl px-5 py-16">
-    <h2 class="text-2xl font-bold text-navy">数理同好会について</h2>
-    <span class="mt-3 block h-0.5 w-10 bg-gold"></span>
-    <p class="mt-5 max-w-2xl leading-loose">
-      数理同好会は、数学が好きな学生が集まって、問題を解いたり、教え合ったり、数学の面白さを発信したりする同好会です。部誌『Σ』を毎年発行しています。
-    </p>
-    <div class="mt-10 grid gap-4 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-4">
-      <a href="/introduce" class="group flex items-center justify-between py-2 font-bold text-navy">
-        詳しい概要 <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
-      </a>
-      <a href="/articles" class="group flex items-center justify-between py-2 font-bold text-navy">
-        記事一覧 <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
-      </a>
-      <a href="/activities" class="group flex items-center justify-between py-2 font-bold text-navy">
-        活動の記録 <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
-      </a>
-      <a href="/contact" class="group flex items-center justify-between py-2 font-bold text-navy">
-        お問い合わせ <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
-      </a>
-    </div>
+
+  <section class="mx-auto max-w-6xl space-y-14 px-5 pb-20">
+    {
+      cards.map((card, i) => (
+        <div class={`flex flex-col items-center gap-8 md:flex-row ${i % 2 === 1 ? "md:flex-row-reverse" : ""}`}>
+          <div class="w-full md:w-1/2">
+            <img src={card.img} alt={card.title} class="aspect-video w-full object-cover" loading="lazy" />
+          </div>
+          <div class="w-full md:w-1/2">
+            <h3 class="text-3xl font-bold text-navy">{card.title}</h3>
+            <p class="mt-4 leading-relaxed text-sub">{card.text}</p>
+            <a
+              href={card.link}
+              class="mt-6 inline-block rounded-full bg-navy px-6 py-3 font-bold text-white transition hover:bg-dark"
+            >
+              詳細を見る
+            </a>
+          </div>
+        </div>
+      ))
+    }
   </section>
 </BaseLayout>

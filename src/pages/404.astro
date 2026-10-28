@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="ページが見つかりません" description="お探しのページは見つかりませんでした。">
+  <section class="mx-auto max-w-3xl px-5 py-28 text-center">
+    <p class="font-display text-[7rem] font-bold leading-none text-ink md:text-[10rem]">404</p>
+    <h1 class="mt-6 text-2xl font-bold">ページが見つかりません</h1>
+    <p class="mt-4 leading-relaxed text-sub">
+      お探しのページは、移動したか削除された可能性があります。
+    </p>
+    <a
+      href="/"
+      class="mt-8 inline-block border-b-2 border-gold pb-1 font-bold text-navy hover:text-gold-text"
+    >
+      トップページへ戻る
+    </a>
+  </section>
+</BaseLayout>
