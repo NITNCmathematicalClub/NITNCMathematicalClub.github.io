@@ -33,6 +33,7 @@ npm run preview # ビルド結果の確認
 ## ドキュメント
 
 - [docs/article-spec.md](docs/article-spec.md) — 記事機能の仕様書（v2.0.0 確定版）
+- [docs/content-guide.md](docs/content-guide.md) — 部員向けの執筆ガイド
 - [docs/architecture.md](docs/architecture.md) — 構成・ルーティング・コンポーネント
 - [docs/development.md](docs/development.md) — 開発手順・環境構築
 - [docs/operations.md](docs/operations.md) — デプロイ・バージョン・権限などの運用

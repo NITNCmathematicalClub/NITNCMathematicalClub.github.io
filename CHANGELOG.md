@@ -11,6 +11,7 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 
 ### Added
 
+- 部員向けの執筆ガイド（`docs/content-guide.md`）を追加し、公開前レビューの当面の運用を明記
 - カテゴリ別・タグ別の記事一覧ページと、Pagefind によるサイト内検索（`/search`）を追加
 - 記事機能を実装（Content Collections による記事管理、記事一覧・詳細ページ、目次、関連記事、ホームへのお知らせ・最近の記事の表示。下書きは本番に含めない）
 - 数式表示（remark-math + rehype-katex）を導入し、記事の執筆テンプレート（`src/content/articles/_template.md`）を用意

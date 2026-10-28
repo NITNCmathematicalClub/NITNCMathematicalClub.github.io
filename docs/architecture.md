@@ -18,7 +18,7 @@ v2.0.0 の構成です。全体計画は [article-spec.md](article-spec.md) §12
 Astro のファイルベースルーティングです。`src/pages/` 配下のファイルがそのまま URL になります。
 
 - `src/pages/index.astro` → `/`
-- `src/pages/articles/[slug].astro` → `/articles/<slug>`（記事詳細。Content Collections から生成）
+- `src/pages/articles/[...slug].astro` → `/articles/<slug>`（記事詳細。Content Collections から生成）
 - 既存パス（`/introduce`、`/activities`、`/exams`、`/note`、`/club-magazine`、`/contact`）は
   v1 と同じパスで維持する（URL 互換性）
 
@@ -27,7 +27,7 @@ Astro のファイルベースルーティングです。`src/pages/` 配下の�
 - 記事（お知らせ・過去問解説を含む）: Astro の Content Collections で Markdown / MDX として管理する。
   メタデータ（title / date / author / category / tags / draft / description）は front-matter で持つ。
   仕様の詳細は [article-spec.md](article-spec.md) §7 を参照
-- 既存ページの本文: ページ単位で MD / MDX 化して移行する（Phase 2）
+- 既存ページの本文: `.astro` ページとして移行済み（Phase 2）。文章は各ページに持ち、データは `src/data/` の JSON をビルド時に読み込む
 - データファイル（v1 の `public/*.json`）: ビルド時に読み込む形へ移し替える。画像・PDF は `public/` に置く
 
 ## コンポーネント
