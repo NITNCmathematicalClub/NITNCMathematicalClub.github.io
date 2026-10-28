@@ -1,0 +1,47 @@
+---
+// 一覧グリッドのカード（Figma テンプレート: 画像エリア＋日付・ラベルの行＋タイトル＋要約）
+import { fmtISO } from "../lib/date";
+
+interface Props {
+  slug: string;
+  title: string;
+  date: Date;
+  label: string; // カテゴリ名や年度など、ゴールドで出すラベル
+  description: string;
+  author?: { department: string; grade: number };
+  image?: string;
+  href?: string;
+}
+
+const { slug, title, date, label, description, author, image, href } = Astro.props;
+---
+
+<article>
+  <a href={href ?? `/articles/${slug}`} class="group block">
+    {
+      image ? (
+        <img
+          src={image}
+          alt=""
+          class="aspect-[16/10] w-full rounded-lg object-cover"
+          loading="lazy"
+        />
+      ) : (
+        <div class="aspect-[16/10] w-full rounded-lg bg-band" />
+      )
+    }
+    <p class="mt-4 flex items-baseline gap-4 text-xs">
+      <span class="text-sub">{fmtISO(date)}</span>
+      <span class="font-bold text-gold-text">{label}</span>
+    </p>
+    <h3 class="mt-2 text-[17px] font-bold leading-snug text-ink group-hover:underline">{title}</h3>
+  </a>
+  <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-sub">{description}</p>
+  {
+    author && (
+      <p class="mt-3 text-xs text-sub">
+        {author.department} {author.grade}年
+      </p>
+    )
+  }
+</article>

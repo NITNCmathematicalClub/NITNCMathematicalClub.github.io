@@ -1,29 +1,31 @@
 # Changelog
 
-このサイトの主な変更を記録します。形式は Keep a Changelog、
+このサイトの公開履歴です。形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準じ、
 バージョンは Semantic Versioning に従います。
+
+> v1 系（React + Vite）の履歴は、`main` ブランチの `CHANGELOG.md` を参照してください。
 
 ## [Unreleased]
 
-### Removed
-
-- 未使用ファイルの整理（Issue #13）: `src/App.css`、`src/assets/react.svg`、`src/components/HomeCard.tsx`、`src/contents/NoteContents.tsx`、`update_getbase.mjs` を削除
-- 未使用の依存を削除: `@vitejs/plugin-vue`、`@vitejs/plugin-vue-jsx`、`@tailwindcss/aspect-ratio`、`@tailwindcss/postcss`
-- Tailwind v3 時代の `tailwind.config.js` を削除（v4 では `@import "tailwindcss"` と `@theme` が正で、config は読み込まれていなかった）
-- デプロイ経路を GitHub Actions に一本化し、GitHub Pages では無効だった `vercel.json` と `public/.htaccess`、旧デプロイ手順の `npm run deploy`（gh-pages 方式）スクリプトと `gh-pages` パッケージを削除
-
-### Fixed
-
-- 直接URLで各ページを開くと404になる問題（`public/404.html` によるリダイレクト方式を導入し、存在しないパス用の404ページを追加）
-- ページ遷移時にスクロール位置が前のページのまま残る問題
-- 目次のアンカーリンクが日本語の見出しで機能しない問題（slugify をGitHub方式に変更し、日本語の見出しIDが正しく生成されるようにした。重複する見出しは連番で一意化）
-- お知らせ・活動実績の日付ソートが効かない問題（JSON の `date` は文字列なのに型が `number` で、比較が NaN になっていた）
-
-## [1.0.0] - 2026-10-27
+v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `docs/article-spec.md` §12 と親 Issue #3 を参照してください。
 
 ### Added
 
-- バージョン管理の開始（このファイル、タグ、GitHub Release の運用開始）
+- 部員向けの執筆ガイド（`docs/content-guide.md`）を追加し、公開前レビューの当面の運用を明記
+- カテゴリ別・タグ別の記事一覧ページと、Pagefind によるサイト内検索（`/search`）を追加
+- 記事機能を実装（Content Collections による記事管理、記事一覧・詳細ページ、目次、関連記事、ホームへのお知らせ・最近の記事の表示。下書きは本番に含めない）
+- 数式表示（remark-math + rehype-katex）を導入し、記事の執筆テンプレート（`src/content/articles/_template.md`）を用意
+- 既存ページ（ホーム／概要／活動紹介／過去問解説／雑記帳／部誌／お問い合わせ／404）を Astro へ移行。データ JSON はビルド時読み込みに変更し、画像・PDF 資産を引き継いだ
+- Astro 移行基盤を整備（`@astrojs/react`・`@astrojs/mdx`・Tailwind CSS v4 の統合、`site` 設定、共通レイアウトとヘッダー／フッター、デザイントークンの CSS 化）
+- v2.0.0 のデザイン確定版を仕様書に記録（`docs/article-spec.md` §12.10）。Figma テンプレート18種（Desktop／Mobile）を作成し、見出しはゴシック（Noto Sans JP）で確定
 
-<!-- 以後、公開の節目ごとに ## [X.Y.Z] - YYYY-MM-DD を追加し、
-     Added / Changed / Fixed / Removed の見出しで変更を書く -->
+### Changed
+
+- デザインを Figma テンプレートに全面準拠させて再実装（ホーム構成、一覧カード、記事詳細の目次・関連記事、お知らせ／活動報告の専用レイアウト、静的ページの組版）
+- 英字フォントを Roboto（基本）＋ Montserrat（大きな表示）に決定し、Figma のテンプレートとコンポーネントに適用（`docs/article-spec.md` §12.11）
+- サイトの基盤を React + Vite の SPA から Astro 7（静的生成）へ移行開始
+- CI / デプロイの Node.js を 24 に更新（Astro 7 の要件 22.23.4 以上に対応）
+
+### Removed
+
+- 移行の第一段階として、旧ページ・旧コンポーネント・旧データ（JSON）を移行ブランチ上で一時的に削除（内容は `main` に保持され、順次引き継ぐ）

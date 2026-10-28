@@ -1,0 +1,92 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroSlider from "../components/HeroSlider.tsx";
+import SectionTitle from "../components/SectionTitle.astro";
+import HomeArticleCard from "../components/HomeArticleCard.astro";
+import { getCollection } from "astro:content";
+import { fmtISO } from "../lib/date";
+
+const published = (await getCollection("articles", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const latestNews = published.filter((e) => e.data.category === "お知らせ").slice(0, 3);
+const latestArticles = published.filter((e) => e.data.category !== "お知らせ").slice(0, 3);
+
+const links = [
+  { href: "/introduce", label: "詳しい概要" },
+  { href: "/articles", label: "記事一覧" },
+  { href: "/activities", label: "活動の記録" },
+  { href: "/contact", label: "お問い合わせ" },
+];
+---
+
+<BaseLayout title="" description="沼津高専 数理同好会の公式サイトです。活動紹介や部誌、部員による数学記事を掲載しています。">
+  <HeroSlider client:load />
+
+  <section class="mx-auto max-w-6xl px-5 py-16">
+    <div class="flex items-end justify-between">
+      <SectionTitle title="お知らせ" />
+      <a href="/news" class="shrink-0 text-sm font-bold text-gold-text hover:underline">一覧を見る →</a>
+    </div>
+    <ul class="mt-8">
+      {
+        latestNews.map((entry) => (
+          <li class="flex flex-col gap-1.5 border-b border-line py-4 sm:flex-row sm:items-center sm:gap-6">
+            <span class="shrink-0 text-sm text-sub">{fmtISO(entry.data.date)}</span>
+            <span class="w-fit shrink-0 rounded-full border border-line px-3 py-0.5 text-[11px] font-bold text-navy">
+              {entry.data.tags[0] ?? entry.data.category}
+            </span>
+            <a href={`/articles/${entry.id}`} class="hover:underline">
+              {entry.data.title}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-6xl px-5 py-16">
+      <div class="flex items-end justify-between">
+        <SectionTitle title="最近の記事" />
+        <a href="/articles" class="shrink-0 text-sm font-bold text-gold-text hover:underline">
+          記事一覧へ →
+        </a>
+      </div>
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          latestArticles.map((entry) => (
+            <HomeArticleCard
+              slug={entry.id}
+              title={entry.data.title}
+              date={entry.data.date}
+              category={entry.data.category}
+              description={entry.data.description}
+              author={entry.data.author}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-16">
+    <SectionTitle title="数理同好会について" />
+    <p class="mt-6 max-w-3xl leading-loose">
+      数理同好会は、数学が好きな学生が集まって、問題を解いたり、教え合ったり、数学の面白さを発信したりする同好会です。学年や学科を問わず、数学に興味のある学生が参加しています。
+    </p>
+    <div class="mt-10 grid gap-x-8 gap-y-4 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class="group flex items-center justify-between py-1 font-bold text-navy"
+          >
+            {link.label}
+            <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

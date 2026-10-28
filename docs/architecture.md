@@ -1,63 +1,43 @@
-# アーキテクチャ
+# 設計ガイド（v2.0.0 / Astro）
 
-## 全体像
+v2.0.0 の構成です。全体計画は [article-spec.md](article-spec.md) §12、
+旧構成（v1: React + Vite の SPA）は `main` ブランチの同名ドキュメントを参照してください。
 
-```
-ブラウザ
-  └─ index.html → src/main.tsx → src/App.tsx（BrowserRouter）
-       ├─ ページ枠: src/pages/*.tsx
-       │    ├─ PageTitle（見出し＋背景画像）
-       │    ├─ TableOfContents（.h2-style を走査して目次を生成）
-       │    └─ 本文: src/contents/*.tsx
-       └─ データ: fetch("/xxx.json") → public/*.json（ビルド時に dist へ複製）
-```
+## 全体構成
 
-- SPA（Single Page Application）。サーバー側の処理はなく、GitHub Pages が
-  `dist/` の静的ファイルを配信する。
-- だからこそ、トップ以外のURLを直接開くと Pages の404になる（Issue #4 で対策中）。
+- フレームワーク: Astro 7 + TypeScript（strict）
+- 出力: 完全な静的 HTML（ビルド成果物は `dist/`）。ページごとに実ファイルが生成されるため、
+  v1 で必要だった SPA 向けの 404 リダイレクト回避策は不要になる
+- 対話的コンポーネント: Astro Islands として React を使う方針
+  （対象: HeroSlider、NoteCalendar、PieChartByGakka、Navbar のモバイルメニュー等。統合は移行基盤の子 Issue で実施）
+- スタイル: Tailwind CSS v4（`@tailwindcss/vite` プラグイン + CSS の `@theme` でトークン定義）
+- ホスティング: GitHub Pages（GitHub Actions でデプロイ）
 
 ## ルーティング
 
-`src/App.tsx` の `<Routes>` が正本。現行のルートは以下の通り。
+Astro のファイルベースルーティングです。`src/pages/` 配下のファイルがそのまま URL になります。
 
-| パス | ページ (src/pages) | 本文 (src/contents) | 主なデータ |
-|---|---|---|---|
-| `/` | Home.tsx | （ページ内に実装） | news.json |
-| `/introduce` | Introduce.tsx | IntroduceContents.tsx | —（部員構成の円グラフ含む） |
-| `/activities` | Activities.tsx | ActivitiesContents.tsx | activities.json |
-| `/clubmagazine` | ClubMagazine.tsx | ClubMagazineContents.tsx | — |
-| `/exams` | Exams.tsx | ExamsContents.tsx | exams.json |
-| `/contact` | Contact.tsx | （ページ内に実装） | — |
-| `/note` | Note.tsx | （ページ内に実装）※ | notes.json |
+- `src/pages/index.astro` → `/`
+- `src/pages/articles/[...slug].astro` → `/articles/<slug>`（記事詳細。Content Collections から生成）
+- 既存パス（`/introduce`、`/activities`、`/exams`、`/note`、`/club-magazine`、`/contact`）は
+  v1 と同じパスで維持する（URL 互換性）
 
-※ Note ページの本文は Note.tsx 内にあり、カレンダーは `src/components/NoteCalendar.tsx`。
+## コンテンツの置き方（方針）
 
-## 共通コンポーネント（src/components）
+- 記事（お知らせ・過去問解説を含む）: Astro の Content Collections で Markdown / MDX として管理する。
+  メタデータ（title / date / author / category / tags / draft / description）は front-matter で持つ。
+  仕様の詳細は [article-spec.md](article-spec.md) §7 を参照
+- 既存ページの本文: `.astro` ページとして移行済み（Phase 2）。文章は各ページに持ち、データは `src/data/` の JSON をビルド時に読み込む
+- データファイル（v1 の `public/*.json`）: ビルド時に読み込む形へ移し替える。画像・PDF は `public/` に置く
 
-| ファイル | 役割 |
-|---|---|
-| Navbar.tsx | ヘッダーとナビゲーション（PC/モバイル両対応） |
-| Footer.tsx | フッター |
-| PageTitle.tsx | 各ページの見出しと背景画像（`imageUrl` 省略時は Introduce の写真） |
-| TableOfContents.tsx | `.h2-style` の見出しから目次を自動生成（日本語IDの既知問題あり、Issue #12） |
-| HeroSlider.tsx | トップのスライダー（keen-slider、5秒自動送り） |
-| ActivityCard.tsx | 活動報告のカード表示 |
-| PieChartByGakka.tsx | 学科別構成の円グラフ（recharts） |
-| NoteCalendar.tsx | 雑記帳のカレンダー（インラインスタイルで実装） |
+## コンポーネント
 
-## 使用ライブラリの要点
+- 共通レイアウトは `src/layouts/`、共通部品は `src/components/`（v1 の部品は必要に応じて
+  `.astro` 化するか、Islands として React のまま持ってくる）
+- 目次は Markdown の見出しから静的生成し、スクロール連動だけを軽い JS で行う
 
-- ルーティング: react-router-dom v7（BrowserRouter）
-- スタイル: Tailwind CSS v4（`@tailwindcss/vite`）。色・フォントは `src/index.css` の `@theme`
-- 数式: KaTeX（react-katex の `InlineMath`）。CSS は main.tsx で読み込み
-- グラフ: recharts（PieChartByGakka のみ）
-- スライダー: keen-slider（HeroSlider のみ）
-- アイコン: react-icons（Contact ページ）
+## デザイン
 
-## ビルドとデプロイ
-
-- `npm run build` = `tsc -b && vite build`。型チェックを通過しないとビルドできない。
-- PR では `.github/workflows/ci.yml` が lint + build を検証する。
-- main へマージされると `.github/workflows/deploy.yml` が `dist/` を
-  GitHub Pages へデプロイする。公開URLは https://math.nitnc.club/ 。
-- デプロイやドメインなど運用面の詳細は [operations.md](operations.md) を参照。
+- デザインは Figma で先に作成する（Phase 0）。方針は「企業の公式サイトのような、
+  汎用的で尖りすぎないデザイン」。具体像は [article-spec.md](article-spec.md) §12.8 を参照
+- デザイントークン（色・フォント・余白）は Figma 側で定め、実装は Tailwind v4 の `@theme` に写す

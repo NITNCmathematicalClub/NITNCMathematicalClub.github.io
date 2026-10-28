@@ -1,0 +1,44 @@
+---
+import MobileMenu from "./MobileMenu.tsx";
+
+const items = [
+  { href: "/introduce", label: "概要" },
+  { href: "/activities", label: "活動紹介" },
+  { href: "/exams", label: "過去問解説" },
+  { href: "/articles", label: "記事" },
+  { href: "/club-magazine", label: "部誌" },
+  { href: "/contact", label: "お問い合わせ" },
+];
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header data-pagefind-ignore class="fixed inset-x-0 top-0 z-50 border-b border-line/70 bg-base/80 backdrop-blur-md">
+  <div class="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
+    <a href="/" class="flex items-baseline gap-3">
+      <span class="font-logo text-xl font-bold text-navy">数理同好会</span>
+      <span class="hidden text-[11px] tracking-widest text-sub sm:inline">NUMAZU KOSEN</span>
+    </a>
+    <nav class="hidden md:block" aria-label="メインナビゲーション">
+      <ul class="flex items-center gap-7">
+        {
+          items.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? "page" : undefined}
+                class={`py-2 text-sm ${
+                  isActive(item.href) ? "font-bold text-navy" : "text-ink hover:text-navy"
+                }`}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <MobileMenu client:load items={items} current={path} />
+  </div>
+</header>
