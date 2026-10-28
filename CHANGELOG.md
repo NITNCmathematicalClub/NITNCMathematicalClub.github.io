@@ -15,6 +15,7 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 
 ### Changed
 
+- 英字フォントを Roboto（基本）＋ Montserrat（大きな表示）に決定し、Figma のテンプレートとコンポーネントに適用（`docs/article-spec.md` §12.11）
 - サイトの基盤を React + Vite の SPA から Astro 7（静的生成）へ移行開始
 - CI / デプロイの Node.js を 24 に更新（Astro 7 の要件 22.23.4 以上に対応）
 
