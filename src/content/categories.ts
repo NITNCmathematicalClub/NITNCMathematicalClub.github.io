@@ -33,3 +33,6 @@ export const ALL_CATEGORIES = [
 export function categoryOfFolder(folder: string): string {
   return (ARTICLE_CATEGORIES as Record<string, string>)[folder] ?? folder;
 }
+
+/** 数学記事のカテゴリ表示名一覧（記事一覧のチップなど、数学記事だけを扱う場所用） */
+export const ARTICLE_CATEGORY_NAMES = Object.values(ARTICLE_CATEGORIES);

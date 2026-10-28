@@ -1,9 +1,9 @@
 ---
 import ArticleListPage from "../../../components/ArticleListPage.astro";
-import { getAllEntries } from "../../../lib/content";
+import { getArticles } from "../../../lib/content";
 
 export async function getStaticPaths() {
-  const published = (await getAllEntries()).filter(({ data }) => !data.draft);
+  const published = (await getArticles()).filter(({ data }) => !data.draft);
   const tags = [...new Set(published.flatMap((e) => e.data.tags))];
   return tags.map((tag) => ({
     params: { tag },

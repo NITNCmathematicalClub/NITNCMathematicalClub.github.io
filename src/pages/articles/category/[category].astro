@@ -1,11 +1,11 @@
 ---
 import ArticleListPage from "../../../components/ArticleListPage.astro";
-import { getAllEntries } from "../../../lib/content";
-import { ALL_CATEGORIES } from "../../../content/categories";
+import { getArticles } from "../../../lib/content";
+import { ARTICLE_CATEGORY_NAMES } from "../../../content/categories";
 
 export async function getStaticPaths() {
-  const published = (await getAllEntries()).filter(({ data }) => !data.draft);
-  return ALL_CATEGORIES.map((category) => ({
+  const published = (await getArticles()).filter(({ data }) => !data.draft);
+  return ARTICLE_CATEGORY_NAMES.map((category) => ({
     params: { category },
     props: {
       category,
@@ -24,7 +24,7 @@ const { category, entries } = Astro.props;
   description={`カテゴリ「${category}」の記事一覧です。`}
   chips={[
     { label: "すべて", href: "/articles" },
-    ...ALL_CATEGORIES.map((c) => ({
+    ...ARTICLE_CATEGORY_NAMES.map((c) => ({
       label: c,
       href: c === category ? undefined : `/articles/category/${encodeURIComponent(c)}`,
       active: c === category,

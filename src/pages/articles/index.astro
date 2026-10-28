@@ -1,11 +1,11 @@
 ---
 import ArticleListPage from "../../components/ArticleListPage.astro";
-import { getAllEntries } from "../../lib/content";
-import { ALL_CATEGORIES } from "../../content/categories";
+import { getArticles } from "../../lib/content";
+import { ARTICLE_CATEGORY_NAMES } from "../../content/categories";
 
 export const PAGE_SIZE = 9;
 
-const all = (await getAllEntries()).filter(({ data }) => !data.draft);
+const all = (await getArticles()).filter(({ data }) => !data.draft);
 const total = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
 const entries = all.slice(0, PAGE_SIZE);
 ---
@@ -17,7 +17,7 @@ const entries = all.slice(0, PAGE_SIZE);
   description="数理同好会の部員による記事の一覧です。"
   chips={[
     { label: "すべて", active: true },
-    ...ALL_CATEGORIES.map((c) => ({
+    ...ARTICLE_CATEGORY_NAMES.map((c) => ({
       label: c,
       href: `/articles/category/${encodeURIComponent(c)}`,
     })),
