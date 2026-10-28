@@ -1,11 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import StaticHero from "../components/StaticHero.astro";
+import { MAGAZINE_ISSUES } from "../data/magazine";
 ---
 
 <BaseLayout title="部誌" description="数理同好会が毎年発行する部誌『Σ』について紹介します。">
   <StaticHero title="部誌" />
-  <div class="article-body mx-auto w-full max-w-[800px] px-5 pb-16 pt-4">
+  <div class="article-body mx-auto w-full max-w-[800px] px-5 pt-4">
     <h2>概要</h2>
     <p>
       数理同好会では毎年, 高専祭に向けて部誌『Σ』を発行しています.
@@ -17,4 +18,42 @@ import StaticHero from "../components/StaticHero.astro";
     </p>
     <img src="/img/ClubMagazine/cover.jpg" alt="部誌『Σ』の表紙" loading="lazy" />
   </div>
+
+  <section class="mx-auto w-full max-w-[800px] px-5 pb-16">
+    <h2
+      class="mt-[1.2em] border-l-4 border-gold pl-[0.6em] text-[1.45rem] font-bold leading-[1.5] text-navy"
+    >
+      各号の紹介
+    </h2>
+    {
+      MAGAZINE_ISSUES.map((issue) => (
+        <section class="mt-12 sm:flex sm:gap-8">
+          <img
+            src={issue.cover}
+            alt={`部誌『Σ』第${issue.number}号の表紙`}
+            loading="lazy"
+            class="aspect-[4/3] w-full shrink-0 rounded-lg object-cover sm:w-[300px]"
+          />
+          <div class="mt-6 min-w-0 flex-1 sm:mt-0">
+            <h3 class="text-2xl font-bold text-ink">第{issue.number}号</h3>
+            <p class="mt-2 text-sm text-sub">
+              発売日<span class="ml-[1em]">{issue.releaseDate}</span>
+            </p>
+            <h4 class="mt-6 flex items-center gap-3 font-bold text-ink">
+              <span class="block h-[22px] w-[5px] bg-gold" aria-hidden="true" />
+              目次
+            </h4>
+            <ul>
+              {issue.toc.map((item) => (
+                <li class="flex items-baseline justify-between gap-4 border-b border-line py-2.5 text-sm">
+                  <span>{item.title}</span>
+                  <span class="shrink-0 text-sub">{item.page}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ))
+    }
+  </section>
 </BaseLayout>
