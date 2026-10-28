@@ -13,7 +13,7 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft)).so
 <BaseLayout title="記事" description="数理同好会の部員による記事の一覧です。">
   <PageHero title="記事" label="ARTICLES" />
   <div class="mx-auto max-w-6xl px-5 py-12">
-    <nav aria-label="カテゴリ" class="flex flex-wrap gap-2">
+    <nav aria-label="カテゴリ" class="flex flex-wrap items-center gap-2">
       <span class="rounded-full bg-navy px-4 py-1.5 text-sm font-bold text-white">すべて</span>
       {
         CATEGORIES.map((c) => (
@@ -25,6 +25,7 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft)).so
           </a>
         ))
       }
+      <a href="/search" class="ml-auto text-sm font-bold text-gold-text hover:underline">検索 →</a>
     </nav>
     <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {

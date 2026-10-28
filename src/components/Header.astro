@@ -14,7 +14,7 @@ const path = Astro.url.pathname;
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 border-b border-line/70 bg-base/80 backdrop-blur-md">
+<header data-pagefind-ignore class="fixed inset-x-0 top-0 z-50 border-b border-line/70 bg-base/80 backdrop-blur-md">
   <div class="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
     <a href="/" class="flex items-baseline gap-3">
       <span class="font-logo text-xl font-bold text-navy">数理同好会</span>

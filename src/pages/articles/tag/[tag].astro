@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageHero from "../../../components/PageHero.astro";
+import ArticleCard from "../../../components/ArticleCard.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const published = (await getCollection("articles", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+  const tags = [...new Set(published.flatMap((e) => e.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      entries: published.filter((e) => e.data.tags.includes(tag)),
+    },
+  }));
+}
+
+const { tag, entries } = Astro.props;
+---
+
+<BaseLayout title={`タグ: ${tag}`} description={`タグ「${tag}」の記事一覧です。`}>
+  <PageHero title={`#${tag}`} label="TAG" />
+  <div class="mx-auto max-w-6xl px-5 py-12">
+    <p>
+      <a href="/articles" class="text-sm font-bold text-gold-text hover:underline">← 記事一覧へ戻る</a>
+    </p>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        entries.map((entry) => (
+          <ArticleCard
+            slug={entry.id}
+            title={entry.data.title}
+            date={entry.data.date}
+            category={entry.data.category}
+            tags={entry.data.tags}
+            description={entry.data.description}
+            author={entry.data.author}
+            image={entry.data.image}
+          />
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

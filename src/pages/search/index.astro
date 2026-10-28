@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+---
+
+<BaseLayout title="検索" description="サイト内検索です。">
+  <link slot="head" rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <PageHero title="検索" label="SEARCH" />
+  <div class="mx-auto max-w-3xl px-5 py-12">
+    <div id="search"></div>
+    <p class="mt-6 text-sm text-sub">
+      記事のタイトルと本文から検索します。検索インデックスはビルド時に生成されます（開発サーバーでは動作しません）。
+    </p>
+  </div>
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    window.addEventListener("DOMContentLoaded", () => {
+      if (window.PagefindUI) {
+        new window.PagefindUI({ element: "#search", showSubResults: true, showImages: false });
+      }
+    });
+  </script>
+</BaseLayout>
