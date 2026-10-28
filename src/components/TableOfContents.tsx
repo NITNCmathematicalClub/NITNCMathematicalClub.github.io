@@ -7,12 +7,18 @@ interface TocItem {
   level: number;
 }
 
-// テキストをURLに適した形式に変換するヘルパー関数
+// テキストをURLに適した形式に変換するヘルパー関数（GitHub方式）
+// 英字は小文字化し、記号を取り除き、空白をハイフンに置き換える。
+// 日本語などの Unicode の文字・数字は保持する
+// （\w は英数字とアンダースコアしか対象にしないため、日本語がすべて消えてしまう）
 const slugify = (text: string) =>
   text
     .toLowerCase()
     .trim()
-    .replace(/[^\w]+/g, "-");
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 // 目次コンポーネント
 const TableOfContents: FC = () => {
@@ -27,18 +33,31 @@ const TableOfContents: FC = () => {
       const headings = document.querySelectorAll(".h2-style");
       const tocItems: TocItem[] = [];
 
+      // 使用済みIDの管理（重複する見出しのIDを一意化するため）
+      const usedIds = new Set<string>();
+
       // 取得した要素ごとに処理
-      headings.forEach((el) => {
-        // テキストとIDを取得
+      headings.forEach((el, index) => {
+        // テキストを取得
         const text = el.textContent || "";
-        const id = slugify(text);
 
-        // IDが未設定なら自動でつける
-        if (!el.id) el.id = id;
+        // IDが未設定なら slugify で生成して自動でつける
+        if (!el.id) {
+          const base = slugify(text) || `heading-${index}`;
+          let id = base;
+          // 同じIDが既にある場合は -1, -2 ... と連番を付けて一意にする
+          let suffix = 1;
+          while (usedIds.has(id)) {
+            id = `${base}-${suffix}`;
+            suffix++;
+          }
+          el.id = id;
+        }
+        usedIds.add(el.id);
 
-        // 目次アイテムのリストに追加
+        // 目次アイテムのリストに追加（リンク先は要素の実際のIDに合わせる）
         tocItems.push({
-          id,
+          id: el.id,
           text,
           // ここではすべての要素がh2-styleなので、レベルを2に固定
           level: 2,
@@ -82,7 +101,7 @@ const TableOfContents: FC = () => {
       <ul className="space-y-1">
         {items.map((item) => (
           // 目次アイテムをリストとして表示
-          <li key={item.text} className={item.level === 1 ? "ml-4" : ""}>
+          <li key={item.id} className={item.level === 1 ? "ml-4" : ""}>
             <a
               href={`#${item.id}`}
               className="hover:underline text-gray block font-bold"

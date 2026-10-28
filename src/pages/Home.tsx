@@ -2,7 +2,6 @@
 import { useEffect, useState, type FC } from "react";
 import HeroSlider from "../components/HeroSlider";
 // import { Link } from "react-router-dom";
-// import Card from "../components/HomeCard"; // Cardコンポーネントのインポート名は正しいですか？以前はCardとHomeCardが混在していました
 
 // 新しいレイアウトのCardコンポーネント
 interface CardData {
@@ -14,7 +13,7 @@ interface CardData {
 
 // お知らせデータの型定義
 interface NewsItem {
-  date: number; // 日付を数値（タイムスタンプ）で管理
+  date: string; // 日付を "YYYY-MM-DD" 形式の文字列で管理（news.json の実データに合わせる）
   text: string;
 }
 
@@ -77,7 +76,7 @@ const NewsList: FC = () => {
   }
 
   // 日付の降順にソートして、最新3件のニュースを取得
-  const sortedNews = [...newsData].sort((a, b) => b.date - a.date);
+  const sortedNews = [...newsData].sort((a, b) => b.date.localeCompare(a.date));
   const latestNews = sortedNews.slice(0, 3);
 
   return (
