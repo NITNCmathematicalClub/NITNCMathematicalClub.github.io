@@ -11,6 +11,7 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 
 ### Added
 
+- 数式表示（remark-math + rehype-katex）を導入し、記事の執筆テンプレート（`src/content/articles/_template.md`）を用意
 - 既存ページ（ホーム／概要／活動紹介／過去問解説／雑記帳／部誌／お問い合わせ／404）を Astro へ移行。データ JSON はビルド時読み込みに変更し、画像・PDF 資産を引き継いだ
 - Astro 移行基盤を整備（`@astrojs/react`・`@astrojs/mdx`・Tailwind CSS v4 の統合、`site` 設定、共通レイアウトとヘッダー／フッター、デザイントークンの CSS 化）
 - v2.0.0 のデザイン確定版を仕様書に記録（`docs/article-spec.md` §12.10）。Figma テンプレート18種（Desktop／Mobile）を作成し、見出しはゴシック（Noto Sans JP）で確定
