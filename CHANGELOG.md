@@ -9,6 +9,10 @@
 
 v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `docs/article-spec.md` §12 と親 Issue #3 を参照してください。
 
+### Added
+
+- v2.0.0 のデザイン確定版を仕様書に記録（`docs/article-spec.md` §12.10）。Figma テンプレート10種を作成し、見出しはゴシック（Noto Sans JP）で確定
+
 ### Changed
 
 - サイトの基盤を React + Vite の SPA から Astro 7（静的生成）へ移行開始
