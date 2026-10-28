@@ -2,13 +2,15 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroSlider from "../components/HeroSlider.tsx";
 import SectionTitle from "../components/SectionTitle.astro";
-import news from "../data/news.json";
+import ArticleCard from "../components/ArticleCard.astro";
+import { getCollection } from "astro:content";
+import { fmtDots } from "../lib/date";
 
-const latestNews = [...news].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
-const fmtDate = (iso: string) => {
-  const d = new Date(iso + "T00:00:00");
-  return `${d.getFullYear()}年${String(d.getMonth() + 1).padStart(2, "0")}月${String(d.getDate()).padStart(2, "0")}日`;
-};
+const published = (await getCollection("articles", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const latestNews = published.filter((e) => e.data.category === "お知らせ").slice(0, 3);
+const latestArticles = published.filter((e) => e.data.category !== "お知らせ").slice(0, 3);
 
 const cards = [
   {
@@ -42,17 +44,50 @@ const cards = [
   <section class="mx-auto max-w-6xl px-5 py-14">
     <div class="flex items-end justify-between">
       <SectionTitle title="お知らせ" />
+      <a href="/articles" class="shrink-0 text-sm font-bold text-gold-text hover:underline">
+        一覧を見る →
+      </a>
     </div>
     <ul class="mt-6 divide-y divide-line border-y border-line">
       {
-        latestNews.map((item) => (
+        latestNews.map((entry) => (
           <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
-            <span class="shrink-0 text-sm font-medium text-sub">{fmtDate(item.date)}</span>
-            <span>{item.text}</span>
+            <span class="shrink-0 text-sm font-medium text-sub">{fmtDots(entry.data.date)}</span>
+            <span class="rounded-full border border-line px-2.5 py-0.5 text-center text-[11px] font-bold text-navy">
+              {entry.data.category}
+            </span>
+            <a href={`/articles/${entry.id}`} class="hover:underline">
+              {entry.data.title}
+            </a>
           </li>
         ))
       }
     </ul>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 pb-14">
+    <div class="flex items-end justify-between">
+      <SectionTitle title="最近の記事" />
+      <a href="/articles" class="shrink-0 text-sm font-bold text-gold-text hover:underline">
+        記事一覧へ →
+      </a>
+    </div>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        latestArticles.map((entry) => (
+          <ArticleCard
+            slug={entry.id}
+            title={entry.data.title}
+            date={entry.data.date}
+            category={entry.data.category}
+            tags={entry.data.tags}
+            description={entry.data.description}
+            author={entry.data.author}
+            image={entry.data.image}
+          />
+        ))
+      }
+    </div>
   </section>
 
   <section class="mx-auto max-w-6xl space-y-14 px-5 pb-20">
