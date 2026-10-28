@@ -21,6 +21,7 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 
 ### Changed
 
+- コンテンツのフォルダ構成を変更（数学記事は `src/content/articles/<カテゴリフォルダ>/`、お知らせは `src/content/news/`、活動報告は `src/content/reports/` に分離。カテゴリはフォルダから自動で決まるようにし、対応表を `src/content/categories.ts` に新設。URL は変更なし）
 - デザインを Figma テンプレートに全面準拠させて再実装（ホーム構成、一覧カード、記事詳細の目次・関連記事、お知らせ／活動報告の専用レイアウト、静的ページの組版）
 - 英字フォントを Roboto（基本）＋ Montserrat（大きな表示）に決定し、Figma のテンプレートとコンポーネントに適用（`docs/article-spec.md` §12.11）
 - サイトの基盤を React + Vite の SPA から Astro 7（静的生成）へ移行開始

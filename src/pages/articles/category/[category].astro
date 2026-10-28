@@ -1,17 +1,15 @@
 ---
 import ArticleListPage from "../../../components/ArticleListPage.astro";
-import { getCollection } from "astro:content";
-import { CATEGORIES } from "../../../content.config";
+import { getAllEntries } from "../../../lib/content";
+import { ALL_CATEGORIES } from "../../../content/categories";
 
 export async function getStaticPaths() {
-  const published = (await getCollection("articles", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-  );
-  return CATEGORIES.map((category) => ({
+  const published = (await getAllEntries()).filter(({ data }) => !data.draft);
+  return ALL_CATEGORIES.map((category) => ({
     params: { category },
     props: {
       category,
-      entries: published.filter((e) => e.data.category === category),
+      entries: published.filter((e) => e.category === category),
     },
   }));
 }
@@ -26,13 +24,13 @@ const { category, entries } = Astro.props;
   description={`カテゴリ「${category}」の記事一覧です。`}
   chips={[
     { label: "すべて", href: "/articles" },
-    ...CATEGORIES.map((c) => ({
+    ...ALL_CATEGORIES.map((c) => ({
       label: c,
       href: c === category ? undefined : `/articles/category/${encodeURIComponent(c)}`,
       active: c === category,
     })),
   ]}
   entries={entries}
-  labelFor={(e) => e.data.category}
+  labelFor={(e) => e.category}
   showAuthor
 />
