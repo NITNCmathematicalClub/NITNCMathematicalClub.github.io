@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  /* カラートークン（仕様書 §12.10 の確定値） */
+  --color-navy: #27455c;
+  --color-gold: #cea152;
+  --color-gold-text: #a67f35;
+  --color-base: #faf9f6;
+  --color-band: #efebe2;
+  --color-ink: #1b2833;
+  --color-sub: #5a6b76;
+  --color-line: #dcd7ca;
+  --color-dark: #101d27;
+  --color-dark-band: #1b3245;
+  --color-dark-line: #33505f;
+  --color-hero-sub: #c9d4db;
+
+  /* フォント（仕様書 §12.10・§12.11）
+     英数字は Roboto を先に置き、和文は Noto Sans JP にフォールバックさせる */
+  --font-sans: "Roboto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  /* 大きな表示専用（見出しの英数字・大数字） */
+  --font-display: "Montserrat", "Roboto", "Noto Sans JP", sans-serif;
+  /* ロゴ文字専用 */
+  --font-logo: "Noto Serif JP", serif;
+}
+
+body {
+  @apply bg-base text-ink font-sans antialiased;
+}

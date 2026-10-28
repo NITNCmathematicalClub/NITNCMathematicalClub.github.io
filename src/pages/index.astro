@@ -1,16 +1,37 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="" description="沼津高専 数理同好会の公式サイトです。活動紹介や部誌、部員による数学記事を掲載しています。">
+  <section class="bg-navy text-white">
+    <div class="mx-auto max-w-6xl px-5 py-24 md:py-32">
+      <p class="text-xs font-bold tracking-[0.3em] text-hero-sub">NUMAZU KOSEN — MATHEMATICS CLUB</p>
+      <h1 class="mt-4 font-logo text-5xl font-bold md:text-6xl">数理同好会</h1>
+      <span class="mt-6 block h-1 w-12 bg-gold"></span>
+      <p class="mt-6 max-w-xl leading-relaxed text-hero-sub">
+        数学を楽しむ、沼津高専の同好会です。授業の補足や大学数学の入門まで、問題を解いたり、教え合ったり、数学の読みものを歓迎したりしています。
+      </p>
+    </div>
+  </section>
+  <section class="mx-auto max-w-6xl px-5 py-16">
+    <h2 class="text-2xl font-bold text-navy">数理同好会について</h2>
+    <span class="mt-3 block h-0.5 w-10 bg-gold"></span>
+    <p class="mt-5 max-w-2xl leading-loose">
+      数理同好会は、数学が好きな学生が集まって、問題を解いたり、教え合ったり、数学の面白さを発信したりする同好会です。部誌『Σ』を毎年発行しています。
+    </p>
+    <div class="mt-10 grid gap-4 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-4">
+      <a href="/introduce" class="group flex items-center justify-between py-2 font-bold text-navy">
+        詳しい概要 <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
+      </a>
+      <a href="/articles" class="group flex items-center justify-between py-2 font-bold text-navy">
+        記事一覧 <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
+      </a>
+      <a href="/activities" class="group flex items-center justify-between py-2 font-bold text-navy">
+        活動の記録 <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
+      </a>
+      <a href="/contact" class="group flex items-center justify-between py-2 font-bold text-navy">
+        お問い合わせ <span class="text-gold-text transition-transform group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

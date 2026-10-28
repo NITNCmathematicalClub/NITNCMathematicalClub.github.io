@@ -11,6 +11,7 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 
 ### Added
 
+- Astro 移行基盤を整備（`@astrojs/react`・`@astrojs/mdx`・Tailwind CSS v4 の統合、`site` 設定、共通レイアウトとヘッダー／フッター、デザイントークンの CSS 化）
 - v2.0.0 のデザイン確定版を仕様書に記録（`docs/article-spec.md` §12.10）。Figma テンプレート18種（Desktop／Mobile）を作成し、見出しはゴシック（Noto Sans JP）で確定
 
 ### Changed
