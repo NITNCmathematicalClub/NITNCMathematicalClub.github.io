@@ -5,7 +5,6 @@ author:
   department: 電気電子工学科
   grade: 2
   github: sample
-category: 活動報告
 tags: [勉強会]
 draft: false
 description: 試験前に放課後の勉強会を行い、部員同士で分からない問題を教え合いました。

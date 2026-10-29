@@ -11,11 +11,11 @@ interface Heading {
 }
 
 interface RelatedEntry {
-  id: string;
+  slug: string;
+  category: string;
   data: {
     title: string;
     date: Date;
-    category: string;
   };
 }
 
@@ -28,8 +28,8 @@ interface Props {
   description: string;
   image?: string;
   headings: Heading[];
-  prev?: { id: string; title: string } | null;
-  next?: { id: string; title: string } | null;
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
   related: RelatedEntry[];
 }
 
@@ -92,7 +92,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         <nav class="mt-16 flex items-start justify-between gap-6 border-t border-line pt-6" aria-label="前後の記事">
           {
             prev ? (
-              <a href={`/articles/${prev.id}`} class="group max-w-[45%]">
+              <a href={`/articles/${prev.slug}`} class="group max-w-[45%]">
                 <span class="text-xs text-sub">← 前の記事</span>
                 <span class="mt-1 block font-bold text-ink group-hover:underline">{prev.title}</span>
               </a>
@@ -102,7 +102,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
           }
           {
             next && (
-              <a href={`/articles/${next.id}`} class="group max-w-[45%] text-right">
+              <a href={`/articles/${next.slug}`} class="group max-w-[45%] text-right">
                 <span class="text-xs text-sub">次の記事 →</span>
                 <span class="mt-1 block font-bold text-ink group-hover:underline">{next.title}</span>
               </a>
@@ -117,10 +117,10 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
               <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {related.map((entry) => (
                   <RelatedCard
-                    slug={entry.id}
+                    slug={entry.slug}
                     title={entry.data.title}
                     date={entry.data.date}
-                    category={entry.data.category}
+                    category={entry.category}
                   />
                 ))}
               </div>

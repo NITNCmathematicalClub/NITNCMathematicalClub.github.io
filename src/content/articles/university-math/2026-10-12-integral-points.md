@@ -5,7 +5,6 @@ author:
   department: 制御情報工学科
   grade: 3
   github: sample
-category: 大学数学入門
 tags: [積分]
 draft: false
 description: 置換積分か部分積分か、判断の分かれ目と、つまずきやすい符号ミスを整理しました。

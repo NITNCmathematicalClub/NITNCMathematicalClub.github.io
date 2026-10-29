@@ -5,7 +5,6 @@ author:
   department: 制御情報工学科
   grade: 3
   github: sample
-category: 大学数学入門
 tags: [級数]
 draft: true
 description: 下書きの動作確認用サンプル。本番ビルドには含まれません。

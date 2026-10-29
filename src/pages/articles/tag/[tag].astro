@@ -1,11 +1,9 @@
 ---
 import ArticleListPage from "../../../components/ArticleListPage.astro";
-import { getCollection } from "astro:content";
+import { getArticles } from "../../../lib/content";
 
 export async function getStaticPaths() {
-  const published = (await getCollection("articles", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-  );
+  const published = (await getArticles()).filter(({ data }) => !data.draft);
   const tags = [...new Set(published.flatMap((e) => e.data.tags))];
   return tags.map((tag) => ({
     params: { tag },
@@ -26,6 +24,6 @@ const { tag, entries } = Astro.props;
   description={`タグ「${tag}」の記事一覧です。`}
   chips={[{ label: "記事一覧へ", href: "/articles" }]}
   entries={entries}
-  labelFor={(e) => e.data.category}
+  labelFor={(e) => e.category}
   showAuthor
 />

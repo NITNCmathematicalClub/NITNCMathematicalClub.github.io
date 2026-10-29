@@ -12,11 +12,11 @@ interface Chip {
 }
 
 interface Entry {
-  id: string;
+  slug: string;
+  category: string;
   data: {
     title: string;
     date: Date;
-    category: string;
     tags: string[];
     description: string;
     author: { department: string; grade: number };
@@ -95,7 +95,7 @@ const {
       {
         entries.map((entry) => (
           <GridCard
-            slug={entry.id}
+            slug={entry.slug}
             title={entry.data.title}
             date={entry.data.date}
             label={labelFor(entry)}

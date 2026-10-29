@@ -5,7 +5,6 @@ author:
   department: 制御情報工学科
   grade: 3
   github: sample
-category: お知らせ
 tags: [募集]
 draft: false
 description: 数理同好会では新入部員を募集しています。見学はいつでも歓迎です。
