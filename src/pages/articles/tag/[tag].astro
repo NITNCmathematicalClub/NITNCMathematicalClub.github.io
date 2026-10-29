@@ -1,29 +1,37 @@
 ---
 import ArticleListPage from "../../../components/ArticleListPage.astro";
 import { getArticles } from "../../../lib/content";
+import { ARTICLE_TAG_LIST } from "../../../content/tags";
 
 export async function getStaticPaths() {
   const published = (await getArticles()).filter(({ data }) => !data.draft);
-  const tags = [...new Set(published.flatMap((e) => e.data.tags))];
-  return tags.map((tag) => ({
-    params: { tag },
+  // 定義済みタグすべてにページを作る（記事が0件のタグもチップのリンク先として必要）
+  return ARTICLE_TAG_LIST.map((t) => ({
+    params: { tag: t.slug },
     props: {
-      tag,
-      entries: published.filter((e) => e.data.tags.includes(tag)),
+      tag: t.slug,
+      label: t.label,
+      entries: published.filter((e) => e.tags.some((tag) => tag.slug === t.slug)),
     },
   }));
 }
 
-const { tag, entries } = Astro.props;
+const { tag, label, entries } = Astro.props;
 ---
 
 <ArticleListPage
-  title={`#${tag}`}
+  title={label}
   subtitle="タグの付いた記事の一覧です"
-  pageTitle={`タグ: ${tag}`}
-  description={`タグ「${tag}」の記事一覧です。`}
-  chips={[{ label: "記事一覧へ", href: "/articles" }]}
+  pageTitle={`タグ: ${label}`}
+  description={`タグ「${label}」の記事一覧です。`}
+  chips={[
+    { label: "すべて", href: "/articles" },
+    ...ARTICLE_TAG_LIST.map((t) => ({
+      label: t.label,
+      href: t.slug === tag ? undefined : `/articles/tag/${t.slug}`,
+      active: t.slug === tag,
+    })),
+  ]}
   entries={entries}
-  labelFor={(e) => e.category}
   showAuthor
 />

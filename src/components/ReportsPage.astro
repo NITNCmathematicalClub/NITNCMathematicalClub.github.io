@@ -43,7 +43,7 @@ const entries = reports.filter((r) => r.fy === selected);
             href={r.href}
             title={r.title}
             date={r.date}
-            label={`${r.fy}年度`}
+            labels={r.tagLabels}
             description={r.description}
             image={r.image}
           />

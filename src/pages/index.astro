@@ -31,9 +31,11 @@ const links = [
         latestNews.map((entry) => (
           <li class="flex flex-col gap-1.5 border-b border-line py-4 sm:flex-row sm:items-center sm:gap-6">
             <span class="shrink-0 text-sm text-sub">{fmtISO(entry.data.date)}</span>
-            <span class="w-fit shrink-0 rounded-full border border-line px-3 py-0.5 text-[11px] font-bold text-navy">
-              {entry.data.tags[0] ?? entry.category}
-            </span>
+            {entry.tagLabels.map((label) => (
+              <span class="w-fit shrink-0 rounded-full border border-line px-3 py-0.5 text-[11px] font-bold text-navy">
+                {label}
+              </span>
+            ))}
             <a href={`/articles/${entry.slug}`} class="hover:underline">
               {entry.data.title}
             </a>
@@ -58,7 +60,7 @@ const links = [
               slug={entry.slug}
               title={entry.data.title}
               date={entry.data.date}
-              category={entry.category}
+              labels={entry.tagLabels}
               description={entry.data.description}
               author={entry.data.author}
             />

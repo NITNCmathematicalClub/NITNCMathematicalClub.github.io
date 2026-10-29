@@ -6,6 +6,7 @@ export interface ReportEntry {
   title: string;
   date: Date;
   fy: number;
+  tagLabels: string[];
   description: string;
   image?: string;
   href: string;
@@ -20,6 +21,7 @@ export async function getReports(): Promise<ReportEntry[]> {
     title: e.data.title,
     date: e.data.date,
     fy: fiscalYearOf(e.data.date),
+    tagLabels: e.tagLabels,
     description: e.data.description,
     image: e.data.image,
     href: `/articles/${e.slug}`,
@@ -30,6 +32,7 @@ export async function getReports(): Promise<ReportEntry[]> {
       title: a.title,
       date,
       fy: fiscalYearOf(date),
+      tagLabels: [],
       description: a.description,
       image: a.images[0],
       href: `/activities/records/${a.date}`,

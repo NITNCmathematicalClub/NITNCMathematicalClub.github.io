@@ -10,9 +10,17 @@ export async function getStaticPaths() {
   return published.map((entry, i) => {
     const newer = published[i - 1];
     const older = published[i + 1];
+    const ownSlugs = entry.tags.map((t) => t.slug);
     const related = all
-      .filter((e) => e.slug !== entry.slug && !e.data.draft && e.category === entry.category)
-      .slice(0, 3);
+      .filter((e) => e.slug !== entry.slug && !e.data.draft)
+      .map((e) => ({
+        entry: e,
+        overlap: e.tags.filter((t) => ownSlugs.includes(t.slug)).length,
+      }))
+      .filter(({ overlap }) => overlap > 0)
+      .sort((a, b) => b.overlap - a.overlap)
+      .slice(0, 3)
+      .map(({ entry: e }) => e);
     return {
       params: { slug: entry.slug },
       props: {
@@ -39,7 +47,7 @@ const fiscalYear = (date: Date) =>
     <SimpleLayout
       title={d.title}
       date={d.date}
-      label={entry.category}
+      label={entry.tagLabels.join(" ")}
       description={d.description}
       backHref="/news"
       backLabel="お知らせ一覧へ戻る"
@@ -61,8 +69,7 @@ const fiscalYear = (date: Date) =>
     <ArticleLayout
       title={d.title}
       date={d.date}
-      category={entry.category}
-      tags={d.tags}
+      tags={entry.tags}
       author={d.author}
       description={d.description}
       image={d.image}

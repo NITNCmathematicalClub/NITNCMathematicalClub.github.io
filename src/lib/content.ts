@@ -1,17 +1,26 @@
 import { getCollection, type CollectionEntry } from "astro:content";
-import { categoryOfFolder, NEWS_CATEGORY, REPORTS_CATEGORY } from "../content/categories";
+import { tagLabel } from "../content/tags";
 
-// 3コレクション（数学記事・お知らせ・活動報告）を共通の形に正規化する（Issue #48）
-// - slug: 公開 URL（/articles/<slug>）に使うファイル名部分。フォルダ名は含めない
-// - category: 日本語表示名。数学記事はフォルダ名から、お知らせ・活動報告はコレクションから導出する
+// 3コレクション（数学記事・お知らせ・活動報告）を共通の形に正規化する
+// - slug: 公開 URL（/articles/<slug>）に使うファイル名部分
+// - tags: 表示用に解決したタグ。数学記事は定義表（src/content/tags.ts）の slug を
+//   表示名に引き、お知らせ・活動報告は front-matter の文字列をそのまま使う
 export type EntryKind = "article" | "news" | "report";
 
 type AnyEntry = CollectionEntry<"articles" | "news" | "reports">;
 
+export interface ResolvedTag {
+  slug: string;
+  label: string;
+}
+
 export interface SiteEntry {
   slug: string;
   kind: EntryKind;
-  category: string;
+  /** slug と表示名を解決したタグ（表示順は front-matter の並び） */
+  tags: ResolvedTag[];
+  /** タグの表示名だけの一覧（カードのラベル用） */
+  tagLabels: string[];
   data: AnyEntry["data"];
   /** 描画（render）などに使う元エントリ */
   raw: AnyEntry;
@@ -22,13 +31,13 @@ const byDateDesc = (a: SiteEntry, b: SiteEntry) => b.data.date.getTime() - a.dat
 function normalize(entry: AnyEntry, kind: EntryKind): SiteEntry {
   const segments = entry.id.split("/");
   const slug = segments[segments.length - 1];
-  const category =
-    kind === "news"
-      ? NEWS_CATEGORY
-      : kind === "report"
-        ? REPORTS_CATEGORY
-        : categoryOfFolder(segments.slice(0, -1).join("/"));
-  return { slug, kind, category, data: entry.data, raw: entry };
+  const tags: ResolvedTag[] = entry.data.tags.map((t) => {
+    const value: string = t;
+    return kind === "article"
+      ? { slug: value, label: tagLabel(value) ?? value }
+      : { slug: value, label: value };
+  });
+  return { slug, kind, tags, tagLabels: tags.map((t) => t.label), data: entry.data, raw: entry };
 }
 
 async function load(kind: EntryKind): Promise<SiteEntry[]> {

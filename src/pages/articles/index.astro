@@ -1,7 +1,7 @@
 ---
 import ArticleListPage from "../../components/ArticleListPage.astro";
 import { getArticles } from "../../lib/content";
-import { ARTICLE_CATEGORY_NAMES } from "../../content/categories";
+import { ARTICLE_TAG_LIST } from "../../content/tags";
 
 export const PAGE_SIZE = 9;
 
@@ -17,13 +17,12 @@ const entries = all.slice(0, PAGE_SIZE);
   description="数理同好会の部員による記事の一覧です。"
   chips={[
     { label: "すべて", active: true },
-    ...ARTICLE_CATEGORY_NAMES.map((c) => ({
-      label: c,
-      href: `/articles/category/${encodeURIComponent(c)}`,
+    ...ARTICLE_TAG_LIST.map((t) => ({
+      label: t.label,
+      href: `/articles/tag/${t.slug}`,
     })),
   ]}
   entries={entries}
-  labelFor={(e) => e.category}
   showAuthor
   searchForm
   current={1}

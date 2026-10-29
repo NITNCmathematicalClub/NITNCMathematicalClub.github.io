@@ -5,7 +5,7 @@ author:
   department: 制御情報工学科
   grade: 3
   github: sample
-tags: [級数]
+tags: [analysis]
 draft: true
 description: 下書きの動作確認用サンプル。本番ビルドには含まれません。
 ---
