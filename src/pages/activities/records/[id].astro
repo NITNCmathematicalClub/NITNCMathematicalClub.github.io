@@ -1,7 +1,6 @@
 ---
 import SimpleLayout from "../../../layouts/SimpleLayout.astro";
 import activities from "../../../data/activities.json";
-import { fiscalYearOf } from "../../../lib/reports";
 
 export async function getStaticPaths() {
   return activities.map((a) => ({
@@ -12,13 +11,11 @@ export async function getStaticPaths() {
 
 const { activity } = Astro.props;
 const date = new Date(activity.date + "T00:00:00Z");
-const fy = fiscalYearOf(date);
 ---
 
 <SimpleLayout
   title={activity.title}
   date={date}
-  label={`${fy}年度`}
   description={activity.description}
   backHref="/activities"
   backLabel="活動報告一覧へ戻る"

@@ -6,16 +6,24 @@ interface Props {
   slug: string;
   title: string;
   date: Date;
-  category: string;
+  labels: string[];
   description: string;
   author: { department: string; grade: number };
 }
 
-const { slug, title, date, category, description, author } = Astro.props;
+const { slug, title, date, labels, description, author } = Astro.props;
 ---
 
 <article class="flex h-full flex-col border border-line bg-base p-6">
-  <p class="text-xs font-bold text-gold-text">{category}</p>
+  {
+    labels.length > 0 && (
+      <p class="flex flex-wrap gap-x-3 text-xs font-bold text-gold-text">
+        {labels.map((label) => (
+          <span>#{label}</span>
+        ))}
+      </p>
+    )
+  }
   <h3 class="mt-2 text-lg font-bold leading-snug text-ink">
     <a href={`/articles/${slug}`} class="hover:underline">{title}</a>
   </h3>

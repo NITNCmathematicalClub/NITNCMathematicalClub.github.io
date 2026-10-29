@@ -1,19 +1,27 @@
 ---
-// 記事詳細「関連記事」の小型カード（Figma テンプレート: 罫線の箱、カテゴリ＋タイトル＋日付）
+// 記事詳細「関連記事」の小型カード（Figma テンプレート: 罫線の箱、タグ＋タイトル＋日付）
 import { fmtISO } from "../lib/date";
 
 interface Props {
   slug: string;
   title: string;
   date: Date;
-  category: string;
+  labels: string[];
 }
 
-const { slug, title, date, category } = Astro.props;
+const { slug, title, date, labels } = Astro.props;
 ---
 
 <article class="flex h-full flex-col rounded-lg border border-line bg-white p-5">
-  <p class="text-[11px] font-bold text-gold-text">{category}</p>
+  {
+    labels.length > 0 && (
+      <p class="flex flex-wrap gap-x-2 text-[11px] font-bold text-gold-text">
+        {labels.map((label) => (
+          <span>#{label}</span>
+        ))}
+      </p>
+    )
+  }
   <h3 class="mt-2 flex-1 font-bold leading-snug text-ink">
     <a href={`/articles/${slug}`} class="hover:underline">{title}</a>
   </h3>

@@ -3,14 +3,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroSlider from "../components/HeroSlider.tsx";
 import SectionTitle from "../components/SectionTitle.astro";
 import HomeArticleCard from "../components/HomeArticleCard.astro";
-import { getCollection } from "astro:content";
+import { getAllEntries } from "../lib/content";
 import { fmtISO } from "../lib/date";
 
-const published = (await getCollection("articles", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
-const latestNews = published.filter((e) => e.data.category === "お知らせ").slice(0, 3);
-const latestArticles = published.filter((e) => e.data.category !== "お知らせ").slice(0, 3);
+const published = (await getAllEntries()).filter(({ data }) => !data.draft);
+const latestNews = published.filter((e) => e.kind === "news").slice(0, 3);
+const latestArticles = published.filter((e) => e.kind !== "news").slice(0, 3);
 
 const links = [
   { href: "/introduce", label: "詳しい概要" },
@@ -33,10 +31,12 @@ const links = [
         latestNews.map((entry) => (
           <li class="flex flex-col gap-1.5 border-b border-line py-4 sm:flex-row sm:items-center sm:gap-6">
             <span class="shrink-0 text-sm text-sub">{fmtISO(entry.data.date)}</span>
-            <span class="w-fit shrink-0 rounded-full border border-line px-3 py-0.5 text-[11px] font-bold text-navy">
-              {entry.data.tags[0] ?? entry.data.category}
-            </span>
-            <a href={`/articles/${entry.id}`} class="hover:underline">
+            {entry.tagLabels.map((label) => (
+              <span class="w-fit shrink-0 rounded-full border border-line px-3 py-0.5 text-[11px] font-bold text-navy">
+                #{label}
+              </span>
+            ))}
+            <a href={`/articles/${entry.slug}`} class="hover:underline">
               {entry.data.title}
             </a>
           </li>
@@ -57,10 +57,10 @@ const links = [
         {
           latestArticles.map((entry) => (
             <HomeArticleCard
-              slug={entry.id}
+              slug={entry.slug}
               title={entry.data.title}
               date={entry.data.date}
-              category={entry.data.category}
+              labels={entry.tagLabels}
               description={entry.data.description}
               author={entry.data.author}
             />

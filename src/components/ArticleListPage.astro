@@ -12,12 +12,11 @@ interface Chip {
 }
 
 interface Entry {
-  id: string;
+  slug: string;
+  tagLabels: string[];
   data: {
     title: string;
     date: Date;
-    category: string;
-    tags: string[];
     description: string;
     author: { department: string; grade: number };
     image?: string;
@@ -31,7 +30,6 @@ interface Props {
   description: string;
   chips: Chip[];
   entries: Entry[];
-  labelFor: (entry: Entry) => string;
   showAuthor?: boolean;
   searchForm?: boolean;
   current?: number;
@@ -46,7 +44,6 @@ const {
   description,
   chips,
   entries,
-  labelFor,
   showAuthor = false,
   searchForm = false,
   current = 1,
@@ -95,10 +92,10 @@ const {
       {
         entries.map((entry) => (
           <GridCard
-            slug={entry.id}
+            slug={entry.slug}
             title={entry.data.title}
             date={entry.data.date}
-            label={labelFor(entry)}
+            labels={entry.tagLabels}
             description={entry.data.description}
             author={showAuthor ? entry.data.author : undefined}
             image={entry.data.image}

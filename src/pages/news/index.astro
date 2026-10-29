@@ -1,10 +1,8 @@
 ---
 import ArticleListPage from "../../components/ArticleListPage.astro";
-import { getCollection } from "astro:content";
+import { getNews } from "../../lib/content";
 
-const entries = (await getCollection("articles", ({ data }) => !data.draft && data.category === "お知らせ")).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+const entries = (await getNews()).filter(({ data }) => !data.draft);
 const tags = [...new Set(entries.flatMap((e) => e.data.tags))];
 ---
 
@@ -18,5 +16,4 @@ const tags = [...new Set(entries.flatMap((e) => e.data.tags))];
     ...tags.map((t) => ({ label: t, href: `/news/tag/${encodeURIComponent(t)}` })),
   ]}
   entries={entries}
-  labelFor={(e) => e.data.tags[0] ?? e.data.category}
 />

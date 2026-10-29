@@ -5,8 +5,7 @@ author:
   department: 制御情報工学科
   grade: 3
   github: sample
-category: 大学数学入門
-tags: [極限, 微分]
+tags: [analysis]
 draft: false
 description: 高校数学と大学数学のあいだにある「極限」の考え方を、イプシロン・デルタ論法の入口まで案内します。
 ---

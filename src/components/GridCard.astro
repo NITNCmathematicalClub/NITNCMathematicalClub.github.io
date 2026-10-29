@@ -6,14 +6,14 @@ interface Props {
   slug: string;
   title: string;
   date: Date;
-  label: string; // カテゴリ名や年度など、ゴールドで出すラベル
+  labels: string[]; // タグなど、ゴールドで出すラベル（複数可）
   description: string;
   author?: { department: string; grade: number };
   image?: string;
   href?: string;
 }
 
-const { slug, title, date, label, description, author, image, href } = Astro.props;
+const { slug, title, date, labels, description, author, image, href } = Astro.props;
 ---
 
 <article>
@@ -32,7 +32,9 @@ const { slug, title, date, label, description, author, image, href } = Astro.pro
     }
     <p class="mt-4 flex items-baseline gap-4 text-xs">
       <span class="text-sub">{fmtISO(date)}</span>
-      <span class="font-bold text-gold-text">{label}</span>
+      {
+        labels.map((label) => <span class="font-bold text-gold-text">#{label}</span>)
+      }
     </p>
     <h3 class="mt-2 text-[17px] font-bold leading-snug text-ink group-hover:underline">{title}</h3>
   </a>

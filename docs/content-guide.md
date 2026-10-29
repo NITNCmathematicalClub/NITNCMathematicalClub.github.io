@@ -2,7 +2,7 @@
 
 部員が記事を書いて公開するまでの手順です。コードを書かなくても、このガイドの手順だけで記事を1本公開できます。
 
-記事の仕様（front-matter の項目やカテゴリの決まり）は [article-spec.md](article-spec.md) §7 が正本です。このガイドは手順だけをまとめています。
+記事の仕様（front-matter の項目やタグの決まり）は [article-spec.md](article-spec.md) §7 が正本です。このガイドは手順だけをまとめています。
 
 ## 全体の流れ
 
@@ -22,7 +22,13 @@
 
 ### ファイルを作る
 
-`src/content/articles/_template.md` をコピーし、名前を変えます。
+置くフォルダで、記事の種類が決まります。`src/content/articles/_template.md` をコピーし、種類に応じたフォルダへ入れます。分類はフォルダではなく、front-matter の `tags` で行います（下記）。
+
+| 種類 | 置くフォルダ |
+|---|---|
+| 数学記事 | `src/content/articles/` |
+| お知らせ | `src/content/news/` |
+| 活動報告 | `src/content/reports/` |
 
 - ファイル名 = そのまま記事の URL になります（`/articles/<ファイル名>`）
 - 形式: `YYYY-MM-DD-<英小文字とハイフンの名前>.md`（例: `2026-11-01-limit-intro.md`）
@@ -38,10 +44,19 @@
 | `author.department` | 自分の学科名（この「学科＋学年」だけがサイトに表示されます） |
 | `author.grade` | 自分の学年（1〜5） |
 | `author.github` | 自分の GitHub アカウント名。**サイトには表示されません**（コメントの通知などの内部連携用） |
-| `category` | 次の5つから1つ: お知らせ / 授業・教科解説 / 大学数学入門 / 競技数学・入試問題 / 活動報告 |
-| `tags` | 0〜5個。新しいタグを作る前に、既存の記事で使われているタグを優先してください |
+| `tags` | 数学記事は定義済みの25種から slug で指定します（複数指定可、0〜5個。下の一覧参照）。定義外の slug を書くとビルドエラーになります。お知らせ・活動報告は自由な文字列で構いません |
 | `draft` | 下書きの間は `true`、公開時に `false`。`true` の記事は本番サイトに表示されません |
 | `description` | 一覧に出る1〜2文の要約 |
+
+#### 数学記事のタグ一覧（25種）
+
+| 分野 | slug（表示名） |
+|---|---|
+| 数学 | `information`（情報）、`theory-of-computation`（計算理論）、`programming`（プログラミング）、`algebra`（代数）、`geometry`（幾何）、`analysis`（解析）、`probability-and-statistics`（確率/統計）、`set-theory-and-logic`（集合/論理） |
+| 物理 | `mechanics`（力学）、`electromagnetism`（電磁気学）、`thermodynamics`（熱力学）、`statistical-mechanics`（統計力学）、`quantum-mechanics`（量子力学）、`relativity`（相対性理論）、`waves`（波動）、`optics`（光学）、`fluid-mechanics`（流体力学）、`condensed-matter-physics`（物性物理学） |
+| 化学 | `inorganic-chemistry`（無機化学）、`organic-chemistry`（有機化学）、`physical-chemistry`（物理化学）、`analytical-chemistry`（分析化学）、`biochemistry`（生物化学）、`chemical-engineering`（化学工学）、`polymer-chemistry`（高分子化学） |
+
+書き方: `tags: [analysis, algebra]` のように、内容に合う分野を選びます。1つの記事に複数の分野にまたがる場合は、すべて付けてください。
 
 ### 本文を書く
 
@@ -52,8 +67,8 @@
 
 ### お知らせ・活動報告を書く場合
 
-- お知らせはカテゴリ「お知らせ」にすると、トップページのお知らせ欄にも自動で載ります
-- 活動報告はカテゴリ「活動報告」にし、タグにイベント名などを入れてください
+- お知らせは `src/content/news/` に置くと、トップページのお知らせ欄と `/news` に自動で載ります
+- 活動報告は `src/content/reports/` に置き、タグにイベント名などを入れてください
 
 ## 3. 手元で確認する
 
@@ -81,6 +96,7 @@ npm run dev   # http://localhost:4321/ で確認
 
 ## よくあるつまずき
 
-- **ビルドエラーになる**: front-matter のカテゴリが5分類以外になっていないか、日付の形式がずれていないかを確認してください
+- **ビルドエラーになる**: 日付の形式がずれていないか、必須項目が抜けていないかを確認してください
+- **タグでビルドエラーになる**: 数学記事の `tags` は定義済みの slug（上の一覧）から選んでください。スペルが1文字でも違うとエラーになります
 - **記事が一覧に出ない**: `draft: true` のままになっていないか確認してください
 - **数式がそのまま表示される**: `$` の前後に余分な空白が入っていると数式として認識されません
