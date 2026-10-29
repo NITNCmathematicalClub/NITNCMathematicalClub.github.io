@@ -47,7 +47,7 @@ const fiscalYear = (date: Date) =>
     <SimpleLayout
       title={d.title}
       date={d.date}
-      label={entry.tagLabels.join(" ")}
+      label={entry.tagLabels.map((l) => `#${l}`).join(" ")}
       description={d.description}
       backHref="/news"
       backLabel="お知らせ一覧へ戻る"

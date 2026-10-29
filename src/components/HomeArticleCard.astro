@@ -19,7 +19,7 @@ const { slug, title, date, labels, description, author } = Astro.props;
     labels.length > 0 && (
       <p class="flex flex-wrap gap-x-3 text-xs font-bold text-gold-text">
         {labels.map((label) => (
-          <span>{label}</span>
+          <span>#{label}</span>
         ))}
       </p>
     )

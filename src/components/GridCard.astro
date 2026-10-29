@@ -33,7 +33,7 @@ const { slug, title, date, labels, description, author, image, href } = Astro.pr
     <p class="mt-4 flex items-baseline gap-4 text-xs">
       <span class="text-sub">{fmtISO(date)}</span>
       {
-        labels.map((label) => <span class="font-bold text-gold-text">{label}</span>)
+        labels.map((label) => <span class="font-bold text-gold-text">#{label}</span>)
       }
     </p>
     <h3 class="mt-2 text-[17px] font-bold leading-snug text-ink group-hover:underline">{title}</h3>

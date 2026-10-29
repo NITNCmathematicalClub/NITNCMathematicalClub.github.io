@@ -33,7 +33,7 @@ const links = [
             <span class="shrink-0 text-sm text-sub">{fmtISO(entry.data.date)}</span>
             {entry.tagLabels.map((label) => (
               <span class="w-fit shrink-0 rounded-full border border-line px-3 py-0.5 text-[11px] font-bold text-navy">
-                {label}
+                #{label}
               </span>
             ))}
             <a href={`/articles/${entry.slug}`} class="hover:underline">
