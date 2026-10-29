@@ -36,10 +36,6 @@ export async function getStaticPaths() {
 const { entry, prev, next, related } = Astro.props;
 const { Content, headings } = await render(entry.raw);
 const d = entry.data;
-
-// 年度（4月始まり）
-const fiscalYear = (date: Date) =>
-  date.getUTCMonth() >= 3 ? date.getUTCFullYear() : date.getUTCFullYear() - 1;
 ---
 
 {
@@ -47,7 +43,7 @@ const fiscalYear = (date: Date) =>
     <SimpleLayout
       title={d.title}
       date={d.date}
-      label={entry.tagLabels.map((l) => `#${l}`).join(" ")}
+
       description={d.description}
       backHref="/news"
       backLabel="お知らせ一覧へ戻る"
@@ -58,7 +54,7 @@ const fiscalYear = (date: Date) =>
     <SimpleLayout
       title={d.title}
       date={d.date}
-      label={`${fiscalYear(d.date)}年度`}
+
       description={d.description}
       backHref="/activities"
       backLabel="活動報告一覧へ戻る"
