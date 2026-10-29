@@ -1,0 +1,231 @@
+# Sveltia CMS の設定（Issue #53 試験導入）
+#
+# 編集対象は src/content/ 配下の Markdown ファイルで、保存は GitHub API 経由の
+# コミットになる。Editorial Workflow を使うため、保存した記事は下書きとして
+# 専用ブランチに置かれ、レビューに回すと PR が自動作成される。
+#
+# ログインについて:
+# - リポジトリの書き込み権限がある GitHub アカウントが必要
+# - Sveltia のログイン画面で、fine-grained personal access token
+#   （対象リポジトリのみ・Contents: Read and write）を入力して入る方法が、
+#   中継サーバー不要で試せる。恒常運用で OAuth ログインにする場合は別途検討する
+#
+# 注意:
+# - branch は試験導入中は feat/astro-migration。v2.0.0 公開後は main に変える
+# - 数式（KaTeX）のプレビューは CMS 内では効かない。公開前の見た目の確認は
+#   PR プレビューで行う（docs/pr-preview.md）
+
+backend:
+  name: github
+  repo: NITNCmathematicalClub/NITNCMathematicalClub.github.io
+  branch: feat/astro-migration
+
+publish_mode: editorial_workflow
+
+site_url: https://math.nitnc.club
+display_url: https://math.nitnc.club
+
+media_folder: "public/img/uploads"
+public_folder: "/img/uploads"
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  # 記事（数学記事）。tags は固定25種から複数選択（src/content/tags.ts と一致させる）
+  - name: articles
+    label: 記事
+    label_singular: 記事
+    folder: "src/content/articles"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - { label: タイトル, name: title, widget: string }
+      - {
+          label: 日付,
+          name: date,
+          widget: datetime,
+          format: "YYYY-MM-DD",
+          date_format: "YYYY-MM-DD",
+          time_format: false,
+        }
+      - label: 著者
+        name: author
+        widget: object
+        fields:
+          - label: 学科
+            name: department
+            widget: select
+            options:
+              - 機械工学科
+              - 電気電子工学科
+              - 電子制御工学科
+              - 制御情報工学科
+              - 物質工学科
+          - {
+              label: 学年,
+              name: grade,
+              widget: number,
+              value_type: int,
+              min: 1,
+              max: 5,
+              step: 1,
+            }
+          - {
+              label: GitHub アカウント（公開ページには表示されません）,
+              name: github,
+              widget: string,
+            }
+      - label: タグ（最大5つ）
+        name: tags
+        widget: select
+        multiple: true
+        max: 5
+        required: false
+        options:
+          - { label: "情報（information）", value: "information" }
+          - { label: "計算理論（theory-of-computation）", value: "theory-of-computation" }
+          - { label: "プログラミング（programming）", value: "programming" }
+          - { label: "代数（algebra）", value: "algebra" }
+          - { label: "幾何（geometry）", value: "geometry" }
+          - { label: "解析（analysis）", value: "analysis" }
+          - { label: "確率/統計（probability-and-statistics）", value: "probability-and-statistics" }
+          - { label: "集合/論理（set-theory-and-logic）", value: "set-theory-and-logic" }
+          - { label: "力学（mechanics）", value: "mechanics" }
+          - { label: "電磁気学（electromagnetism）", value: "electromagnetism" }
+          - { label: "熱力学（thermodynamics）", value: "thermodynamics" }
+          - { label: "統計力学（statistical-mechanics）", value: "statistical-mechanics" }
+          - { label: "量子力学（quantum-mechanics）", value: "quantum-mechanics" }
+          - { label: "相対性理論（relativity）", value: "relativity" }
+          - { label: "波動（waves）", value: "waves" }
+          - { label: "光学（optics）", value: "optics" }
+          - { label: "流体力学（fluid-mechanics）", value: "fluid-mechanics" }
+          - { label: "物性物理学（condensed-matter-physics）", value: "condensed-matter-physics" }
+          - { label: "無機化学（inorganic-chemistry）", value: "inorganic-chemistry" }
+          - { label: "有機化学（organic-chemistry）", value: "organic-chemistry" }
+          - { label: "物理化学（physical-chemistry）", value: "physical-chemistry" }
+          - { label: "分析化学（analytical-chemistry）", value: "analytical-chemistry" }
+          - { label: "生物化学（biochemistry）", value: "biochemistry" }
+          - { label: "化学工学（chemical-engineering）", value: "chemical-engineering" }
+          - { label: "高分子化学（polymer-chemistry）", value: "polymer-chemistry" }
+      - { label: 下書き, name: draft, widget: boolean, default: false }
+      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text }
+      - { label: 表紙画像, name: image, widget: image, required: false }
+      - { label: 本文, name: body, widget: markdown }
+
+  # お知らせ。tags は自由な文字列
+  - name: news
+    label: お知らせ
+    label_singular: お知らせ
+    folder: "src/content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - { label: タイトル, name: title, widget: string }
+      - {
+          label: 日付,
+          name: date,
+          widget: datetime,
+          format: "YYYY-MM-DD",
+          date_format: "YYYY-MM-DD",
+          time_format: false,
+        }
+      - label: 著者
+        name: author
+        widget: object
+        fields:
+          - label: 学科
+            name: department
+            widget: select
+            options:
+              - 機械工学科
+              - 電気電子工学科
+              - 電子制御工学科
+              - 制御情報工学科
+              - 物質工学科
+          - {
+              label: 学年,
+              name: grade,
+              widget: number,
+              value_type: int,
+              min: 1,
+              max: 5,
+              step: 1,
+            }
+          - {
+              label: GitHub アカウント（公開ページには表示されません）,
+              name: github,
+              widget: string,
+            }
+      - label: タグ（自由入力・最大5つ）
+        name: tags
+        widget: list
+        required: false
+        max: 5
+        default: []
+        field: { label: タグ, name: tag, widget: string }
+      - { label: 下書き, name: draft, widget: boolean, default: false }
+      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text }
+      - { label: 表紙画像, name: image, widget: image, required: false }
+      - { label: 本文, name: body, widget: markdown }
+
+  # 活動報告。tags は自由な文字列
+  - name: reports
+    label: 活動報告
+    label_singular: 活動報告
+    folder: "src/content/reports"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - { label: タイトル, name: title, widget: string }
+      - {
+          label: 日付,
+          name: date,
+          widget: datetime,
+          format: "YYYY-MM-DD",
+          date_format: "YYYY-MM-DD",
+          time_format: false,
+        }
+      - label: 著者
+        name: author
+        widget: object
+        fields:
+          - label: 学科
+            name: department
+            widget: select
+            options:
+              - 機械工学科
+              - 電気電子工学科
+              - 電子制御工学科
+              - 制御情報工学科
+              - 物質工学科
+          - {
+              label: 学年,
+              name: grade,
+              widget: number,
+              value_type: int,
+              min: 1,
+              max: 5,
+              step: 1,
+            }
+          - {
+              label: GitHub アカウント（公開ページには表示されません）,
+              name: github,
+              widget: string,
+            }
+      - label: タグ（自由入力・最大5つ）
+        name: tags
+        widget: list
+        required: false
+        max: 5
+        default: []
+        field: { label: タグ, name: tag, widget: string }
+      - { label: 下書き, name: draft, widget: boolean, default: false }
+      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text }
+      - { label: 表紙画像, name: image, widget: image, required: false }
+      - { label: 本文, name: body, widget: markdown }
