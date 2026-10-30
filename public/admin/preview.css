@@ -1,0 +1,184 @@
+/* Sveltia CMS のプレビュー用スタイル（Issue #53）
+ *
+ * CMS のプレビューペインは sandboxed iframe で描画され、管理画面のスタイルを
+ * 継承しないため、記事詳細ページの見た目をここで再現する。
+ * 登録は public/admin/preview.js の CMS.registerPreviewStyle() で行う。
+ *
+ * 色・フォント・本文の組版はサイト本体の実物に合わせている:
+ * - デザイントークンと .article-body の組版: src/styles/global.css
+ * - 記事詳細のレイアウト（日付→タイトル→著者・タグ→表紙画像→本文）:
+ *   src/layouts/ArticleLayout.astro
+ * - フォントの読み込み: src/layouts/BaseLayout.astro と同じ Google Fonts
+ *   （Montserrat は大きな表示用、本文は Roboto + Noto Sans JP）
+ */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap");
+
+:root {
+  --color-navy: #27455c;
+  --color-gold: #cea152;
+  --color-gold-text: #a67f35;
+  --color-base: #faf9f6;
+  --color-band: #efebe2;
+  --color-ink: #1b2833;
+  --color-sub: #5a6b76;
+  --color-line: #dcd7ca;
+  --color-dark: #101d27;
+  --font-sans: "Roboto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  --font-display: "Montserrat", "Roboto", "Noto Sans JP", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 記事詳細のレイアウト再現（ArticleLayout.astro: 中央カラム最大800px） */
+.preview-article {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 20px 64px;
+}
+
+.preview-date {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-sub);
+}
+
+.preview-title {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.375;
+  color: var(--color-ink);
+}
+
+@media (min-width: 768px) {
+  .preview-title {
+    font-size: 2.25rem;
+  }
+}
+
+.preview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  margin: 16px 0 0;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 0.875rem;
+  color: var(--color-sub);
+}
+
+.preview-tag {
+  font-weight: 700;
+  color: var(--color-gold-text);
+}
+
+.preview-cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.preview-cover-empty {
+  background: var(--color-band);
+}
+
+/* KaTeX（記事の数式）: 本文サイズに馴染ませる（global.css と同じ指定） */
+.katex {
+  font-size: 1.06em;
+}
+
+/* 記事本文（Markdown）の組版。以下は src/styles/global.css の
+   .article-body の定義の転記（プレビュー iframe 内で効かせるため） */
+.article-body {
+  margin-top: 40px;
+  line-height: 1.9;
+}
+.article-body h2 {
+  margin: 2.5em 0 0.8em;
+  padding-left: 0.6em;
+  border-left: 4px solid var(--color-gold);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-navy);
+}
+.article-body h3 {
+  margin: 2em 0 0.6em;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+.article-body p {
+  margin: 1em 0;
+}
+.article-body ul {
+  margin: 1em 0;
+  padding-left: 1.4em;
+  list-style: disc;
+}
+.article-body ol {
+  margin: 1em 0;
+  padding-left: 1.4em;
+  list-style: decimal;
+}
+.article-body blockquote {
+  margin: 1.2em 0;
+  padding: 0.2em 1em;
+  border-left: 3px solid var(--color-line);
+  color: var(--color-sub);
+}
+.article-body a {
+  color: var(--color-gold-text);
+  text-decoration: underline;
+}
+.article-body code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--color-band);
+  font-size: 0.9em;
+}
+.article-body pre {
+  margin: 1.2em 0;
+  padding: 1em;
+  border-radius: 6px;
+  background: var(--color-dark);
+  color: #edf2f5;
+  overflow-x: auto;
+}
+.article-body pre code {
+  background: transparent;
+  padding: 0;
+}
+.article-body table {
+  margin: 1.2em 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+.article-body th,
+.article-body td {
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.7em 0.8em 0.7em 0;
+  text-align: left;
+  vertical-align: top;
+}
+.article-body thead th {
+  border-bottom: 1px solid var(--color-line);
+  font-weight: 700;
+}
+.article-body img {
+  max-width: 100%;
+  margin: 1.2em auto;
+  border-radius: 8px;
+}
