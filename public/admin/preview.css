@@ -178,7 +178,9 @@ body {
   font-weight: 700;
 }
 .article-body img {
+  display: block;
   max-width: 100%;
+  height: auto;
   margin: 1.2em auto;
   border-radius: 8px;
 }
