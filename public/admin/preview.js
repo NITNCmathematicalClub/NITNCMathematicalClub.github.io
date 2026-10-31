@@ -65,6 +65,21 @@
     // 表などの GFM 拡張は本番でも有効なので gfm は true
     markedLib.setOptions({ gfm: true, breaks: false });
   }
+  if (purifyLib && typeof purifyLib.addHook === "function") {
+    // アップロード直後（未保存）の画像は、本文の中では blob: URL で参照される
+    // （保存のタイミングで実パス /img/uploads/... に置き換わるのが Sveltia の仕様）。
+    // DOMPurify は既定で blob: の src を除去してしまいプレビューに出なくなるため、
+    // メディア要素の src / poster に限って blob: を許可する
+    purifyLib.addHook("uponSanitizeAttribute", function (node, data) {
+      if (
+        (data.attrName === "src" || data.attrName === "poster") &&
+        typeof data.attrValue === "string" &&
+        data.attrValue.indexOf("blob:") === 0
+      ) {
+        data.forceKeepAttr = true;
+      }
+    });
+  }
 
   // 記事タグの slug → 日本語ラベル対応表。
   // 正本は src/content/tags.ts の ARTICLE_TAGS で、これはその転記。
