@@ -302,34 +302,38 @@
     var bodyRef = useRef(null);
     var content = renderBodyHtml(props.body);
 
-    useEffect(
-      function () {
-        var element = bodyRef.current;
-        if (!element || content === null) {
-          return;
-        }
-        element.innerHTML = content;
-        if (typeof props.getAsset === "function") {
-          var images = element.querySelectorAll("img");
-          images.forEach(function (image) {
-            var src = image.getAttribute("src") || "";
-            if (!src || /^(https?:|data:|blob:)/.test(src)) {
-              return;
+    // 依存配列なし＝描画のたびに実行する。本文が変わったときだけでなく、
+    // アップロードした画像の実体（blob URL）が非同期に届いて CMS が
+    // 再描画したときにも、画像 URL を解決し直すため
+    useEffect(function () {
+      var element = bodyRef.current;
+      if (!element || content === null) {
+        return;
+      }
+      element.innerHTML = content;
+      if (typeof props.getAsset === "function") {
+        var images = element.querySelectorAll("img");
+        images.forEach(function (image) {
+          var src = image.getAttribute("src") || "";
+          if (!src || /^(https?:|data:|blob:)/.test(src)) {
+            return;
+          }
+          try {
+            // 公開パス（/img/uploads/...）とリポジトリ内パス（public/img/...）の
+            // どちらでも引けるよう、候補を順に試す
+            var asset =
+              props.getAsset(src) ||
+              props.getAsset(src.replace(/^\//, "")) ||
+              props.getAsset("public" + src);
+            if (asset && asset.url) {
+              image.setAttribute("src", asset.url);
             }
-            try {
-              var asset =
-                props.getAsset(src) || props.getAsset(src.replace(/^\//, ""));
-              if (asset && asset.url) {
-                image.setAttribute("src", asset.url);
-              }
-            } catch {
-              // 画像 URL の解決に失敗してもプレビュー自体は表示する
-            }
-          });
-        }
-      },
-      [content],
-    );
+          } catch {
+            // 画像 URL の解決に失敗してもプレビュー自体は表示する
+          }
+        });
+      }
+    });
 
     if (content === null) {
       return html`<div className="article-body">${props.fallback}</div>`;
