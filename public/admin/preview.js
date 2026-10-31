@@ -5,8 +5,15 @@
 // 1. プレビュースタイルの登録（KaTeX の CSS と public/admin/preview.css）
 // 2. articles / news / reports 共通のカスタムプレビューテンプレートの登録
 //    （記事詳細ページに寄せて「日付 → タイトル → 著者・タグ → 表紙画像 → 本文」）
-// 3. テンプレートの描画後に KaTeX の auto-render を適用し、
-//    $...$（文中）/ $$...$$（別行立て）を数式として描く
+// 3. 本文は widgetFor() の描画に任せず、テンプレート側で直接レンダリングする。
+//    CMS 標準の本文プレビューは描画の完了が非同期で、後段に KaTeX 変換を
+//    つなぐ方式では数式がそのまま残ってしまう問題があったため（実機確認で判明）。
+//    手順は本番サイト（remark-math + rehype-katex）の考え方に寄せて:
+//    a. コードブロック・コード範囲を除き、$...$ / $$...$$ を一旦プレースホルダへ退避
+//       （Markdown 変換で _ や * が強調に化けるのを防ぐ）
+//    b. marked で Markdown → HTML に変換し、DOMPurify で無害化する
+//    c. プレースホルダを KaTeX の描画結果（renderToString）に置き換える
+//    ライブラリが読み込めなかった場合は、従来どおり widgetFor('body') に倒す。
 //
 // API の根拠（@sveltia/cms 0.238.1 の公式ドキュメントと型定義で確認）:
 // - CMS.registerPreviewStyle(filePath) / (cssString, { raw: true })
@@ -48,6 +55,16 @@
   }
   var useEffect = React.useEffect;
   var useRef = React.useRef;
+
+  // 本文レンダリング用ライブラリ（public/admin/index.html で読み込む）
+  var markedLib = window.marked || null;
+  var purifyLib = window.DOMPurify || null;
+  var katexLib = window.katex || null;
+  if (markedLib && typeof markedLib.setOptions === "function") {
+    // 本番（Astro の Markdown）は改行を <br> にしないので breaks は false。
+    // 表などの GFM 拡張は本番でも有効なので gfm は true
+    markedLib.setOptions({ gfm: true, breaks: false });
+  }
 
   // 記事タグの slug → 日本語ラベル対応表。
   // 正本は src/content/tags.ts の ARTICLE_TAGS で、これはその転記。
@@ -115,28 +132,216 @@
     return text.length >= 10 ? text.slice(0, 10) : text;
   }
 
-  var EntryPreview = function (props) {
-    var rootRef = useRef(null);
+  // Markdown ソースから数式を取り出し、プレースホルダに置き換える。
+  // フェンス付きコードブロックの中とインラインコードの中は対象にしない。
+  // 戻り値: { text: 置換後のソース, maths: [{ token, tex, display }] }
+  function extractMath(source) {
+    var maths = [];
 
-    // 描画のたびに（マウント時と本文の更新時）数式を描き直す
-    useEffect(function () {
-      var element = rootRef.current;
-      if (!element || typeof window.renderMathInElement !== "function") {
+    function pushMath(tex, display) {
+      var token = "XSVELTIAMATH" + maths.length + "X";
+      maths.push({ token: token, tex: tex, display: display });
+      return token;
+    }
+
+    // コードブロック以外の範囲を処理する（インラインコードと数式を見る）
+    function processText(text) {
+      var out = "";
+      var i = 0;
+      var n = text.length;
+      while (i < n) {
+        var ch = text.charAt(i);
+        if (ch === "`") {
+          var runMatch = /^`+/.exec(text.slice(i));
+          var run = runMatch ? runMatch[0] : "`";
+          var close = text.indexOf(run, i + run.length);
+          if (close === -1) {
+            out += run;
+            i += run.length;
+          } else {
+            out += text.slice(i, close + run.length);
+            i = close + run.length;
+          }
+          continue;
+        }
+        if (ch === "\\" && text.charAt(i + 1) === "$") {
+          out += "\\$";
+          i += 2;
+          continue;
+        }
+        if (ch === "$") {
+          if (text.charAt(i + 1) === "$") {
+            var endDisplay = text.indexOf("$$", i + 2);
+            if (endDisplay !== -1) {
+              var texDisplay = text.slice(i + 2, endDisplay);
+              if (texDisplay.trim()) {
+                // 別行立ては単独の段落になるよう前後に空行を置く
+                out += "\n\n" + pushMath(texDisplay.trim(), true) + "\n\n";
+                i = endDisplay + 2;
+                continue;
+              }
+            }
+            out += "$$";
+            i += 2;
+            continue;
+          }
+          var lineEnd = text.indexOf("\n", i);
+          if (lineEnd === -1) {
+            lineEnd = n;
+          }
+          var endInline = text.indexOf("$", i + 1);
+          if (endInline !== -1 && endInline < lineEnd) {
+            var texInline = text.slice(i + 1, endInline);
+            var nextChar = text.charAt(endInline + 1);
+            // remark-math に寄せた簡単な判定: 中身の両端が空白でなく、
+            // 閉じた直後が数字でないものだけを数式とみなす（金額表記との衝突回避）
+            if (
+              texInline &&
+              !/^\s/.test(texInline) &&
+              !/\s$/.test(texInline) &&
+              !/[0-9]/.test(nextChar)
+            ) {
+              out += pushMath(texInline, false);
+              i = endInline + 1;
+              continue;
+            }
+          }
+          out += "$";
+          i += 1;
+          continue;
+        }
+        out += ch;
+        i += 1;
+      }
+      return out;
+    }
+
+    // フェンス付きコードブロックを行単位で切り分け、中身はそのまま通す
+    var lines = source.split("\n");
+    var result = "";
+    var buffer = "";
+    var fenceMarker = null;
+
+    function flushBuffer() {
+      if (buffer) {
+        result += processText(buffer);
+        buffer = "";
+      }
+    }
+
+    lines.forEach(function (line, index) {
+      var suffix = index < lines.length - 1 ? "\n" : "";
+      var fenceMatch = /^\s*(`{3,}|~{3,})/.exec(line);
+      if (fenceMarker) {
+        result += line + suffix;
+        if (
+          fenceMatch &&
+          fenceMatch[1].charAt(0) === fenceMarker.charAt(0) &&
+          fenceMatch[1].length >= fenceMarker.length
+        ) {
+          fenceMarker = null;
+        }
         return;
       }
+      if (fenceMatch) {
+        flushBuffer();
+        fenceMarker = fenceMatch[1];
+        result += line + suffix;
+        return;
+      }
+      buffer += line + suffix;
+    });
+    flushBuffer();
+
+    return { text: result, maths: maths };
+  }
+
+  // 本文 Markdown を HTML 文字列にする。ライブラリ不足や変換に失敗したときは
+  // null を返し、呼び出し側が widgetFor の標準プレビューに倒す
+  function renderBodyHtml(body) {
+    if (typeof body !== "string" || !body.trim()) {
+      return "";
+    }
+    if (!markedLib || !purifyLib || !katexLib) {
+      return null;
+    }
+    var extracted = extractMath(body);
+    var rawHtml;
+    try {
+      rawHtml = markedLib.parse(extracted.text);
+    } catch {
+      return null;
+    }
+    if (typeof rawHtml !== "string") {
+      return null;
+    }
+    var clean = purifyLib.sanitize(rawHtml);
+    extracted.maths.forEach(function (math) {
+      var rendered;
       try {
-        window.renderMathInElement(element, {
-          delimiters: [
-            { left: "$$", right: "$$", display: true },
-            { left: "$", right: "$", display: false },
-          ],
+        rendered = katexLib.renderToString(math.tex, {
+          displayMode: math.display,
           throwOnError: false,
         });
       } catch {
-        // 数式の描画に失敗してもプレビュー自体は表示する
+        rendered = math.display
+          ? "$$" + math.tex + "$$"
+          : "$" + math.tex + "$";
       }
+      if (math.display) {
+        clean = clean.split("<p>" + math.token + "</p>").join(rendered);
+      }
+      clean = clean.split(math.token).join(rendered);
     });
+    return clean;
+  }
 
+  // 本文の描画コンポーネント。自前レンダリングできるときは innerHTML で流し込み、
+  // 画像は getAsset でプレビュー用 URL に差し替える（未保存のアップロードも見えるように）
+  var BodyPreview = function (props) {
+    var bodyRef = useRef(null);
+    var content = renderBodyHtml(props.body);
+
+    useEffect(
+      function () {
+        var element = bodyRef.current;
+        if (!element || content === null) {
+          return;
+        }
+        element.innerHTML = content;
+        if (typeof props.getAsset === "function") {
+          var images = element.querySelectorAll("img");
+          images.forEach(function (image) {
+            var src = image.getAttribute("src") || "";
+            if (!src || /^(https?:|data:|blob:)/.test(src)) {
+              return;
+            }
+            try {
+              var asset =
+                props.getAsset(src) || props.getAsset(src.replace(/^\//, ""));
+              if (asset && asset.url) {
+                image.setAttribute("src", asset.url);
+              }
+            } catch {
+              // 画像 URL の解決に失敗してもプレビュー自体は表示する
+            }
+          });
+        }
+      },
+      [content],
+    );
+
+    if (content === null) {
+      return html`<div className="article-body">${props.fallback}</div>`;
+    }
+    return html`<div
+      className="article-body"
+      data-key-path="body"
+      ref=${bodyRef}
+    ></div>`;
+  };
+
+  var EntryPreview = function (props) {
     var entry = props.entry;
     var title = entry.getIn(["data", "title"]) || "";
     var date = formatDate(entry.getIn(["data", "date"]));
@@ -150,9 +355,10 @@
       imagePath && typeof props.getAsset === "function"
         ? props.getAsset(imagePath)
         : null;
+    var body = entry.getIn(["data", "body"]) || "";
 
     return html`
-      <article className="preview-article" ref=${rootRef}>
+      <article className="preview-article">
         ${date &&
         html`<p className="preview-date" data-key-path="date">${date}</p>`}
         <h1 className="preview-title" data-key-path="title" tabIndex=${0}>
@@ -176,7 +382,11 @@
               className="preview-cover preview-cover-empty"
               aria-hidden="true"
             ></div>`}
-        <div className="article-body">${props.widgetFor("body")}</div>
+        <${BodyPreview}
+          body=${body}
+          getAsset=${props.getAsset}
+          fallback=${props.widgetFor("body")}
+        />
       </article>
     `;
   };
