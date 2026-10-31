@@ -311,6 +311,32 @@
     return clean;
   }
 
+  // 画像だけの段落を figure 化し、代替テキストをキャプションにする。
+  // 本番側の rehype-image-captions プラグインと同じ変換をプレビューでも行う
+  var wrapStandaloneImages = function (root) {
+    root.querySelectorAll("p").forEach(function (p) {
+      var elements = Array.from(p.children);
+      if (elements.length !== 1 || elements[0].tagName !== "IMG") {
+        return;
+      }
+      // 画像以外のテキストが混ざっている段落は対象外（img は textContent を持たない）
+      if ((p.textContent || "").trim() !== "") {
+        return;
+      }
+      var img = elements[0];
+      var alt = (img.getAttribute("alt") || "").trim();
+      if (!alt) {
+        return;
+      }
+      var figure = p.ownerDocument.createElement("figure");
+      var caption = p.ownerDocument.createElement("figcaption");
+      caption.textContent = alt;
+      p.replaceWith(figure);
+      figure.appendChild(img);
+      figure.appendChild(caption);
+    });
+  };
+
   // 本文の描画コンポーネント。自前レンダリングできるときは innerHTML で流し込み、
   // 画像は getAsset でプレビュー用 URL に差し替える（未保存のアップロードも見えるように）
   var BodyPreview = function (props) {
@@ -326,6 +352,7 @@
         return;
       }
       element.innerHTML = content;
+      wrapStandaloneImages(element);
       if (typeof props.getAsset === "function") {
         var images = element.querySelectorAll("img");
         images.forEach(function (image) {
