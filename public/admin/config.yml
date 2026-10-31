@@ -12,7 +12,8 @@
 #
 # 注意:
 # - branch は試験導入中は feat/astro-migration。v2.0.0 公開後は main に変える
-# - 数式（KaTeX）のプレビューは CMS 内では効かない。公開前の見た目の確認は
+# - プレビューはカスタムテンプレート（public/admin/preview.js）でサイトの
+#   デザインに寄せ、数式（KaTeX）も描画するようにしている。公開前の最終確認は
 #   PR プレビューで行う（docs/pr-preview.md）
 
 backend:
@@ -55,6 +56,7 @@ collections:
       - label: 著者
         name: author
         widget: object
+        collapsed: true
         fields:
           - label: 学科
             name: department
@@ -112,9 +114,9 @@ collections:
           - { label: "化学工学（chemical-engineering）", value: "chemical-engineering" }
           - { label: "高分子化学（polymer-chemistry）", value: "polymer-chemistry" }
       - { label: 下書き, name: draft, widget: boolean, default: false }
-      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text }
+      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text, hint: "記事一覧などに出る短い説明です。本文は一番下の『本文』欄に書いてください。" }
       - { label: 表紙画像, name: image, widget: image, required: false }
-      - { label: 本文, name: body, widget: markdown }
+      - { label: 本文, name: body, widget: markdown, modes: [raw, rich_text], hint: "本文はこちらに書きます。数式は $...$（文中）/ $$...$$（別行立て）で書くと、右のプレビューでも数式として表示されます。画像は、先にメディアライブラリへアップロードしてから、本文に ![説明](/img/uploads/ファイル名) と書いてください（リッチテキスト表示ではドラッグ＆ドロップでも追加できます）。画像だけの段落にすると、[説明] の文がキャプションとして画像の下に出ます。" }
 
   # お知らせ。tags は自由な文字列
   - name: news
@@ -137,6 +139,7 @@ collections:
       - label: 著者
         name: author
         widget: object
+        collapsed: true
         fields:
           - label: 学科
             name: department
@@ -169,9 +172,9 @@ collections:
         default: []
         field: { label: タグ, name: tag, widget: string }
       - { label: 下書き, name: draft, widget: boolean, default: false }
-      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text }
+      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text, hint: "記事一覧などに出る短い説明です。本文は一番下の『本文』欄に書いてください。" }
       - { label: 表紙画像, name: image, widget: image, required: false }
-      - { label: 本文, name: body, widget: markdown }
+      - { label: 本文, name: body, widget: markdown, modes: [raw, rich_text], hint: "本文はこちらに書きます。数式は $...$（文中）/ $$...$$（別行立て）で書くと、右のプレビューでも数式として表示されます。画像は、先にメディアライブラリへアップロードしてから、本文に ![説明](/img/uploads/ファイル名) と書いてください（リッチテキスト表示ではドラッグ＆ドロップでも追加できます）。画像だけの段落にすると、[説明] の文がキャプションとして画像の下に出ます。" }
 
   # 活動報告。tags は自由な文字列
   - name: reports
@@ -194,6 +197,7 @@ collections:
       - label: 著者
         name: author
         widget: object
+        collapsed: true
         fields:
           - label: 学科
             name: department
@@ -226,6 +230,6 @@ collections:
         default: []
         field: { label: タグ, name: tag, widget: string }
       - { label: 下書き, name: draft, widget: boolean, default: false }
-      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text }
+      - { label: 概要（一覧や検索結果に出る短い説明）, name: description, widget: text, hint: "記事一覧などに出る短い説明です。本文は一番下の『本文』欄に書いてください。" }
       - { label: 表紙画像, name: image, widget: image, required: false }
-      - { label: 本文, name: body, widget: markdown }
+      - { label: 本文, name: body, widget: markdown, modes: [raw, rich_text], hint: "本文はこちらに書きます。数式は $...$（文中）/ $$...$$（別行立て）で書くと、右のプレビューでも数式として表示されます。画像は、先にメディアライブラリへアップロードしてから、本文に ![説明](/img/uploads/ファイル名) と書いてください（リッチテキスト表示ではドラッグ＆ドロップでも追加できます）。画像だけの段落にすると、[説明] の文がキャプションとして画像の下に出ます。" }

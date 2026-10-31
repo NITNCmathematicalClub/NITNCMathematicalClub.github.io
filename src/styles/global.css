@@ -111,6 +111,24 @@ body {
   font-weight: 700;
 }
 .article-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
   margin: 1.2em auto;
   border-radius: 8px;
+}
+/* 画像だけの段落は figure 化され、代替テキストがキャプションになる
+   （src/plugins/rehype-image-captions.js） */
+.article-body figure {
+  margin: 1.2em 0;
+}
+.article-body figure img {
+  margin: 0 auto;
+}
+.article-body figcaption {
+  margin-top: 0.6em;
+  text-align: center;
+  font-size: 0.9em;
+  line-height: 1.7;
+  color: var(--color-sub);
 }
