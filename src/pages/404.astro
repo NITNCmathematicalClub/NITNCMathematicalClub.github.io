@@ -11,6 +11,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </Fragment>
 
   <section class="relative mx-auto flex min-h-[calc(100dvh-9rem)] w-full max-w-5xl flex-col px-5 pb-10 pt-14 text-center">
+    <!-- 破裂パーティクルのレイヤー -->
+    <div id="burst-layer" class="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden="true"></div>
     <!-- プレイ画面 -->
     <div id="play-view" class="flex flex-1 flex-col">
       <!-- レベル表示（右上）。チュートリアル中は出さない -->
@@ -67,7 +69,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div id="timer-box" class="invisible mx-auto mt-2 w-full max-w-3xl text-left">
         <p id="countdown" class="font-display text-4xl font-bold text-ink">8</p>
         <div class="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-band">
-          <div id="timer-bar" class="h-full rounded-full bg-navy" style="width: 100%"></div>
+          <div id="timer-bar" class="h-full w-full rounded-full bg-navy" style="transform: scaleX(1)"></div>
         </div>
       </div>
 
@@ -143,7 +145,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       transition: height 0.5s ease;
     }
     #band.band-in {
-      animation: band-in 0.3s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+      animation: band-in 0.25s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
     }
     @keyframes band-in {
       from {
@@ -212,12 +214,43 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }
     }
     #current-value.pulse {
-      animation: pulse 0.18s ease;
+      animation: pulse 0.16s ease;
     }
     @keyframes pulse {
-      50% {
-        transform: scale(0.96);
+      0% {
+        transform: scale(1);
       }
+      40% {
+        transform: scale(1.09);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    #current-value.bursting {
+      animation: bursting 0.14s ease-out forwards;
+    }
+    @keyframes bursting {
+      from {
+        transform: scale(1);
+      }
+      to {
+        transform: scale(1.14);
+      }
+    }
+    #timer-bar {
+      transform-origin: left center;
+    }
+    .prime-btn {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition:
+        transform 0.07s ease,
+        border-color 0.15s ease,
+        background-color 0.15s ease;
+    }
+    .prime-btn:active {
+      transform: scale(0.93);
     }
     #current-value.num-in {
       animation: num-in 0.35s cubic-bezier(0.22, 0.9, 0.3, 1);
@@ -336,6 +369,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     let timerTotal = 0;
     let sequenceIds = [];
     let xpTimeout = null;
+    let sequenceActive = false;
+    let bonusPending = false;
+    let lastPointerTap = { p: 0, t: 0 };
 
     const xpNeed = (lv) => 50 + 30 * (lv - 1);
     const unlockedPrimes = () => ALL_PRIMES.slice(0, Math.min(2 + level, ALL_PRIMES.length));
@@ -368,9 +404,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         b.dataset.prime = String(p);
         b.className =
           "prime-btn h-[5.25rem] w-[5.25rem] rounded-lg border border-line bg-base font-display text-[2.75rem] font-bold leading-none text-ink transition hover:border-gold md:h-[6.75rem] md:w-[6.75rem] md:text-6xl";
+        // 応答速度優先： pointerdown で即反応する。直後の click は二重処理を防ぐ
+        // （キーボード操作では click だけが来るので、そちらでも動くようにする）
+        b.addEventListener("pointerdown", () => {
+          lastPointerTap = { p, t: performance.now() };
+          handleTap(p, b);
+        });
         b.addEventListener("click", () => {
-          b.blur();
-          onPrime(p, b);
+          if (lastPointerTap.p === p && performance.now() - lastPointerTap.t < 600) return;
+          handleTap(p, b);
         });
         buttonsEl.appendChild(b);
       }
@@ -436,8 +478,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       valueEl.classList.add("num-in");
     }
 
-    // クリア時に数字が勢いよくはじけて飛び散る
+    // クリア時：数字を少しふくらませてから破裂させる（数字の飛散＋パーティクル）
     function burstValue() {
+      valueEl.classList.add("bursting");
+      later(() => {
+        valueEl.classList.remove("bursting");
+        explodeValue();
+      }, 140);
+    }
+
+    function explodeValue() {
       const text = valueEl.textContent;
       valueEl.replaceChildren();
       const moves = [
@@ -464,6 +514,63 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           });
         });
       });
+      spawnParticles();
+    }
+
+    // 破裂のパーティクル（ドットと放射状の筋）。Web Animations で軽く回す
+    function spawnParticles() {
+      const layer = $("burst-layer");
+      const vRect = valueEl.getBoundingClientRect();
+      const lRect = layer.getBoundingClientRect();
+      const cx = vRect.left - lRect.left + vRect.width / 2;
+      const cy = vRect.top - lRect.top + vRect.height / 2;
+      const colors = ["#cea152", "#27455c", "#101d27", "#e2b96f"];
+      for (let i = 0; i < 16; i++) {
+        const s = document.createElement("span");
+        const size = 5 + Math.random() * 7;
+        s.style.cssText = `position:absolute;left:${cx}px;top:${cy}px;width:${size}px;height:${size}px;border-radius:9999px;background:${colors[i % colors.length]};`;
+        layer.appendChild(s);
+        const ang = (Math.PI * 2 * i) / 16 + Math.random() * 0.5;
+        const dist = 110 + Math.random() * 160;
+        const dx = Math.cos(ang) * dist;
+        const dy = Math.sin(ang) * dist;
+        const anim = s.animate(
+          [
+            { transform: "translate(-50%,-50%) scale(1)", opacity: 1 },
+            {
+              transform: `translate(calc(-50% + ${dx * 0.75}px), calc(-50% + ${dy * 0.75 - 36}px)) scale(1)`,
+              opacity: 1,
+              offset: 0.55,
+            },
+            {
+              transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy + 90}px)) scale(0.6)`,
+              opacity: 0,
+            },
+          ],
+          { duration: 560 + Math.random() * 220, easing: "cubic-bezier(.16,.68,.3,1)" },
+        );
+        anim.onfinish = () => s.remove();
+      }
+      for (let i = 0; i < 6; i++) {
+        const s = document.createElement("span");
+        s.style.cssText = `position:absolute;left:${cx}px;top:${cy}px;width:34px;height:4px;border-radius:2px;background:#cea152;`;
+        layer.appendChild(s);
+        const ang = (Math.PI * 2 * i) / 6 + Math.random() * 0.4;
+        const dist = 180 + Math.random() * 120;
+        const dx = Math.cos(ang) * dist;
+        const dy = Math.sin(ang) * dist;
+        const anim = s.animate(
+          [
+            { transform: `translate(-50%,-50%) rotate(${ang}rad) scaleX(0.4)`, opacity: 1 },
+            {
+              transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${ang}rad) scaleX(1.3)`,
+              opacity: 0,
+            },
+          ],
+          { duration: 420, easing: "cubic-bezier(.16,.68,.3,1)" },
+        );
+        anim.onfinish = () => s.remove();
+      }
     }
 
     function showBand(kind) {
@@ -500,22 +607,35 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       timerEnd = Date.now() + timerTotal;
       timerBox.classList.remove("invisible");
       countdownEl.textContent = String(seconds);
-      timerBar.style.width = "100%";
+      timerBar.style.transform = "scaleX(1)";
+      let lastShown = seconds;
       timerId = setInterval(() => {
         const remain = timerEnd - Date.now();
         if (remain <= 0) {
           countdownEl.textContent = "0";
-          timerBar.style.width = "0%";
+          timerBar.style.transform = "scaleX(0)";
           gameOver();
           return;
         }
-        countdownEl.textContent = String(Math.ceil(remain / 1000));
-        timerBar.style.width = `${(remain / timerTotal) * 100}%`;
+        // バーは transform（レイアウト計算なし）、数字は秒が変わったときだけ書き換える
+        const shown = Math.ceil(remain / 1000);
+        if (shown !== lastShown) {
+          lastShown = shown;
+          countdownEl.textContent = String(shown);
+        }
+        timerBar.style.transform = `scaleX(${remain / timerTotal})`;
       }, 100);
     }
     function stopTimer() {
       if (timerId) clearInterval(timerId);
       timerId = null;
+    }
+
+    // 制限時間は素因数ごとの重みの合計（2,3,5 は2秒／7,11,13 は3秒／17以上は4秒）
+    function primeWeight(p) {
+      if (p <= 5) return 2;
+      if (p <= 13) return 3;
+      return 4;
     }
 
     function genProblem() {
@@ -524,26 +644,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       for (let t = 0; t < 80; t++) {
         const k = mn + Math.floor(Math.random() * (mx - mn + 1));
         let v = 1;
+        let time = 0;
         let count = 0;
         for (let i = 0; i < k; i++) {
-          v *= primes[Math.floor(Math.random() * primes.length)];
+          const p = primes[Math.floor(Math.random() * primes.length)];
+          v *= p;
+          time += primeWeight(p);
           count++;
           if (v > MAX_VALUE) break;
         }
-        if (v <= MAX_VALUE && count >= 3) return { value: v, factors: count };
+        if (v <= MAX_VALUE && count >= 3) return { value: v, time };
       }
-      return { value: 2 * 2 * 3 * 5, factors: 4 };
+      return { value: 2 * 2 * 3 * 5, time: 8 };
     }
 
     // 本編の問題を開始する。デッキ（使える素数）の反映はこのタイミングだけ
     function nextProblem() {
+      valueEl.classList.remove("bursting");
       renderButtons();
-      const { value, factors } = genProblem();
+      const { value, time } = genProblem();
       current = value;
       missesThisProblem = 0;
       showNumber(value);
       playing = true;
-      startTimer(factors * 2);
+      startTimer(time);
     }
 
     // チュートリアルから本編へ移る（レベル表示はここから出す）
@@ -557,29 +681,60 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function clearProblem() {
       playing = false;
+      sequenceActive = true;
       stopTimer();
       timerBox.classList.add("invisible");
       solvedCount++;
+      // 破裂と SOLVED の帯は同時に出して待ち時間を重ねる
       burstValue();
+      showBand("solved");
       gainXp(20);
-      if (missesThisProblem === 0) {
-        later(() => gainXp(10), 300);
-      }
-      // はじける → SOLVED の帯 → 右へ抜ける → NEXT の帯 → 右へ抜ける → 次の問題
-      later(() => {
-        showBand("solved");
+      bonusPending = missesThisProblem === 0;
+      if (bonusPending) {
         later(() => {
-          slideBandOut(() => {
-            showBand("next");
-            later(() => {
-              slideBandOut(() => {
-                if (phase === "tutorial") enterMain();
-                nextProblem();
-              });
-            }, 300);
-          });
-        }, 550);
-      }, 350);
+          bonusPending = false;
+          gainXp(10);
+        }, 300);
+      }
+      // SOLVED が右へ抜けたら即次の問題を出し、NEXT の帯は上から流すだけにする
+      later(() => {
+        slideBandOut(() => {
+          sequenceActive = false;
+          if (phase === "tutorial") enterMain();
+          nextProblem();
+          bandWipe();
+        });
+      }, 500);
+    }
+
+    // NEXT の帯は遷移の拭いとして流す（入力はブロックしない）
+    function bandWipe() {
+      showBand("next");
+      later(() => slideBandOut(() => {}), 220);
+    }
+
+    // クリア演出中にもう一度押したら、演出を飛ばして次の問題へ（快適さ優先）
+    function skipSequence() {
+      if (!sequenceActive) return;
+      clearSequences();
+      sequenceActive = false;
+      if (bonusPending) {
+        bonusPending = false;
+        gainXp(10);
+      }
+      resetBand();
+      valueEl.classList.remove("bursting");
+      if (phase === "tutorial") enterMain();
+      nextProblem();
+    }
+
+    function handleTap(p, btn) {
+      btn.blur();
+      if (sequenceActive) {
+        skipSequence();
+        return;
+      }
+      onPrime(p, btn);
     }
 
     function onPrime(p, btn) {
@@ -589,15 +744,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         correctTaps++;
         usedPrimes.add(p);
         current = Math.floor(current / p);
+        // まず数字の見た目を即座に変えてから、経験値まわりを処理する
+        setValue(current);
         gainXp(5);
         if (isPrime(current)) {
           // 最後の一手：結果の数字を 0.2 秒見せてからクリア演出へ
-          setValue(current);
           playing = false;
           stopTimer();
           later(() => clearProblem(), 200);
-        } else {
-          setValue(current);
         }
       } else {
         totalMisses++;
@@ -611,6 +765,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     function gameOver() {
       phase = "over";
       playing = false;
+      sequenceActive = false;
+      bonusPending = false;
       stopTimer();
       clearSequences();
       $("result-solved").textContent = String(solvedCount);
@@ -692,6 +848,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       resetStats();
       phase = "idle";
       playing = false;
+      sequenceActive = false;
+      bonusPending = false;
       valueEl.textContent = "404";
       headingEl.textContent = "ページが見つかりません";
       headingEl.classList.remove("ghost");
@@ -711,6 +869,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       if (e.code === "Space") {
         e.preventDefault();
         if (phase === "idle") startTutorial();
+        else if (sequenceActive) skipSequence();
       }
     });
 
