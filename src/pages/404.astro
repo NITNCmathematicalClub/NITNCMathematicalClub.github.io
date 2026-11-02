@@ -5,7 +5,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <BaseLayout title="ページが見つかりません" description="お探しのページは見つかりませんでした。">
   <Fragment slot="head">
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Montserrat:wght@800;900&display=swap"
       rel="stylesheet"
     />
   </Fragment>
@@ -35,7 +35,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <p id="xp-popup" class="mt-1 font-display text-lg font-bold text-gold opacity-0">+5xp</p>
       </div>
 
-      <p id="current-value" class="font-display text-[6.5rem] font-bold leading-none text-ink md:text-[10rem]">404</p>
+      <p id="current-value" class="select-none font-display text-[6.5rem] font-bold leading-none text-ink md:text-[10rem]">404</p>
       <h1 id="heading" class="mt-6 text-2xl font-bold">ページが見つかりません</h1>
       <p id="desc" class="mt-4 leading-relaxed text-sub">
         お探しのページは、移動したか削除された可能性があります。
@@ -43,13 +43,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <!-- 帯（クリア／NEXT）。画面の全幅に出て、右へ抜けて消える -->
       <div class="relative mt-10 flex h-28 items-center md:h-32" aria-hidden="true">
-        <!-- チュートリアル開始時に中央へ大きく出す指示文 -->
-        <div id="mission" class="absolute inset-0 hidden items-center justify-center">
-          <p class="font-display text-5xl font-black tracking-wide text-navy md:text-6xl">
-            割りつくせ<span class="text-gold">！</span>
-          </p>
-        </div>
         <div id="band" class="pointer-events-none ml-[calc(50%-50dvw)] w-[100dvw] max-w-none flex-none bg-navy opacity-0">
+          <div id="band-mission" class="hidden items-center justify-center py-5 md:py-6">
+            <p class="text-5xl tracking-wide text-base md:text-7xl">割りつくせ！</p>
+          </div>
           <div id="band-solved" class="hidden items-center justify-center py-5 md:py-6">
             <p class="font-display text-5xl font-black tracking-wide text-base md:text-7xl">
               YOU SOLVED IT <span class="text-gold">!</span>
@@ -132,11 +129,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
     </div>
 
-    <!-- 30秒操作がなかったら、開始方法をそっと知らせる -->
+    <!-- 15秒操作がなかったら、開始方法をそっと知らせる -->
     <div id="idle-hint" class="pointer-events-none absolute bottom-24 left-1/2 text-center" aria-hidden="true">
       <div class="hidden md:block">
         <span class="keycap">Space</span>
-        <p class="mt-2 text-sm text-sub">スペースキーで開始</p>
       </div>
       <div class="md:hidden">
         <span class="swipe-arrow font-display text-3xl font-bold text-navy">↑</span>
@@ -256,6 +252,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     /* 素数ボタンは JS で動的に作るため、スコープ付き CSS では当たらない。:global で指定する */
     :global(.prime-btn) {
       touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
       transition:
         transform 0.07s ease,
@@ -268,18 +266,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     :global(.prime-btn.miss) {
       animation: miss-glow 0.6s ease;
     }
-    #mission.show-mission > p {
-      animation: mission-in 0.35s cubic-bezier(0.22, 0.9, 0.3, 1);
+    #band-mission p {
+      font-family: "Dela Gothic One", "Noto Sans JP", sans-serif;
     }
-    @keyframes mission-in {
-      from {
-        opacity: 0;
-        transform: scale(0.85);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    .ghost {
+      visibility: hidden;
     }
     #idle-hint {
       opacity: 0;
@@ -419,9 +410,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const overView = $("over-view");
     const hud = $("hud");
     const valueEl = $("current-value");
-    const missionEl = $("mission");
+    const headingEl = $("heading");
+    const descEl = $("desc");
     const idleHintEl = $("idle-hint");
     const bandEl = $("band");
+    const bandMission = $("band-mission");
     const bandSolved = $("band-solved");
     const bandNext = $("band-next");
     const timerBox = $("timer-box");
@@ -656,6 +649,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function showBand(kind) {
+      bandMission.classList.toggle("hidden", kind !== "mission");
+      bandMission.classList.toggle("flex", kind === "mission");
       bandSolved.classList.toggle("hidden", kind !== "solved");
       bandSolved.classList.toggle("flex", kind === "solved");
       bandNext.classList.toggle("hidden", kind !== "next");
@@ -764,24 +759,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       startTimer(time);
     }
 
-    // チュートリアルから本編へ移る（レベル表示はここから出す）
+    // チュートリアルから本編へ移る（レベル表示はここから出し、
+    // 見出しと説明文は場所を保ったまま消す）
     function enterMain() {
       phase = "main";
+      headingEl.classList.add("ghost");
+      descEl.classList.add("ghost");
       hud.classList.remove("invisible");
       hud.removeAttribute("aria-hidden");
-    }
-
-    function showMission() {
-      missionEl.classList.remove("hidden");
-      missionEl.classList.add("flex");
-      missionEl.classList.remove("show-mission");
-      void missionEl.offsetWidth;
-      missionEl.classList.add("show-mission");
-    }
-    function hideMission() {
-      missionEl.classList.add("hidden");
-      missionEl.classList.remove("flex");
-      missionEl.classList.remove("show-mission");
     }
 
     // 待機が長いときだけ、開始方法をそっと知らせる
@@ -790,7 +775,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       clearTimeout(idleTimer);
       idleTimer = setTimeout(() => {
         if (phase === "idle") idleHintEl.classList.add("hint-show");
-      }, 30000);
+      }, 15000);
     }
     function disarmIdleHint() {
       clearTimeout(idleTimer);
@@ -802,10 +787,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       stopTimer();
       timerBox.classList.add("invisible");
       solvedCount++;
-      hideMission();
-      // 破裂と SOLVED の帯は同時に出して待ち時間を重ねる
+      // 破裂と帯の演出は同時に出して待ち時間を重ねる
       burstValue();
-      showBand("solved");
       gainXp(20);
       bonusPending = missesThisProblem === 0;
       if (bonusPending) {
@@ -814,14 +797,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           gainXp(10);
         }, 300);
       }
-      // SOLVED が右へ抜けたら即次の問題を出し、NEXT の帯は上から流すだけにする
-      later(() => {
-        slideBandOut(() => {
-          if (phase === "tutorial") enterMain();
-          nextProblem();
-          bandWipe();
-        });
-      }, 500);
+      const showSolved = () => {
+        showBand("solved");
+        // SOLVED が右へ抜けたら即次の問題を出し、NEXT の帯は上から流すだけにする
+        later(() => {
+          slideBandOut(() => {
+            if (phase === "tutorial") enterMain();
+            nextProblem();
+            bandWipe();
+          });
+        }, 500);
+      };
+      // チュートリアル中は「割りつくせ！」の帯と入れ替える
+      if (phase === "tutorial") slideBandOut(showSolved);
+      else showSolved();
     }
 
     // NEXT の帯は遷移の拭いとして流す（入力はブロックしない）
@@ -904,7 +893,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       clearSequences();
       stopTimer();
       resetStats();
-      hideMission();
+      headingEl.classList.add("ghost");
+      descEl.classList.add("ghost");
       hud.classList.remove("invisible");
       hud.removeAttribute("aria-hidden");
       timerBox.classList.add("invisible");
@@ -926,12 +916,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     // チュートリアル開始（最初の404）。レベル表示は出さず、
-    // 「割りつくせ！」は見出しではなく中央に大きく出す
+    // 「割りつくせ！」は YOU SOLVED IT と同じ帯で出す
     function startTutorial() {
       if (phase !== "idle") return;
       phase = "tutorial";
       disarmIdleHint();
-      showMission();
+      showBand("mission");
       buttonsEl.classList.remove("invisible");
       buttonsEl.classList.add("buttons-in");
       renderButtons();
@@ -947,7 +937,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       playing = false;
       bonusPending = false;
       valueEl.textContent = "404";
-      hideMission();
+      headingEl.classList.remove("ghost");
+      descEl.classList.remove("ghost");
       hud.classList.add("invisible");
       hud.setAttribute("aria-hidden", "true");
       buttonsEl.classList.add("invisible");
@@ -997,7 +988,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       startRetry();
     });
 
-    // 初期表示でも、30 秒操作がなければ開始方法を知らせる
+    // 初期表示でも、15 秒操作がなければ開始方法を知らせる
     armIdleHint();
   </script>
 </BaseLayout>
