@@ -26,7 +26,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             </div>
             <p
               id="levelup-text"
-              class="pointer-events-none absolute left-1/2 top-1/2 whitespace-nowrap font-display text-xl font-black tracking-wide text-gold opacity-0"
+              class="pointer-events-none absolute left-1/2 top-0 whitespace-nowrap font-display text-xl font-black tracking-wide text-gold opacity-0"
             >
               LEVEL UP !
             </p>
@@ -362,7 +362,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     /* 中央寄せは translate プロパティで担い、アニメーションは scale と opacity だけにする
        （両方で translate を持つと二重にずれて中心から外れる） */
     #levelup-text {
-      translate: -50% -50%;
+      /* 水平は数字の中心、垂直は数字の少し上 */
+      translate: -50% calc(-100% - 0.375rem);
     }
     #levelup-text.levelup-show {
       animation: levelup-show 0.75s ease forwards;
@@ -806,7 +807,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             nextProblem();
             bandWipe();
           });
-        }, 500);
+        }, 400);
       };
       // チュートリアル中は「割りつくせ！」の帯と入れ替える
       if (phase === "tutorial") slideBandOut(showSolved);
@@ -816,7 +817,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     // NEXT の帯は遷移の拭いとして流す（入力はブロックしない）
     function bandWipe() {
       showBand("next");
-      later(() => slideBandOut(() => {}), 220);
+      later(() => slideBandOut(() => {}), 400);
     }
 
     function handleTap(p, btn) {
@@ -922,6 +923,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       phase = "tutorial";
       disarmIdleHint();
       showBand("mission");
+      // 「割りつくせ！」も SOLVED と同じく、少し見せたら右へ消えていく
+      later(() => {
+        if (phase === "tutorial") slideBandOut(() => {});
+      }, 400);
       buttonsEl.classList.remove("invisible");
       buttonsEl.classList.add("buttons-in");
       renderButtons();
