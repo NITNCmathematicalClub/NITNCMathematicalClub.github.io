@@ -13,14 +13,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <section class="relative mx-auto flex min-h-[calc(100dvh-9rem)] w-full max-w-5xl flex-col px-5 pb-10 pt-14 text-center">
     <!-- プレイ画面 -->
     <div id="play-view" class="flex flex-1 flex-col">
-      <!-- レベル表示（右上） -->
+      <!-- レベル表示（右上）。チュートリアル中は出さない -->
       <div id="hud" class="invisible absolute right-5 top-5 text-left" aria-hidden="true">
-        <div class="flex items-end gap-1.5">
+        <div class="flex items-baseline gap-1.5">
           <span class="font-display text-2xl font-bold leading-none text-ink">Lv.</span>
           <div class="relative font-display text-7xl font-bold leading-none">
-            <span id="gauge-base" class="text-[#eae8e1]">1</span>
+            <span id="gauge-base" class="inline-block text-[#eae8e1]">1</span>
             <div id="gauge-fill" class="absolute bottom-0 left-0 w-full overflow-hidden" style="height: 0%">
-              <span id="gauge-fill-text" class="absolute bottom-0 left-0 text-navy">1</span>
+              <span id="gauge-fill-text" class="absolute bottom-0 left-0 inline-block text-navy">1</span>
             </div>
             <p
               id="levelup-text"
@@ -38,14 +38,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <p id="desc" class="mt-4 leading-relaxed text-sub">
         お探しのページは、移動したか削除された可能性があります。
       </p>
-      <p id="start-hint" class="mt-6 text-sm text-sub">
-        <span class="hidden md:inline">Space：ゲーム開始</span>
-        <span class="md:hidden">下から上にスワイプ：ゲーム開始</span>
-      </p>
 
-      <!-- 帯（クリア／NEXT） -->
+      <!-- 帯（クリア／NEXT）。画面の全幅に出て、右へ抜けて消える -->
       <div class="mt-10 flex h-28 items-center md:h-32" aria-hidden="true">
-        <div id="band" class="pointer-events-none ml-[calc(50%-50dvw)] w-[100dvw] max-w-none bg-navy opacity-0">
+        <div id="band" class="pointer-events-none ml-[calc(50%-50dvw)] w-[100dvw] max-w-none flex-none bg-navy opacity-0">
           <div id="band-solved" class="hidden items-center justify-center py-5 md:py-6">
             <p class="font-display text-5xl font-black tracking-wide text-base md:text-7xl">
               YOU SOLVED IT <span class="text-gold">!</span>
@@ -75,7 +71,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </div>
 
-      <!-- 素数ボタン -->
+      <!-- 素数ボタン。位置は全フェーズで固定（表示切替でレイアウトを動かさない） -->
       <div
         id="prime-buttons"
         class="invisible mx-auto mt-8 flex min-h-[5.25rem] max-w-3xl flex-wrap items-start justify-center gap-3 md:min-h-[6.75rem] md:gap-4"
@@ -137,19 +133,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </section>
 
   <style>
+    :global(body) {
+      overflow-x: hidden;
+    }
+    .ghost {
+      visibility: hidden;
+    }
     #gauge-fill {
       transition: height 0.5s ease;
     }
     #band.band-in {
-      animation: band-in 0.45s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+      animation: band-in 0.3s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
     }
     @keyframes band-in {
       from {
-        transform: translateX(-100%);
+        transform: translateX(-100dvw);
         opacity: 0;
       }
       to {
         transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    #band.band-out {
+      animation: band-out 0.32s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
+    }
+    @keyframes band-out {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100dvw);
         opacity: 1;
       }
     }
@@ -204,11 +219,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         transform: scale(0.96);
       }
     }
+    #current-value.num-in {
+      animation: num-in 0.35s cubic-bezier(0.22, 0.9, 0.3, 1);
+    }
+    @keyframes num-in {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
     #current-value .digit {
       display: inline-block;
       transition:
-        transform 0.6s ease,
-        opacity 0.6s ease;
+        transform 0.55s cubic-bezier(0.16, 0.68, 0.3, 1),
+        opacity 0.45s ease;
     }
     #xp-popup.xp-show {
       animation: xp-show 0.9s ease forwards;
@@ -277,7 +305,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const valueEl = $("current-value");
     const headingEl = $("heading");
     const descEl = $("desc");
-    const hintEl = $("start-hint");
     const bandEl = $("band");
     const bandSolved = $("band-solved");
     const bandNext = $("band-next");
@@ -291,7 +318,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const xpPopup = $("xp-popup");
     const levelupText = $("levelup-text");
 
-    let started = false;
+    // フェーズ: idle（通常の404）/ tutorial（最初の404）/ countdown（リトライ直前）/ main（本編）/ over
+    let phase = "idle";
     let playing = false;
     let level = 1;
     let xpInLevel = 0;
@@ -303,7 +331,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     let totalTaps = 0;
     let missesThisProblem = 0;
     let usedPrimes = new Set();
-    let firstProblem = true;
     let timerId = null;
     let timerEnd = 0;
     let timerTotal = 0;
@@ -375,7 +402,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       if (leveled) {
         gaugeBase.textContent = String(level);
         gaugeFillText.textContent = String(level);
-        renderButtons();
+        // 使える素数（デッキ）が増えるのは次の問題へ行くときだけ。
+        // ここではボタンは描き直さない（nextProblem で反映する）
         // いったん満タンにして 0.75 秒見せてから、新しいレベルの進み具合まで下げる
         setGauge(1);
         levelupText.classList.remove("levelup-show");
@@ -390,33 +418,48 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }
     }
 
+    // 割り算の結果表示（軽いパルス）
     function setValue(n) {
       valueEl.textContent = String(n);
+      valueEl.classList.remove("num-in");
       valueEl.classList.remove("pulse");
       void valueEl.offsetWidth;
       valueEl.classList.add("pulse");
     }
 
-    function scatterValue() {
+    // 新しい数字の出現（カウントダウンと次の問題で共通の演出）
+    function showNumber(text) {
+      valueEl.textContent = String(text);
+      valueEl.classList.remove("pulse");
+      valueEl.classList.remove("num-in");
+      void valueEl.offsetWidth;
+      valueEl.classList.add("num-in");
+    }
+
+    // クリア時に数字が勢いよくはじけて飛び散る
+    function burstValue() {
       const text = valueEl.textContent;
       valueEl.replaceChildren();
       const moves = [
-        { x: -34, y: -20, r: -8 },
-        { x: 0, y: -34, r: 6 },
-        { x: 34, y: -24, r: 14 },
-        { x: -18, y: -40, r: -14 },
-        { x: 20, y: -44, r: 10 },
-        { x: 0, y: -52, r: -5 },
+        { x: -130, y: -80, r: -38 },
+        { x: -50, y: -130, r: -14 },
+        { x: 40, y: -140, r: 12 },
+        { x: 125, y: -85, r: 36 },
+        { x: -90, y: -30, r: -58 },
+        { x: 95, y: -35, r: 52 },
+        { x: 0, y: -160, r: 5 },
+        { x: -150, y: -120, r: -24 },
       ];
       [...text].forEach((ch, i) => {
         const s = document.createElement("span");
         s.className = "digit";
         s.textContent = ch;
+        s.style.transitionDelay = `${i * 25}ms, ${i * 25}ms`;
         valueEl.appendChild(s);
         const m = moves[i % moves.length];
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            s.style.transform = `translate(${m.x}px, ${m.y}px) rotate(${m.r}deg)`;
+            s.style.transform = `translate(${m.x}px, ${m.y}px) rotate(${m.r}deg) scale(1.12)`;
             s.style.opacity = "0";
           });
         });
@@ -428,12 +471,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       bandSolved.classList.toggle("flex", kind === "solved");
       bandNext.classList.toggle("hidden", kind !== "next");
       bandNext.classList.toggle("flex", kind === "next");
+      bandEl.classList.remove("band-out");
       bandEl.classList.remove("band-in");
       void bandEl.offsetWidth;
       bandEl.classList.add("band-in");
     }
-    function hideBand() {
+    // 帯が右へ抜けて消えてから次へ進む
+    function slideBandOut(done) {
       bandEl.classList.remove("band-in");
+      bandEl.classList.remove("band-out");
+      void bandEl.offsetWidth;
+      bandEl.classList.add("band-out");
+      later(() => {
+        bandEl.classList.remove("band-out");
+        bandEl.style.opacity = "0";
+        done();
+      }, 330);
+    }
+    function resetBand() {
+      bandEl.classList.remove("band-in");
+      bandEl.classList.remove("band-out");
       bandEl.style.opacity = "0";
     }
 
@@ -478,13 +535,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return { value: 2 * 2 * 3 * 5, factors: 4 };
     }
 
+    // 本編の問題を開始する。デッキ（使える素数）の反映はこのタイミングだけ
     function nextProblem() {
+      renderButtons();
       const { value, factors } = genProblem();
       current = value;
       missesThisProblem = 0;
-      valueEl.textContent = String(value);
+      showNumber(value);
       playing = true;
       startTimer(factors * 2);
+    }
+
+    // チュートリアルから本編へ移る（レベル表示はここから出す）
+    function enterMain() {
+      phase = "main";
+      headingEl.classList.add("ghost");
+      descEl.classList.add("ghost");
+      hud.classList.remove("invisible");
+      hud.removeAttribute("aria-hidden");
     }
 
     function clearProblem() {
@@ -492,24 +560,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       stopTimer();
       timerBox.classList.add("invisible");
       solvedCount++;
-      scatterValue();
-      showBand("solved");
+      burstValue();
       gainXp(20);
       if (missesThisProblem === 0) {
-        later(() => gainXp(10), 350);
+        later(() => gainXp(10), 300);
       }
+      // はじける → SOLVED の帯 → 右へ抜ける → NEXT の帯 → 右へ抜ける → 次の問題
       later(() => {
-        showBand("next");
+        showBand("solved");
         later(() => {
-          hideBand();
-          if (firstProblem) {
-            firstProblem = false;
-            headingEl.classList.add("hidden");
-            descEl.classList.add("hidden");
-          }
-          nextProblem();
-        }, 900);
-      }, 1500);
+          slideBandOut(() => {
+            showBand("next");
+            later(() => {
+              slideBandOut(() => {
+                if (phase === "tutorial") enterMain();
+                nextProblem();
+              });
+            }, 300);
+          });
+        }, 550);
+      }, 350);
     }
 
     function onPrime(p, btn) {
@@ -521,8 +591,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         current = Math.floor(current / p);
         gainXp(5);
         if (isPrime(current)) {
-          valueEl.textContent = String(current);
-          clearProblem();
+          // 最後の一手：結果の数字を 0.2 秒見せてからクリア演出へ
+          setValue(current);
+          playing = false;
+          stopTimer();
+          later(() => clearProblem(), 200);
         } else {
           setValue(current);
         }
@@ -536,12 +609,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function gameOver() {
+      phase = "over";
       playing = false;
       stopTimer();
       clearSequences();
-      playView.classList.add("hidden");
-      overView.classList.remove("hidden");
-      overView.classList.add("flex");
       $("result-solved").textContent = String(solvedCount);
       $("result-misses").textContent = String(totalMisses);
       $("result-accuracy").textContent =
@@ -549,9 +620,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       $("result-primes").textContent = String(usedPrimes.size);
       $("result-level").textContent = `Lv.${level}`;
       $("result-xp").textContent = String(totalXp);
+      playView.classList.add("hidden");
+      overView.classList.remove("hidden");
+      overView.classList.add("flex");
+      // 裏側のプレイ画面は初期状態に戻しておく（戻ったときの残像・ちらつき対策）
+      valueEl.textContent = "404";
+      resetBand();
+      timerBox.classList.add("invisible");
     }
 
-    function resetRun() {
+    function resetStats() {
       level = 1;
       xpInLevel = 0;
       totalXp = 0;
@@ -561,37 +639,78 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       totalTaps = 0;
       missesThisProblem = 0;
       usedPrimes = new Set();
-      firstProblem = true;
       current = 404;
       gaugeBase.textContent = "1";
       gaugeFillText.textContent = "1";
       setGauge(0);
-      headingEl.classList.remove("hidden");
-      descEl.classList.remove("hidden");
-      headingEl.textContent = "割りつくせ！";
-      valueEl.textContent = "404";
-      timerBox.classList.add("invisible");
-      hideBand();
-      renderButtons();
-      playing = true;
     }
 
-    function startGame() {
-      if (started) return;
-      started = true;
-      hintEl.classList.add("hidden");
+    // リトライ：404 には戻らず、スリーカウント（0.25 秒 × 3、合図なし）を挟んで
+    // Lv.1 の通常問題から始める
+    function startRetry() {
+      clearSequences();
+      stopTimer();
+      resetStats();
       headingEl.textContent = "割りつくせ！";
+      headingEl.classList.add("ghost");
+      descEl.classList.add("ghost");
       hud.classList.remove("invisible");
+      hud.removeAttribute("aria-hidden");
+      timerBox.classList.add("invisible");
+      resetBand();
+      buttonsEl.classList.remove("invisible");
+      renderButtons();
+      overView.classList.add("hidden");
+      overView.classList.remove("flex");
+      playView.classList.remove("hidden");
+      phase = "countdown";
+      playing = false;
+      showNumber("3");
+      later(() => showNumber("2"), 250);
+      later(() => showNumber("1"), 500);
+      later(() => {
+        phase = "main";
+        nextProblem();
+      }, 750);
+    }
+
+    // チュートリアル開始（最初の404）。レベル表示は出さない
+    function startTutorial() {
+      if (phase !== "idle") return;
+      phase = "tutorial";
+      headingEl.textContent = "割りつくせ！";
       buttonsEl.classList.remove("invisible");
       buttonsEl.classList.add("buttons-in");
       renderButtons();
       playing = true;
     }
 
+    // 通常の404（待機状態）へ完全に戻す。bfcache 復元時の残像対策
+    function resetToIdle() {
+      clearSequences();
+      stopTimer();
+      resetStats();
+      phase = "idle";
+      playing = false;
+      valueEl.textContent = "404";
+      headingEl.textContent = "ページが見つかりません";
+      headingEl.classList.remove("ghost");
+      descEl.classList.remove("ghost");
+      hud.classList.add("invisible");
+      hud.setAttribute("aria-hidden", "true");
+      buttonsEl.classList.add("invisible");
+      buttonsEl.classList.remove("buttons-in");
+      timerBox.classList.add("invisible");
+      resetBand();
+      overView.classList.add("hidden");
+      overView.classList.remove("flex");
+      playView.classList.remove("hidden");
+    }
+
     document.addEventListener("keydown", (e) => {
       if (e.code === "Space") {
         e.preventDefault();
-        if (!started) startGame();
+        if (phase === "idle") startTutorial();
       }
     });
 
@@ -607,21 +726,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     document.addEventListener(
       "touchmove",
       (e) => {
-        if (started || touchStartY === null) return;
+        if (phase !== "idle" || touchStartY === null) return;
         const y = e.touches[0].clientY;
         if (touchStartY > window.innerHeight * 0.5 && touchStartY - y > 60) {
-          startGame();
+          startTutorial();
           touchStartY = null;
         }
       },
       { passive: true },
     );
 
+    window.addEventListener("pageshow", (e) => {
+      if (e.persisted) resetToIdle();
+    });
+
     $("restart-button").addEventListener("click", () => {
-      overView.classList.add("hidden");
-      overView.classList.remove("flex");
-      playView.classList.remove("hidden");
-      resetRun();
+      startRetry();
     });
   </script>
 </BaseLayout>
