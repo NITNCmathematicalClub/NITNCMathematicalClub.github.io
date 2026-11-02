@@ -31,9 +31,9 @@ const pageTitle = title === "" ? "数理同好会 | 沼津高専" : `${title} | 
     />
     <slot name="head" />
   </head>
-  <body>
+  <body class="flex min-h-dvh flex-col">
     <Header />
-    <main class="pt-16">
+    <main class="flex-1 pt-16">
       <slot />
     </main>
     <Footer />
