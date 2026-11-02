@@ -3,17 +3,625 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="ページが見つかりません" description="お探しのページは見つかりませんでした。">
-  <section class="mx-auto max-w-3xl px-5 py-28 text-center">
-    <p class="font-display text-[7rem] font-bold leading-none text-ink md:text-[10rem]">404</p>
-    <h1 class="mt-6 text-2xl font-bold">ページが見つかりません</h1>
-    <p class="mt-4 leading-relaxed text-sub">
-      お探しのページは、移動したか削除された可能性があります。
-    </p>
+  <Fragment slot="head">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap"
+      rel="stylesheet"
+    />
+  </Fragment>
+
+  <section class="relative mx-auto flex min-h-[calc(100dvh-9rem)] w-full max-w-5xl flex-col px-5 pb-10 pt-14 text-center">
+    <!-- プレイ画面 -->
+    <div id="play-view" class="flex flex-1 flex-col">
+      <!-- レベル表示（右上） -->
+      <div id="hud" class="invisible absolute right-5 top-5 text-left" aria-hidden="true">
+        <div class="flex items-end gap-1.5">
+          <span class="font-display text-2xl font-bold leading-none text-ink">Lv.</span>
+          <div class="relative font-display text-7xl font-bold leading-none">
+            <span id="gauge-base" class="text-[#eae8e1]">1</span>
+            <div id="gauge-fill" class="absolute bottom-0 left-0 w-full overflow-hidden" style="height: 0%">
+              <span id="gauge-fill-text" class="absolute bottom-0 left-0 text-navy">1</span>
+            </div>
+            <p
+              id="levelup-text"
+              class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-display text-xl font-black tracking-wide text-gold opacity-0"
+            >
+              LEVEL UP !
+            </p>
+          </div>
+        </div>
+        <p id="xp-popup" class="mt-1 font-display text-lg font-bold text-gold opacity-0">+5xp</p>
+      </div>
+
+      <p id="current-value" class="font-display text-[6.5rem] font-bold leading-none text-ink md:text-[10rem]">404</p>
+      <h1 id="heading" class="mt-6 text-2xl font-bold">ページが見つかりません</h1>
+      <p id="desc" class="mt-4 leading-relaxed text-sub">
+        お探しのページは、移動したか削除された可能性があります。
+      </p>
+      <p id="start-hint" class="mt-6 text-sm text-sub">
+        <span class="hidden md:inline">Space：ゲーム開始</span>
+        <span class="md:hidden">下から上にスワイプ：ゲーム開始</span>
+      </p>
+
+      <!-- 帯（クリア／NEXT） -->
+      <div class="mt-10 flex h-28 items-center md:h-32" aria-hidden="true">
+        <div id="band" class="pointer-events-none ml-[calc(50%-50dvw)] w-[100dvw] max-w-none bg-navy opacity-0">
+          <div id="band-solved" class="hidden items-center justify-center py-5 md:py-6">
+            <p class="font-display text-5xl font-black tracking-wide text-base md:text-7xl">
+              YOU SOLVED IT <span class="text-gold">!</span>
+            </p>
+          </div>
+          <div id="band-next" class="hidden items-center justify-between py-5 md:py-6">
+            <p class="pl-6 font-display text-3xl font-black text-base md:pl-10 md:text-4xl">
+              <span class="chev inline-block opacity-30">&gt;</span>
+              <span class="chev inline-block opacity-60">&gt;</span>
+              <span class="chev inline-block">&gt;</span>
+            </p>
+            <p class="font-display text-5xl font-black tracking-wide text-base md:text-7xl">NEXT</p>
+            <p class="pr-6 font-display text-3xl font-black text-gold md:pr-10 md:text-4xl">
+              <span class="chev inline-block">&gt;</span>
+              <span class="chev inline-block opacity-60">&gt;</span>
+              <span class="chev inline-block opacity-30">&gt;</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 制限時間 -->
+      <div id="timer-box" class="invisible mx-auto mt-2 w-full max-w-3xl text-left">
+        <p id="countdown" class="font-display text-4xl font-bold text-ink">8</p>
+        <div class="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-band">
+          <div id="timer-bar" class="h-full rounded-full bg-navy" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <!-- 素数ボタン -->
+      <div
+        id="prime-buttons"
+        class="invisible mx-auto mt-8 flex min-h-[5.25rem] max-w-3xl flex-wrap items-start justify-center gap-3 md:min-h-[6.75rem] md:gap-4"
+      ></div>
+    </div>
+
+    <!-- ゲームオーバー画面 -->
+    <div id="over-view" class="hidden flex-1 flex-col items-center">
+      <p class="font-display text-6xl font-black tracking-wide text-ink md:text-7xl">GAME OVER</p>
+      <p class="mt-4 text-lg font-bold text-navy">時間切れになりました</p>
+      <dl class="mt-8 grid w-full max-w-xl grid-cols-2 gap-x-6 gap-y-7 rounded-xl border border-line bg-white p-7 text-left md:grid-cols-3 md:p-8">
+        <div>
+          <dt class="text-xs text-sub">解いた問題数</dt>
+          <dd id="result-solved" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-sub">ミスの数</dt>
+          <dd id="result-misses" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-sub">正答率</dt>
+          <dd id="result-accuracy" class="mt-1 font-display text-3xl font-bold text-ink">0%</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-sub">素数の数（種類）</dt>
+          <dd id="result-primes" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-sub">到達レベル</dt>
+          <dd id="result-level" class="mt-1 font-display text-3xl font-bold text-ink">Lv.1</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-sub">経験値</dt>
+          <dd id="result-xp" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+        </div>
+      </dl>
+      <div class="mt-10 flex flex-col items-center">
+        <button
+          id="restart-button"
+          type="button"
+          aria-label="もう一度プレイ"
+          class="flex h-[5.25rem] w-[5.25rem] items-center justify-center rounded-lg border border-line bg-base text-navy transition hover:border-gold md:h-[6.75rem] md:w-[6.75rem]"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-10 w-10 md:h-12 md:w-12" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+        </button>
+        <span class="mt-2 text-xs font-bold text-navy">もう一度</span>
+      </div>
+    </div>
+
     <a
       href="/"
-      class="mt-8 inline-block border-b-2 border-gold pb-1 font-bold text-navy hover:text-gold-text"
+      class="mt-auto inline-block self-center border-b-2 border-gold pb-1 pt-10 font-bold text-navy hover:text-gold-text"
     >
       トップページへ戻る
     </a>
   </section>
+
+  <style>
+    #gauge-fill {
+      transition: height 0.5s ease;
+    }
+    #band.band-in {
+      animation: band-in 0.45s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+    }
+    @keyframes band-in {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    #band .chev {
+      animation: chev-flow 0.9s ease-in-out infinite alternate;
+    }
+    #band .chev:nth-child(2) {
+      animation-delay: 0.12s;
+    }
+    #band .chev:nth-child(3) {
+      animation-delay: 0.24s;
+    }
+    @keyframes chev-flow {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(6px);
+      }
+    }
+    #prime-buttons.buttons-in {
+      animation: buttons-in 0.45s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+    }
+    @keyframes buttons-in {
+      from {
+        transform: translateY(2.5rem);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .prime-btn.miss {
+      animation: miss-glow 0.5s ease;
+    }
+    @keyframes miss-glow {
+      0%,
+      100% {
+        background-color: #faf9f6;
+      }
+      40% {
+        background-color: rgba(226, 75, 75, 0.28);
+        border-color: rgba(226, 75, 75, 0.55);
+      }
+    }
+    #current-value.pulse {
+      animation: pulse 0.18s ease;
+    }
+    @keyframes pulse {
+      50% {
+        transform: scale(0.96);
+      }
+    }
+    #current-value .digit {
+      display: inline-block;
+      transition:
+        transform 0.6s ease,
+        opacity 0.6s ease;
+    }
+    #xp-popup.xp-show {
+      animation: xp-show 0.9s ease forwards;
+    }
+    @keyframes xp-show {
+      0% {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      20% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      75% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+    #levelup-text.levelup-show {
+      animation: levelup-show 0.75s ease forwards;
+    }
+    @keyframes levelup-show {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.4);
+      }
+      35% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.15);
+      }
+      60% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      85% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+  </style>
+
+  <script>
+    const ALL_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+    // レベルごとの素因数の個数（下限〜上限）。Lv.8 以降は Lv.8 と同じ
+    const FACTOR_RANGES = [
+      null,
+      [3, 4],
+      [3, 5],
+      [4, 5],
+      [4, 6],
+      [5, 6],
+      [5, 7],
+      [6, 7],
+      [6, 8],
+    ];
+    const MAX_VALUE = 999999;
+
+    const $ = (id) => document.getElementById(id);
+    const playView = $("play-view");
+    const overView = $("over-view");
+    const hud = $("hud");
+    const valueEl = $("current-value");
+    const headingEl = $("heading");
+    const descEl = $("desc");
+    const hintEl = $("start-hint");
+    const bandEl = $("band");
+    const bandSolved = $("band-solved");
+    const bandNext = $("band-next");
+    const timerBox = $("timer-box");
+    const countdownEl = $("countdown");
+    const timerBar = $("timer-bar");
+    const buttonsEl = $("prime-buttons");
+    const gaugeBase = $("gauge-base");
+    const gaugeFill = $("gauge-fill");
+    const gaugeFillText = $("gauge-fill-text");
+    const xpPopup = $("xp-popup");
+    const levelupText = $("levelup-text");
+
+    let started = false;
+    let playing = false;
+    let level = 1;
+    let xpInLevel = 0;
+    let totalXp = 0;
+    let current = 404;
+    let solvedCount = 0;
+    let totalMisses = 0;
+    let correctTaps = 0;
+    let totalTaps = 0;
+    let missesThisProblem = 0;
+    let usedPrimes = new Set();
+    let firstProblem = true;
+    let timerId = null;
+    let timerEnd = 0;
+    let timerTotal = 0;
+    let sequenceIds = [];
+    let xpTimeout = null;
+
+    const xpNeed = (lv) => 50 + 30 * (lv - 1);
+    const unlockedPrimes = () => ALL_PRIMES.slice(0, Math.min(2 + level, ALL_PRIMES.length));
+    const factorRange = () => FACTOR_RANGES[Math.min(level, 8)];
+
+    function isPrime(n) {
+      if (n < 2) return false;
+      for (let i = 2; i * i <= n; i++) {
+        if (n % i === 0) return false;
+      }
+      return true;
+    }
+
+    function later(fn, ms) {
+      const id = setTimeout(fn, ms);
+      sequenceIds.push(id);
+      return id;
+    }
+    function clearSequences() {
+      sequenceIds.forEach((id) => clearTimeout(id));
+      sequenceIds = [];
+    }
+
+    function renderButtons() {
+      buttonsEl.replaceChildren();
+      for (const p of unlockedPrimes()) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = String(p);
+        b.dataset.prime = String(p);
+        b.className =
+          "prime-btn h-[5.25rem] w-[5.25rem] rounded-lg border border-line bg-base font-display text-[2.75rem] font-bold leading-none text-ink transition hover:border-gold md:h-[6.75rem] md:w-[6.75rem] md:text-6xl";
+        b.addEventListener("click", () => {
+          b.blur();
+          onPrime(p, b);
+        });
+        buttonsEl.appendChild(b);
+      }
+    }
+
+    function setGauge(ratio) {
+      gaugeFill.style.height = `${Math.round(ratio * 100)}%`;
+    }
+
+    function showXpPopup(amount) {
+      xpPopup.textContent = `+${amount}xp`;
+      xpPopup.classList.remove("xp-show");
+      void xpPopup.offsetWidth;
+      xpPopup.classList.add("xp-show");
+      if (xpTimeout) clearTimeout(xpTimeout);
+      xpTimeout = setTimeout(() => xpPopup.classList.remove("xp-show"), 950);
+    }
+
+    function gainXp(amount) {
+      totalXp += amount;
+      xpInLevel += amount;
+      showXpPopup(amount);
+      let leveled = false;
+      while (xpInLevel >= xpNeed(level)) {
+        xpInLevel -= xpNeed(level);
+        level++;
+        leveled = true;
+      }
+      if (leveled) {
+        gaugeBase.textContent = String(level);
+        gaugeFillText.textContent = String(level);
+        renderButtons();
+        // いったん満タンにして 0.75 秒見せてから、新しいレベルの進み具合まで下げる
+        setGauge(1);
+        levelupText.classList.remove("levelup-show");
+        void levelupText.offsetWidth;
+        levelupText.classList.add("levelup-show");
+        later(() => {
+          levelupText.classList.remove("levelup-show");
+          setGauge(xpInLevel / xpNeed(level));
+        }, 750);
+      } else {
+        setGauge(xpInLevel / xpNeed(level));
+      }
+    }
+
+    function setValue(n) {
+      valueEl.textContent = String(n);
+      valueEl.classList.remove("pulse");
+      void valueEl.offsetWidth;
+      valueEl.classList.add("pulse");
+    }
+
+    function scatterValue() {
+      const text = valueEl.textContent;
+      valueEl.replaceChildren();
+      const moves = [
+        { x: -34, y: -20, r: -8 },
+        { x: 0, y: -34, r: 6 },
+        { x: 34, y: -24, r: 14 },
+        { x: -18, y: -40, r: -14 },
+        { x: 20, y: -44, r: 10 },
+        { x: 0, y: -52, r: -5 },
+      ];
+      [...text].forEach((ch, i) => {
+        const s = document.createElement("span");
+        s.className = "digit";
+        s.textContent = ch;
+        valueEl.appendChild(s);
+        const m = moves[i % moves.length];
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            s.style.transform = `translate(${m.x}px, ${m.y}px) rotate(${m.r}deg)`;
+            s.style.opacity = "0";
+          });
+        });
+      });
+    }
+
+    function showBand(kind) {
+      bandSolved.classList.toggle("hidden", kind !== "solved");
+      bandSolved.classList.toggle("flex", kind === "solved");
+      bandNext.classList.toggle("hidden", kind !== "next");
+      bandNext.classList.toggle("flex", kind === "next");
+      bandEl.classList.remove("band-in");
+      void bandEl.offsetWidth;
+      bandEl.classList.add("band-in");
+    }
+    function hideBand() {
+      bandEl.classList.remove("band-in");
+      bandEl.style.opacity = "0";
+    }
+
+    function startTimer(seconds) {
+      stopTimer();
+      timerTotal = seconds * 1000;
+      timerEnd = Date.now() + timerTotal;
+      timerBox.classList.remove("invisible");
+      countdownEl.textContent = String(seconds);
+      timerBar.style.width = "100%";
+      timerId = setInterval(() => {
+        const remain = timerEnd - Date.now();
+        if (remain <= 0) {
+          countdownEl.textContent = "0";
+          timerBar.style.width = "0%";
+          gameOver();
+          return;
+        }
+        countdownEl.textContent = String(Math.ceil(remain / 1000));
+        timerBar.style.width = `${(remain / timerTotal) * 100}%`;
+      }, 100);
+    }
+    function stopTimer() {
+      if (timerId) clearInterval(timerId);
+      timerId = null;
+    }
+
+    function genProblem() {
+      const [mn, mx] = factorRange();
+      const primes = unlockedPrimes();
+      for (let t = 0; t < 80; t++) {
+        const k = mn + Math.floor(Math.random() * (mx - mn + 1));
+        let v = 1;
+        let count = 0;
+        for (let i = 0; i < k; i++) {
+          v *= primes[Math.floor(Math.random() * primes.length)];
+          count++;
+          if (v > MAX_VALUE) break;
+        }
+        if (v <= MAX_VALUE && count >= 3) return { value: v, factors: count };
+      }
+      return { value: 2 * 2 * 3 * 5, factors: 4 };
+    }
+
+    function nextProblem() {
+      const { value, factors } = genProblem();
+      current = value;
+      missesThisProblem = 0;
+      valueEl.textContent = String(value);
+      playing = true;
+      startTimer(factors * 2);
+    }
+
+    function clearProblem() {
+      playing = false;
+      stopTimer();
+      timerBox.classList.add("invisible");
+      solvedCount++;
+      scatterValue();
+      showBand("solved");
+      gainXp(20);
+      if (missesThisProblem === 0) {
+        later(() => gainXp(10), 350);
+      }
+      later(() => {
+        showBand("next");
+        later(() => {
+          hideBand();
+          if (firstProblem) {
+            firstProblem = false;
+            headingEl.classList.add("hidden");
+            descEl.classList.add("hidden");
+          }
+          nextProblem();
+        }, 900);
+      }, 1500);
+    }
+
+    function onPrime(p, btn) {
+      if (!playing) return;
+      totalTaps++;
+      if (current % p === 0) {
+        correctTaps++;
+        usedPrimes.add(p);
+        current = Math.floor(current / p);
+        gainXp(5);
+        if (isPrime(current)) {
+          valueEl.textContent = String(current);
+          clearProblem();
+        } else {
+          setValue(current);
+        }
+      } else {
+        totalMisses++;
+        missesThisProblem++;
+        btn.classList.remove("miss");
+        void btn.offsetWidth;
+        btn.classList.add("miss");
+      }
+    }
+
+    function gameOver() {
+      playing = false;
+      stopTimer();
+      clearSequences();
+      playView.classList.add("hidden");
+      overView.classList.remove("hidden");
+      overView.classList.add("flex");
+      $("result-solved").textContent = String(solvedCount);
+      $("result-misses").textContent = String(totalMisses);
+      $("result-accuracy").textContent =
+        totalTaps > 0 ? `${Math.round((correctTaps / totalTaps) * 100)}%` : "100%";
+      $("result-primes").textContent = String(usedPrimes.size);
+      $("result-level").textContent = `Lv.${level}`;
+      $("result-xp").textContent = String(totalXp);
+    }
+
+    function resetRun() {
+      level = 1;
+      xpInLevel = 0;
+      totalXp = 0;
+      solvedCount = 0;
+      totalMisses = 0;
+      correctTaps = 0;
+      totalTaps = 0;
+      missesThisProblem = 0;
+      usedPrimes = new Set();
+      firstProblem = true;
+      current = 404;
+      gaugeBase.textContent = "1";
+      gaugeFillText.textContent = "1";
+      setGauge(0);
+      headingEl.classList.remove("hidden");
+      descEl.classList.remove("hidden");
+      headingEl.textContent = "割りつくせ！";
+      valueEl.textContent = "404";
+      timerBox.classList.add("invisible");
+      hideBand();
+      renderButtons();
+      playing = true;
+    }
+
+    function startGame() {
+      if (started) return;
+      started = true;
+      hintEl.classList.add("hidden");
+      headingEl.textContent = "割りつくせ！";
+      hud.classList.remove("invisible");
+      buttonsEl.classList.remove("invisible");
+      buttonsEl.classList.add("buttons-in");
+      renderButtons();
+      playing = true;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (!started) startGame();
+      }
+    });
+
+    // モバイル: 画面下半分から上へ引っ張り上げる動作で開始
+    let touchStartY = null;
+    document.addEventListener(
+      "touchstart",
+      (e) => {
+        touchStartY = e.touches[0].clientY;
+      },
+      { passive: true },
+    );
+    document.addEventListener(
+      "touchmove",
+      (e) => {
+        if (started || touchStartY === null) return;
+        const y = e.touches[0].clientY;
+        if (touchStartY > window.innerHeight * 0.5 && touchStartY - y > 60) {
+          startGame();
+          touchStartY = null;
+        }
+      },
+      { passive: true },
+    );
+
+    $("restart-button").addEventListener("click", () => {
+      overView.classList.add("hidden");
+      overView.classList.remove("flex");
+      playView.classList.remove("hidden");
+      resetRun();
+    });
+  </script>
 </BaseLayout>
