@@ -14,9 +14,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <!-- 破裂パーティクルのレイヤー -->
     <div id="burst-layer" class="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden="true"></div>
     <!-- プレイ画面 -->
-    <div id="play-view" class="flex flex-1 flex-col">
-      <!-- レベル表示（右上）。チュートリアル中は出さない -->
-      <div id="hud" class="invisible absolute right-5 top-5 text-left" aria-hidden="true">
+    <div id="play-view" class="flex flex-1 flex-col pt-10 md:pt-0">
+      <!-- レベル表示。デスクトップは右上に重ね、スマホは数字の上に置いて高さをずらす。
+           チュートリアル中は出さない -->
+      <div id="hud" class="invisible text-left max-md:relative max-md:mb-3 max-md:self-end md:absolute md:right-5 md:top-[8.75rem]" aria-hidden="true">
         <div class="flex items-baseline gap-1.5">
           <span class="font-display text-2xl font-bold leading-none text-ink">Lv.</span>
           <div class="relative font-display text-7xl font-bold leading-none">
@@ -35,7 +36,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <p id="xp-popup" class="mt-1 font-display text-lg font-bold text-gold opacity-0">+5xp</p>
       </div>
 
-      <p id="current-value" class="select-none font-display text-[6.5rem] font-bold leading-none text-ink md:text-[10rem]">404</p>
+      <p id="current-value" class="select-none font-display text-[6.5rem] font-bold leading-none text-ink md:mt-16 md:text-[10rem]">404</p>
       <h1 id="heading" class="mt-6 text-2xl font-bold">ページが見つかりません</h1>
       <p id="desc" class="mt-4 leading-relaxed text-sub">
         お探しのページは、移動したか削除された可能性があります。
@@ -663,6 +664,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     // 帯が右へ抜けて消えてから次へ進む
     function slideBandOut(done) {
+      // すでに出きっている帯はアニメーションさせない
+      // （アニメーションの開始フレームで中身が一瞬見えてしまうため）
+      if (bandEl.style.opacity === "0") {
+        done();
+        return;
+      }
       bandEl.classList.remove("band-in");
       bandEl.classList.remove("band-out");
       void bandEl.offsetWidth;
@@ -670,6 +677,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       later(() => {
         bandEl.classList.remove("band-out");
         bandEl.style.opacity = "0";
+        // 中身も隠しておく（次の帯が来るまで何も残さない）
+        bandMission.classList.add("hidden");
+        bandMission.classList.remove("flex");
+        bandSolved.classList.add("hidden");
+        bandSolved.classList.remove("flex");
+        bandNext.classList.add("hidden");
+        bandNext.classList.remove("flex");
         done();
       }, 330);
     }
