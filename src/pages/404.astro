@@ -720,11 +720,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       timerId = null;
     }
 
-    // 制限時間は素因数ごとの重みの合計（2,3,5 は3秒／7,11,13 は4秒／17以上は5秒）
+    // 制限時間は素因数ごとの重みの合計（2,3,5 は1秒／7,11,13 は2秒／17以上は3秒）
     function primeWeight(p) {
-      if (p <= 5) return 3;
-      if (p <= 13) return 4;
-      return 5;
+      if (p <= 5) return 1;
+      if (p <= 13) return 2;
+      return 3;
     }
 
     // 組み合わせてよい素因数の個数の上限（レベルで開放）
@@ -853,6 +853,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       } else {
         totalMisses++;
         missesThisProblem++;
+        // ペナルティ：制限時間を1秒引く（締切を前にずらす。
+        // 時間切れの判定は残り時間 <= 0 で行っているので、そのまま効く）
+        if (timerId !== null) timerEnd -= 1000;
         btn.classList.remove("miss");
         void btn.offsetWidth;
         btn.classList.add("miss");
