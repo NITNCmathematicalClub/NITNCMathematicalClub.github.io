@@ -5,16 +5,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <BaseLayout title="ページが見つかりません" description="お探しのページは見つかりませんでした。">
   <Fragment slot="head">
     <link
-      href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Montserrat:wght@800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap"
       rel="stylesheet"
     />
   </Fragment>
 
-  <section class="relative mx-auto flex min-h-[calc(100dvh-9rem)] w-full max-w-5xl flex-col px-5 pb-10 pt-14 text-center">
+  <section class="relative mx-auto flex min-h-[calc(100dvh-9rem)] w-full max-w-5xl flex-col px-5 pb-10 pt-8 text-center md:pt-14">
     <!-- 破裂パーティクルのレイヤー -->
     <div id="burst-layer" class="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden="true"></div>
     <!-- プレイ画面 -->
-    <div id="play-view" class="flex flex-1 flex-col pt-10 md:pt-0">
+    <div id="play-view" class="flex flex-1 flex-col pt-6 md:pt-0">
       <!-- レベル表示。デスクトップは右上に重ね、スマホは数字の上に置いて高さをずらす。
            チュートリアル中は出さない -->
       <div id="hud" class="invisible text-left max-md:relative max-md:mb-3 max-md:self-end md:absolute md:right-5 md:top-[8.75rem]" aria-hidden="true">
@@ -43,11 +43,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </p>
 
       <!-- 帯（クリア／NEXT）。画面の全幅に出て、右へ抜けて消える -->
-      <div class="relative mt-10 flex h-28 items-center md:h-32" aria-hidden="true">
+      <div class="relative mt-8 flex h-24 items-center md:mt-10 md:h-32" aria-hidden="true">
         <div id="band" class="pointer-events-none ml-[calc(50%-50dvw)] w-[100dvw] max-w-none flex-none bg-navy opacity-0">
-          <div id="band-mission" class="hidden items-center justify-center py-5 md:py-6">
-            <p class="text-5xl tracking-wide text-base md:text-7xl">割りつくせ！</p>
-          </div>
           <div id="band-solved" class="hidden items-center justify-center py-5 md:py-6">
             <p class="font-display text-5xl font-black tracking-wide text-base md:text-7xl">
               YOU SOLVED IT <span class="text-gold">!</span>
@@ -267,11 +264,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     :global(.prime-btn.miss) {
       animation: miss-glow 0.6s ease;
     }
-    #band-mission p {
-      font-family: "Dela Gothic One", "Noto Sans JP", sans-serif;
-    }
     .ghost {
       visibility: hidden;
+    }
+    /* スマホでは、本編で見出し等を畳んで一画面に収める */
+    @media (width < 48rem) {
+      .ghost {
+        display: none;
+      }
     }
     #idle-hint {
       opacity: 0;
@@ -416,7 +416,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const descEl = $("desc");
     const idleHintEl = $("idle-hint");
     const bandEl = $("band");
-    const bandMission = $("band-mission");
     const bandSolved = $("band-solved");
     const bandNext = $("band-next");
     const timerBox = $("timer-box");
@@ -651,8 +650,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     function showBand(kind) {
-      bandMission.classList.toggle("hidden", kind !== "mission");
-      bandMission.classList.toggle("flex", kind === "mission");
+      // 帯の表示状態は style.opacity で一元管理する（slideBandOut の判定と揃える）
+      bandEl.style.opacity = "1";
       bandSolved.classList.toggle("hidden", kind !== "solved");
       bandSolved.classList.toggle("flex", kind === "solved");
       bandNext.classList.toggle("hidden", kind !== "next");
@@ -678,8 +677,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         bandEl.classList.remove("band-out");
         bandEl.style.opacity = "0";
         // 中身も隠しておく（次の帯が来るまで何も残さない）
-        bandMission.classList.add("hidden");
-        bandMission.classList.remove("flex");
         bandSolved.classList.add("hidden");
         bandSolved.classList.remove("flex");
         bandNext.classList.add("hidden");
@@ -823,9 +820,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           });
         }, 400);
       };
-      // チュートリアル中は「割りつくせ！」の帯と入れ替える
-      if (phase === "tutorial") slideBandOut(showSolved);
-      else showSolved();
+      showSolved();
     }
 
     // NEXT の帯は遷移の拭いとして流す（入力はブロックしない）
@@ -930,17 +925,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }, 750);
     }
 
-    // チュートリアル開始（最初の404）。レベル表示は出さず、
-    // 「割りつくせ！」は YOU SOLVED IT と同じ帯で出す
+    // チュートリアル開始（最初の404）。レベル表示は出さない
     function startTutorial() {
       if (phase !== "idle") return;
       phase = "tutorial";
       disarmIdleHint();
-      showBand("mission");
-      // 「割りつくせ！」も SOLVED と同じく、少し見せたら右へ消えていく
-      later(() => {
-        if (phase === "tutorial") slideBandOut(() => {});
-      }, 400);
       buttonsEl.classList.remove("invisible");
       buttonsEl.classList.add("buttons-in");
       renderButtons();
