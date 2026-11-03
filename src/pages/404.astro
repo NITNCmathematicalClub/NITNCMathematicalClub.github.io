@@ -85,30 +85,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div id="over-view" class="hidden flex-1 flex-col items-center">
       <p class="font-display text-6xl font-black tracking-wide text-ink md:text-7xl">GAME OVER</p>
       <p class="mt-4 text-lg font-bold text-navy">時間切れになりました</p>
-      <dl class="mt-8 grid w-full max-w-xl grid-cols-2 gap-x-6 gap-y-7 rounded-xl border border-line bg-white p-7 text-left md:grid-cols-3 md:p-8">
-        <div>
-          <dt class="text-xs text-sub">解いた問題数</dt>
-          <dd id="result-solved" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+      <dl class="mt-8 w-full max-w-xl rounded-xl border border-line bg-white p-7 text-left md:p-8">
+        <div class="grid grid-cols-2 gap-x-6 gap-y-7 md:grid-cols-4">
+          <div class="result-item">
+            <dt class="text-xs text-sub">解いた問題数</dt>
+            <dd id="result-solved" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+          </div>
+          <div class="result-item">
+            <dt class="text-xs text-sub">ミスの数</dt>
+            <dd id="result-misses" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+          </div>
+          <div class="result-item">
+            <dt class="text-xs text-sub">正答率</dt>
+            <dd id="result-accuracy" class="mt-1 font-display text-3xl font-bold text-ink">0%</dd>
+          </div>
+          <div class="result-item">
+            <dt class="text-xs text-sub">経験値</dt>
+            <dd id="result-xp" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+          </div>
         </div>
-        <div>
-          <dt class="text-xs text-sub">ミスの数</dt>
-          <dd id="result-misses" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
-        </div>
-        <div>
-          <dt class="text-xs text-sub">正答率</dt>
-          <dd id="result-accuracy" class="mt-1 font-display text-3xl font-bold text-ink">0%</dd>
-        </div>
-        <div>
-          <dt class="text-xs text-sub">素数の数（種類）</dt>
-          <dd id="result-primes" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
-        </div>
-        <div>
+        <div class="result-item mt-9 text-center">
           <dt class="text-xs text-sub">到達レベル</dt>
-          <dd id="result-level" class="mt-1 font-display text-3xl font-bold text-ink">Lv.1</dd>
-        </div>
-        <div>
-          <dt class="text-xs text-sub">経験値</dt>
-          <dd id="result-xp" class="mt-1 font-display text-3xl font-bold text-ink">0</dd>
+          <dd class="mt-1 flex items-baseline justify-center gap-1 font-display font-bold leading-none text-ink">
+            <span class="text-3xl">Lv.</span><span id="result-level" class="text-7xl">1</span>
+          </dd>
         </div>
       </dl>
       <div class="mt-10 flex flex-col items-center">
@@ -266,6 +266,40 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     .ghost {
       visibility: hidden;
+    }
+    /* リザルトは1項目ずつ順に出す。最後のレベルだけ大きく */
+    .result-item {
+      opacity: 0;
+    }
+    .result-item.reveal {
+      animation: result-pop 0.3s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+    }
+    .result-item.reveal-big {
+      animation: result-pop-big 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+    }
+    @keyframes result-pop {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes result-pop-big {
+      0% {
+        opacity: 0;
+        transform: scale(0.4);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.12);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
     /* スマホでは、本編で見出し等を畳んで一画面に収める */
     @media (width < 48rem) {
@@ -720,11 +754,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       timerId = null;
     }
 
-    // 制限時間は素因数ごとの重みの合計（2,3,5 は1秒／7,11,13 は2秒／17以上は3秒）
+    // 制限時間は素因数ごとの重みの合計（2,3,5 は1秒／7,11,13 は2秒／17以上は4秒）
     function primeWeight(p) {
       if (p <= 5) return 1;
       if (p <= 13) return 2;
-      return 3;
+      return 4;
     }
 
     // 組み合わせてよい素因数の個数の上限（レベルで開放）
@@ -872,12 +906,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       $("result-misses").textContent = String(totalMisses);
       $("result-accuracy").textContent =
         totalTaps > 0 ? `${Math.round((correctTaps / totalTaps) * 100)}%` : "100%";
-      $("result-primes").textContent = String(usedPrimes.size);
-      $("result-level").textContent = `Lv.${level}`;
+      $("result-level").textContent = String(level);
       $("result-xp").textContent = String(totalXp);
       playView.classList.add("hidden");
       overView.classList.remove("hidden");
       overView.classList.add("flex");
+      // リザルトは0.3秒ずつ順に出し、最後のレベルは少し溜めてから大きく出す
+      const resultItems = overView.querySelectorAll(".result-item");
+      resultItems.forEach((el) => el.classList.remove("reveal", "reveal-big"));
+      resultItems.forEach((el, i) => {
+        const isLast = i === resultItems.length - 1;
+        later(() => el.classList.add(isLast ? "reveal-big" : "reveal"), isLast ? 1400 : i * 300);
+      });
       // 裏側のプレイ画面は初期状態に戻しておく（戻ったときの残像・ちらつき対策）
       valueEl.textContent = "404";
       resetBand();
