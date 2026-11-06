@@ -1,7 +1,6 @@
-import recordsData from "../data/records.json";
 import { getReportArticles } from "./content";
 
-// 活動報告ページ用に、活動報告（src/content/reports/）と従来の活動記録（records.json）を統合する
+// 活動報告ページ用に、活動報告（src/content/reports/）の一覧を整える
 export interface ReportEntry {
   title: string;
   date: Date;
@@ -17,26 +16,15 @@ export const fiscalYearOf = (d: Date) =>
 
 export async function getReports(): Promise<ReportEntry[]> {
   const articles = (await getReportArticles()).filter(({ data }) => !data.draft);
-  const fromArticles: ReportEntry[] = articles.map((e) => ({
-    title: e.data.title,
-    date: e.data.date,
-    fy: fiscalYearOf(e.data.date),
-    tagLabels: e.tagLabels,
-    description: e.data.description,
-    image: e.data.image,
-    href: `/articles/${e.slug}`,
-  }));
-  const fromRecords: ReportEntry[] = recordsData.map((a) => {
-    const date = new Date(a.date + "T00:00:00Z");
-    return {
-      title: a.title,
-      date,
-      fy: fiscalYearOf(date),
-      tagLabels: [],
-      description: a.description,
-      image: a.images[0],
-      href: `/reports/records/${a.date}`,
-    };
-  });
-  return [...fromArticles, ...fromRecords].sort((a, b) => b.date.getTime() - a.date.getTime());
+  return articles
+    .map((e) => ({
+      title: e.data.title,
+      date: e.data.date,
+      fy: fiscalYearOf(e.data.date),
+      tagLabels: e.tagLabels,
+      description: e.data.description,
+      image: e.data.image,
+      href: `/articles/${e.slug}`,
+    }))
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
 }
