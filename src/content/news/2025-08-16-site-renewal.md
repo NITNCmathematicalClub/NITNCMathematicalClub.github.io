@@ -7,7 +7,7 @@ author:
   github: sample
 tags: []
 draft: false
-description: 公式サイトのリニューアルの完成版を公開しました.
+description: 公式サイトのリニューアルの完成版を公開しました。
 ---
 
-公式サイトのリニューアルの完成版を公開しました.
+公式サイトのリニューアルの完成版を公開しました。

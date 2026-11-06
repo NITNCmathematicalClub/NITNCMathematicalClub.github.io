@@ -19,7 +19,7 @@ Astro のファイルベースルーティングです。`src/pages/` 配下の�
 
 - `src/pages/index.astro` → `/`
 - `src/pages/articles/[...slug].astro` → `/articles/<slug>`（記事詳細。Content Collections から生成）
-- 既存パス（`/introduce`、`/activities`、`/exams`、`/note`、`/club-magazine`、`/contact`）は
+- 既存パス（`/introduce`、`/reports`、`/exams`、`/note`、`/club-magazine`、`/contact`）は
   v1 と同じパスで維持する（URL 互換性）
 
 ## コンテンツの置き方（方針）

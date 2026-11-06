@@ -7,7 +7,7 @@ author:
   github: sample
 tags: []
 draft: false
-description: 公式サイトをGitHub Pagesへ移動しました.
+description: 公式サイトをGitHub Pagesへ移動しました。
 ---
 
-公式サイトをGitHub Pagesへ移動しました.
+公式サイトをGitHub Pagesへ移動しました。

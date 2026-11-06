@@ -1,9 +1,9 @@
 ---
 import SimpleLayout from "../../../layouts/SimpleLayout.astro";
-import activities from "../../../data/activities.json";
+import records from "../../../data/records.json";
 
 export async function getStaticPaths() {
-  return activities.map((a) => ({
+  return records.map((a) => ({
     params: { id: a.date },
     props: { activity: a },
   }));
@@ -17,7 +17,7 @@ const date = new Date(activity.date + "T00:00:00Z");
   title={activity.title}
   date={date}
   description={activity.description}
-  backHref="/activities"
+  backHref="/reports"
   backLabel="活動報告一覧へ戻る"
 >
   <p>{activity.description}</p>
