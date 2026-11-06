@@ -63,7 +63,7 @@ npm run preview # ビルド結果の確認
 4. **カスタムドメイン**: `math.nitnc.club` はリポジトリの Settings > Pages で設定されています（CNAME ファイルはありません）。デプロイ方式を変えるときはドメイン設定の確認を忘れないこと。
 5. **ワークフローファイル**: `.github/workflows/` の変更は、ツール側の権限の都合で Web UI から行う場合があります。変更が必要なら PR 本文に明記してください。
 6. **Tailwind は v4**: 色やフォントのカスタマイズは CSS の `@theme` で行う方針です（v3 の `tailwind.config.js` は使いません）。
-7. **URL の互換性**: 既存パス（`/`、`/introduce`、`/activities`、`/exams`、`/note`、`/club-magazine`、`/contact`）は移行後も維持します。ページ移行時は必ず確認してください。
+7. **URL の互換性**: 既存パス（`/`、`/introduce`、`/reports`、`/exams`、`/note`、`/club-magazine`、`/contact`）は移行後も維持します。ページ移行時は必ず確認してください。
 
 ## ドキュメント一覧
 
