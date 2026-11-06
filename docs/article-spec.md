@@ -246,7 +246,7 @@ description: 一覧に出す1〜2文の要約
 - Project「数理同好会サイト開発」は現行の Status/Priority/Size をそのまま使い、v2.0.0 の子 Issue を Ready に並べる。必要なら Iteration やロードマップビューは後から追加する（最初から作り込まない）。
 
 ### 12.6 移行チェックリストとリスク
-- URL 互換性：既存パス（/、/introduce、/activities、/exams、/note、/club-magazine、/contact）を維持する。Astro の生成パス（末尾スラッシュの有無）と Pages の配信で全URLを本番相当環境で確認する。
+- URL 互換性：既存パス（/、/introduce、/reports、/exams、/note、/club-magazine、/contact）を維持する。Astro の生成パス（末尾スラッシュの有無）と Pages の配信で全URLを本番相当環境で確認する。
 - デプロイ：ワークフローのビルド手順が変わる（.github/workflows の変更はブラウザ UI 経由が必要、という既知の制約あり）。
 - 移行期間中の現行サイト更新：移行ブランチが長命になると二重管理になるため、Phase 1〜2 の期間は現行サイトへの大きな変更を止め、緊急修正のみにする。
 - 検証：移行前後で全ページのスクリーンショット比較とリンクチェックを行い、差分リストを PR に添える。
