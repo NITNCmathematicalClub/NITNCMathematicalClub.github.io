@@ -2,16 +2,25 @@
 import { render } from "astro:content";
 import ArticleLayout from "../../layouts/ArticleLayout.astro";
 import SimpleLayout from "../../layouts/SimpleLayout.astro";
-import { getAllEntries } from "../../lib/content";
+import { getAllEntries, type SiteEntry } from "../../lib/content";
 
 export async function getStaticPaths() {
   const all = await getAllEntries();
   const published = all.filter(({ data }) => (import.meta.env.PROD ? !data.draft : true));
-  return published.map((entry, i) => {
-    const newer = published[i - 1];
-    const older = published[i + 1];
+  // 前後リンクと関連記事は、同じ種別（記事／お知らせ／活動報告）の中だけで完結させる（#68）
+  const byKind = new Map<string, SiteEntry[]>();
+  for (const e of published) {
+    const list = byKind.get(e.kind) ?? [];
+    list.push(e);
+    byKind.set(e.kind, list);
+  }
+  return published.map((entry) => {
+    const siblings = byKind.get(entry.kind) ?? [];
+    const i = siblings.indexOf(entry);
+    const newer = siblings[i - 1];
+    const older = siblings[i + 1];
     const ownSlugs = entry.tags.map((t) => t.slug);
-    const related = all
+    const related = siblings
       .filter((e) => e.slug !== entry.slug && !e.data.draft)
       .map((e) => ({
         entry: e,

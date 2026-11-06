@@ -26,6 +26,10 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 - Astro 移行基盤を整備（`@astrojs/react`・`@astrojs/mdx`・Tailwind CSS v4 の統合、`site` 設定、共通レイアウトとヘッダー／フッター、デザイントークンの CSS 化）
 - v2.0.0 のデザイン確定版を仕様書に記録（`docs/article-spec.md` §12.10）。Figma テンプレート18種（Desktop／Mobile）を作成し、見出しはゴシック（Noto Sans JP）で確定
 
+### Fixed
+
+- 記事詳細ページの「前の記事・次の記事」と関連記事が、種別（記事／お知らせ／活動報告）を跨いで選ばれていた問題を修正（#68）
+
 ### Changed
 
 - 活動報告の URL を `/activities` から `/reports` に変更し、名称を reports に統一した（ページのフォルダ名、活動記録データのファイル名 records.json もあわせて整理）
