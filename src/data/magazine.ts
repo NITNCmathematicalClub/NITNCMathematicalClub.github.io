@@ -18,7 +18,7 @@ export const MAGAZINE_ISSUES: MagazineIssue[] = [
   {
     number: 11,
     releaseDate: "2025年11月8日（高専祭）",
-    cover: "/img/ClubMagazine/cover.jpg",
+    cover: "/img/no-image.svg",
     toc: [
       { title: "極限の考え方", page: 3 },
       { title: "数列と級数の収束", page: 11 },
@@ -31,7 +31,7 @@ export const MAGAZINE_ISSUES: MagazineIssue[] = [
   {
     number: 10,
     releaseDate: "2024年11月2日（高専祭）",
-    cover: "/img/ClubMagazine/cover.jpg",
+    cover: "/img/no-image.svg",
     toc: [
       { title: "微分積分の入口", page: 3 },
       { title: "確率の数え方", page: 9 },
