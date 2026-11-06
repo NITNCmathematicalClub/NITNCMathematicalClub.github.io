@@ -3,11 +3,11 @@ import type { TooltipProps } from "recharts";
 
 // 構成員（学科別）のデータ。更新時はこの配列を書き換える
 const data = [
-  { name: "機械工学科", value: 0, fill: "#e60012" },
-  { name: "電気電子工学科", value: 5, fill: "#e6a000" },
-  { name: "電子制御工学科", value: 2, fill: "#009b63" },
-  { name: "制御情報工学科", value: 15, fill: "#6357a3" },
-  { name: "物質工学科", value: 1, fill: "#007bbb" },
+  { name: "機械工学科", value: 2, fill: "#e60012" },
+  { name: "電気電子工学科", value: 3, fill: "#e6a000" },
+  { name: "電子制御工学科", value: 3, fill: "#009b63" },
+  { name: "制御情報工学科", value: 17, fill: "#6357a3" },
+  { name: "物質工学科", value: 3, fill: "#007bbb" },
 ];
 
 const total = data.reduce((sum, item) => sum + item.value, 0);

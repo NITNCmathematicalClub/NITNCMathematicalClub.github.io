@@ -9,9 +9,9 @@
  * - 記事詳細のレイアウト（日付→タイトル→著者・タグ→表紙画像→本文）:
  *   src/layouts/ArticleLayout.astro
  * - フォントの読み込み: src/layouts/BaseLayout.astro と同じ Google Fonts
- *   （Montserrat は大きな表示用、本文は Roboto + Noto Sans JP）
+ *   （Montserrat は大きな表示用、本文は Inter + Noto Sans JP）
  */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;700&display=swap");
 
 :root {
   --color-navy: #27455c;
@@ -23,8 +23,8 @@
   --color-sub: #5a6b76;
   --color-line: #dcd7ca;
   --color-dark: #101d27;
-  --font-sans: "Roboto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
-  --font-display: "Montserrat", "Roboto", "Noto Sans JP", sans-serif;
+  --font-sans: "Inter", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  --font-display: "Montserrat", "Inter", "Noto Sans JP", sans-serif;
 }
 
 body {

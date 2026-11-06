@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const images = ["/img/Hero/slide1.jpg", "/img/Hero/slide2.jpg", "/img/Hero/slide3.jpg"];
+const images = ["/img/Hero/slide1.jpg", "/img/Hero/slide3.jpg"];
 
 export default function HeroSlider() {
   const [index, setIndex] = useState(0);
