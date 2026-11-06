@@ -16,10 +16,10 @@
   --color-hero-sub: #c9d4db;
 
   /* フォント（仕様書 §12.10・§12.11）
-     英数字は Roboto を先に置き、和文は Noto Sans JP にフォールバックさせる */
-  --font-sans: "Roboto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+     英数字は Inter を先に置き、和文は Noto Sans JP にフォールバックさせる */
+  --font-sans: "Inter", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
   /* 大きな表示専用（見出しの英数字・大数字） */
-  --font-display: "Montserrat", "Roboto", "Noto Sans JP", sans-serif;
+  --font-display: "Montserrat", "Inter", "Noto Sans JP", sans-serif;
   /* ロゴ文字専用 */
   --font-logo: "Noto Serif JP", serif;
 }
