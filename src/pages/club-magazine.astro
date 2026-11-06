@@ -41,9 +41,13 @@ import { MAGAZINE_ISSUES } from "../data/magazine";
           />
           <div class="mt-6 min-w-0 flex-1 sm:mt-0">
             <h3 class="text-2xl font-bold text-ink">第{issue.number}号</h3>
-            <p class="mt-2 text-sm text-sub">
-              発売日<span class="ml-[1em]">{issue.releaseDate}</span>
-            </p>
+            {
+              issue.releaseDate && (
+                <p class="mt-2 text-sm text-sub">
+                  発売日<span class="ml-[1em]">{issue.releaseDate}</span>
+                </p>
+              )
+            }
             <h4 class="mt-6 flex items-center gap-3 font-bold text-ink">
               <span class="block h-[22px] w-[5px] bg-gold" aria-hidden="true" />
               目次
@@ -52,7 +56,7 @@ import { MAGAZINE_ISSUES } from "../data/magazine";
               {issue.toc.map((item) => (
                 <li class="flex items-baseline justify-between gap-4 border-b border-line py-2.5 text-sm">
                   <span>{item.title}</span>
-                  <span class="shrink-0 text-sub">{item.page}</span>
+                  {item.page != null && <span class="shrink-0 text-sub">{item.page}</span>}
                 </li>
               ))}
             </ul>
