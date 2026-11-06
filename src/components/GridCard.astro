@@ -27,7 +27,12 @@ const { slug, title, date, labels, description, author, image, href } = Astro.pr
           loading="lazy"
         />
       ) : (
-        <div class="aspect-[16/10] w-full rounded-lg bg-band" />
+        <img
+          src="/img/no-image.svg"
+          alt=""
+          class="aspect-[16/10] w-full rounded-lg object-cover"
+          loading="lazy"
+        />
       )
     }
     <p class="mt-4 flex items-baseline gap-4 text-xs">
