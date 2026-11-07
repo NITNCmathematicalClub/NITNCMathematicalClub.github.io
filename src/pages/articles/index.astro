@@ -1,0 +1,31 @@
+---
+import ArticleListPage from "../../components/ArticleListPage.astro";
+import { getArticles } from "../../lib/content";
+import { ARTICLE_TAG_LIST } from "../../content/tags";
+
+export const PAGE_SIZE = 9;
+
+const all = (await getArticles()).filter(({ data }) => !data.draft);
+const total = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+const entries = all.slice(0, PAGE_SIZE);
+---
+
+<ArticleListPage
+  title="記事"
+  subtitle="部員が書いた記事の一覧です"
+  pageTitle="記事"
+  description="数理同好会の部員による記事の一覧です。"
+  chips={[
+    { label: "すべて", active: true },
+    ...ARTICLE_TAG_LIST.map((t) => ({
+      label: t.label,
+      href: `/articles/tag/${t.slug}`,
+    })),
+  ]}
+  entries={entries}
+  showAuthor
+  searchForm
+  current={1}
+  total={total}
+  hrefFor={(p) => (p === 1 ? "/articles" : `/articles/page/${p}`)}
+/>

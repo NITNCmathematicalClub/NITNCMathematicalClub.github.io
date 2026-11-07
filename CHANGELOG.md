@@ -1,32 +1,60 @@
 # Changelog
 
-このサイトの主な変更を記録します。形式は Keep a Changelog、
+このサイトの公開履歴です。形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準じ、
 バージョンは Semantic Versioning に従います。
+
+> v1 系（React + Vite）の履歴は、`main` ブランチの `CHANGELOG.md` を参照してください。
 
 ## [Unreleased]
 
-### Changed
-
-- サイト内の大きな画像8点を最適化（最大幅1920pxへのリサイズとJPEG再圧縮）。合計 約20.5MB → 約2.3MB
-### Removed
-
-- 未使用ファイルの整理（Issue #13）: `src/App.css`、`src/assets/react.svg`、`src/components/HomeCard.tsx`、`src/contents/NoteContents.tsx`、`update_getbase.mjs` を削除
-- 未使用の依存を削除: `@vitejs/plugin-vue`、`@vitejs/plugin-vue-jsx`、`@tailwindcss/aspect-ratio`、`@tailwindcss/postcss`
-- Tailwind v3 時代の `tailwind.config.js` を削除（v4 では `@import "tailwindcss"` と `@theme` が正で、config は読み込まれていなかった）
-- デプロイ経路を GitHub Actions に一本化し、GitHub Pages では無効だった `vercel.json` と `public/.htaccess`、旧デプロイ手順の `npm run deploy`（gh-pages 方式）スクリプトと `gh-pages` パッケージを削除
-
-### Fixed
-
-- 直接URLで各ページを開くと404になる問題（`public/404.html` によるリダイレクト方式を導入し、存在しないパス用の404ページを追加）
-- ページ遷移時にスクロール位置が前のページのまま残る問題
-- 目次のアンカーリンクが日本語の見出しで機能しない問題（slugify をGitHub方式に変更し、日本語の見出しIDが正しく生成されるようにした。重複する見出しは連番で一意化）
-- お知らせ・活動実績の日付ソートが効かない問題（JSON の `date` は文字列なのに型が `number` で、比較が NaN になっていた）
-
-## [1.0.0] - 2026-10-27
+v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `docs/article-spec.md` §12 と親 Issue #3 を参照してください。
 
 ### Added
 
-- バージョン管理の開始（このファイル、タグ、GitHub Release の運用開始）
+- お知らせに公式サイトのリニューアル（Astro へ移行）完了の記事を追加した
+- 部誌ページに第1〜6号の目次（実物、ページ数なし）を追加した。表紙は NO IMAGE プレースホルダ、発売日は不明のため省略
+- 画像がない場合の「NO IMAGE」プレースホルダ（`public/img/no-image.svg`）を追加し、記事カードの画像なし表示に使うようにした（#71）
+- 404 ページに素因数分解ゲームを追加（スペースキー／モバイルはプルアップで開始。レベル・経験値ゲージ、制限時間、リザルト画面つき。#60）
+- 記事エディタ（Sveltia CMS）を `/admin` に試験導入（記事・お知らせ・活動報告の3コレクション、タグは固定25種から選択。#53）。あわせて PR プレビューの土台として、PR ごとにビルド成果物を残すワークフロー案と手順書（`docs/pr-preview.md`）を追加
+- 記事本文の画像にキャプション表示を追加（画像だけの段落では、代替テキストが画像の下にキャプションとして出る。自前の rehype プラグインで figure 化し、CMS プレビューでも同じ表示にした）
+- CMS のプレビューを改良（カスタムプレビューテンプレートで記事詳細のデザインを再現し、数式（KaTeX）もプレビュー内で描画。あわせて記入欄に説明（hint）を追加。#53）
+- 部誌ページに「各号の紹介」を追加（第9〜11号の表紙・発売日・目次を掲載。号データは `src/data/magazine.ts` で管理）
+- 部員向けの執筆ガイド（`docs/content-guide.md`）を追加し、公開前レビューの当面の運用を明記
+- カテゴリ別・タグ別の記事一覧ページと、Pagefind によるサイト内検索（`/search`）を追加
+- 記事機能を実装（Content Collections による記事管理、記事一覧・詳細ページ、目次、関連記事、ホームへのお知らせ・最近の記事の表示。下書きは本番に含めない）
+- 数式表示（remark-math + rehype-katex）を導入し、記事の執筆テンプレート（`src/content/articles/_template.md`）を用意
+- 既存ページ（ホーム／概要／活動紹介／過去問解説／雑記帳／部誌／お問い合わせ／404）を Astro へ移行。データ JSON はビルド時読み込みに変更し、画像・PDF 資産を引き継いだ
+- Astro 移行基盤を整備（`@astrojs/react`・`@astrojs/mdx`・Tailwind CSS v4 の統合、`site` 設定、共通レイアウトとヘッダー／フッター、デザイントークンの CSS 化）
+- v2.0.0 のデザイン確定版を仕様書に記録（`docs/article-spec.md` §12.10）。Figma テンプレート18種（Desktop／Mobile）を作成し、見出しはゴシック（Noto Sans JP）で確定
 
-<!-- 以後、公開の節目ごとに ## [X.Y.Z] - YYYY-MM-DD を追加し、
-     Added / Changed / Fixed / Removed の見出しで変更を書く -->
+### Fixed
+
+- お知らせ・活動報告の詳細ページで、サムネイル画像（image）を設定しても表示されなかった問題を修正（記事と同じく詳細ページに表示する）
+- 活動報告の実施日・場所が表として表示されなかった問題を修正（Markdown の表記法に合わせた）
+- 記事詳細ページの「前の記事・次の記事」と関連記事が、種別（記事／お知らせ／活動報告）を跨いで選ばれていた問題を修正（#68）
+
+### Changed
+
+- 公開画像8点を最適化した v1 側の変更を取り込んだ（最大幅1920pxへのリサイズとJPEG再圧縮。合計 約20.5MB → 約2.3MB）
+- 画像フォルダの名前を統一（`public/img/Activities` → `public/img/reports`）し、CMS の画像保存先をコレクション別のフォルダ（articles / news / reports）に分けた
+- 活動記録（records.json の3件）を活動報告の Markdown に移行し、JSON との統合処理と専用ページ（/reports/records/…）を廃止した。詳細ページの URL は /articles/… に統一
+- 活動報告の URL を `/activities` から `/reports` に変更し、名称を reports に統一した（ページのフォルダ名、活動記録データのファイル名 records.json もあわせて整理）
+- サイト内の日本語文の句読点を、半角のカンマ・ピリオドから全角の「、」「。」に統一した
+- 概要ページの構成員データを最新の内訳に更新（学科別のみ。機械2・電気電子3・電子制御3・制御情報17・物質3、計28人。#69）
+- 英語表記を「NIT, Numazu College」に統一（ヘッダーとフッターのコピーライト。#70）
+- 英数字フォントを Roboto から Inter に変更（#72）
+- トップページのヒーロースライダーから2枚目の写真（slide2.jpg）を外し、2枚構成にした（#73）
+- ページのアイコン（favicon）を、移行前のサイト（main）と同じ数理同好会のアイコンに統一（#66）
+- 記事本文の画像を、横に文章が回り込まないブロック表示（中央寄せ）に変更
+- 内容の短いページ（404 など）でフッターの下に余白が出る問題を修正（レイアウト全体を画面の高さまで伸ばし、フッターを下端にそろえる）
+
+- 記事の分類を、フォルダ＋カテゴリ方式から front-matter のタグ方式に切り替え（分野ベースの固定25種から複数指定可。定義表は `src/content/tags.ts`）。カテゴリ別ページは廃止してタグ別ページに統一し、お知らせ・活動報告のカードや詳細も種別ラベルの代わりにタグを表示するようにした
+- コンテンツのフォルダ構成を変更（数学記事は `src/content/articles/<カテゴリフォルダ>/`、お知らせは `src/content/news/`、活動報告は `src/content/reports/` に分離。カテゴリはフォルダから自動で決まるようにし、対応表を `src/content/categories.ts` に新設。URL は変更なし）
+- デザインを Figma テンプレートに全面準拠させて再実装（ホーム構成、一覧カード、記事詳細の目次・関連記事、お知らせ／活動報告の専用レイアウト、静的ページの組版）
+- 英字フォントを Roboto（基本）＋ Montserrat（大きな表示）に決定し、Figma のテンプレートとコンポーネントに適用（`docs/article-spec.md` §12.11）
+- サイトの基盤を React + Vite の SPA から Astro 7（静的生成）へ移行開始
+- CI / デプロイの Node.js を 24 に更新（Astro 7 の要件 22.23.4 以上に対応）
+
+### Removed
+
+- 移行の第一段階として、旧ページ・旧コンポーネント・旧データ（JSON）を移行ブランチ上で一時的に削除（内容は `main` に保持され、順次引き継ぐ）

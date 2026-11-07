@@ -1,0 +1,31 @@
+---
+import ArticleListPage from "../../../components/ArticleListPage.astro";
+import { getNews } from "../../../lib/content";
+
+export async function getStaticPaths() {
+  const news = (await getNews()).filter(({ data }) => !data.draft);
+  const tags = [...new Set(news.flatMap((e) => e.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag, entries: news.filter((e) => e.data.tags.includes(tag)), tags },
+  }));
+}
+
+const { tag, entries, tags } = Astro.props;
+---
+
+<ArticleListPage
+  title="お知らせ"
+  subtitle="同好会からのお知らせ一覧です"
+  pageTitle={`お知らせ: ${tag}`}
+  description={`お知らせ（${tag}）の一覧です。`}
+  chips={[
+    { label: "すべて", href: "/news" },
+    ...tags.map((t) => ({
+      label: t,
+      href: t === tag ? undefined : `/news/tag/${encodeURIComponent(t)}`,
+      active: t === tag,
+    })),
+  ]}
+  entries={entries}
+/>

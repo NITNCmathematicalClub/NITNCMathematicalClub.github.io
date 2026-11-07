@@ -1,0 +1,91 @@
+---
+import { render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import SimpleLayout from "../../layouts/SimpleLayout.astro";
+import { getAllEntries, type SiteEntry } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const all = await getAllEntries();
+  const published = all.filter(({ data }) => (import.meta.env.PROD ? !data.draft : true));
+  // 前後リンクと関連記事は、同じ種別（記事／お知らせ／活動報告）の中だけで完結させる（#68）
+  const byKind = new Map<string, SiteEntry[]>();
+  for (const e of published) {
+    const list = byKind.get(e.kind) ?? [];
+    list.push(e);
+    byKind.set(e.kind, list);
+  }
+  return published.map((entry) => {
+    const siblings = byKind.get(entry.kind) ?? [];
+    const i = siblings.indexOf(entry);
+    const newer = siblings[i - 1];
+    const older = siblings[i + 1];
+    const ownSlugs = entry.tags.map((t) => t.slug);
+    const related = siblings
+      .filter((e) => e.slug !== entry.slug && !e.data.draft)
+      .map((e) => ({
+        entry: e,
+        overlap: e.tags.filter((t) => ownSlugs.includes(t.slug)).length,
+      }))
+      .filter(({ overlap }) => overlap > 0)
+      .sort((a, b) => b.overlap - a.overlap)
+      .slice(0, 3)
+      .map(({ entry: e }) => e);
+    return {
+      params: { slug: entry.slug },
+      props: {
+        entry,
+        prev: older ? { slug: older.slug, title: older.data.title } : null,
+        next: newer ? { slug: newer.slug, title: newer.data.title } : null,
+        related,
+      },
+    };
+  });
+}
+
+const { entry, prev, next, related } = Astro.props;
+const { Content, headings } = await render(entry.raw);
+const d = entry.data;
+---
+
+{
+  entry.kind === "news" ? (
+    <SimpleLayout
+      title={d.title}
+      date={d.date}
+
+      description={d.description}
+      image={d.image}
+      backHref="/news"
+      backLabel="お知らせ一覧へ戻る"
+    >
+      <Content />
+    </SimpleLayout>
+  ) : entry.kind === "report" ? (
+    <SimpleLayout
+      title={d.title}
+      date={d.date}
+
+      description={d.description}
+      image={d.image}
+      backHref="/reports"
+      backLabel="活動報告一覧へ戻る"
+    >
+      <Content />
+    </SimpleLayout>
+  ) : (
+    <ArticleLayout
+      title={d.title}
+      date={d.date}
+      tags={entry.tags}
+      author={d.author}
+      description={d.description}
+      image={d.image}
+      headings={headings}
+      prev={prev}
+      next={next}
+      related={related}
+    >
+      <Content />
+    </ArticleLayout>
+  )
+}

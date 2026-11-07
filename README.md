@@ -1,39 +1,41 @@
-# 沼津高専 数理同好会 公式サイト
+# 数理同好会 公式サイト
 
-沼津高専数理同好会の公式サイトのソースコードです。
+沼津工業高等専門学校 数理同好会の公式サイトです。公開 URL: https://math.nitnc.club/
 
-- 公開サイト: https://math.nitnc.club/
-- 技術構成: React + TypeScript + Vite（GitHub Pages で公開）
+Astro 7 で静的に生成し、GitHub Pages にデプロイしています。記事は Markdown / MDX（Content Collections）で管理します。仕様は [docs/article-spec.md](docs/article-spec.md)、全体計画は Issue #3 を参照してください。
 
-## クイックスタート
+## 開発環境
 
-前提: Node.js 20。
+前提: **Node.js 22.23.4 以上**（CI は Node 24 を使用）。導入には nvm を推奨します（Ubuntu の `apt install nodejs` では版が古く要件を満たしません）。
 
 ```bash
-npm ci        # 依存インストール
-npm run dev   # 開発サーバー http://localhost:5173/
-npm run build # 型チェック＋ビルド
-npm run lint  # ESLint
+npm ci          # 依存インストール（lockfile 厳密）
+npm run dev     # 開発サーバー http://localhost:4321/
+npm run build   # ビルド（出力は dist/）
+npm run lint    # ESLint
+npm run preview # ビルド結果の確認
 ```
 
-公開は自動です。PR が `main` にマージされると GitHub Actions が
-ビルドして GitHub Pages へデプロイします（手動のデプロイ操作は不要です）。
+作業の完了条件は `npm run build` と `npm run lint` の両方が通ることです。手順の詳細は [docs/development.md](docs/development.md) を参照してください。
+
+## 構成
+
+| パス | 役割 |
+|---|---|
+| `src/pages/` | ページ（ファイルベースルーティング） |
+| `src/layouts/` | 共通レイアウト |
+| `src/components/` | コンポーネント（対話的なものは React の Islands） |
+| `src/content/` | 記事などのコンテンツ（Content Collections） |
+| `src/styles/` | グローバル CSS（Tailwind v4、`@theme` でトークン管理） |
+| `public/` | 静的アセット（画像など、絶対パスで参照） |
+| `docs/` | 設計・運用ドキュメント |
 
 ## ドキュメント
 
-| ドキュメント | 内容 |
-|---|---|
-| [AGENTS.md](AGENTS.md) | AIエージェント向け作業ガイド（構成・注意点の入口） |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | 参加方法と運用ルール（ブランチ・コミット・バージョン） |
-| [docs/architecture.md](docs/architecture.md) | サイトの構成・ルーティング・コンポーネント |
-| [docs/data-schema.md](docs/data-schema.md) | `public/*.json` のデータ形式（正本） |
-| [docs/content-guide.md](docs/content-guide.md) | コンテンツ（お知らせ・活動報告など）の更新手順 |
-| [docs/development.md](docs/development.md) | 開発の進め方・ページ追加チュートリアル |
-| [docs/operations.md](docs/operations.md) | デプロイ・バージョン・Issue/Project・権限の運用 |
-| [CHANGELOG.md](CHANGELOG.md) | 公開履歴 |
-
-## コンテンツの更新だけしたい方へ
-
-お知らせや活動報告などの更新は、`public/` の JSON ファイルの編集だけで
-行えます。手順は [docs/content-guide.md](docs/content-guide.md) をご覧ください。
-作業の依頼は Issue の「コンテンツ追加・修正依頼」テンプレートからも可能です。
+- [docs/article-spec.md](docs/article-spec.md) — 記事機能の仕様書（v2.0.0 確定版）
+- [docs/content-guide.md](docs/content-guide.md) — 部員向けの執筆ガイド
+- [docs/architecture.md](docs/architecture.md) — 構成・ルーティング・コンポーネント
+- [docs/development.md](docs/development.md) — 開発手順・環境構築
+- [docs/operations.md](docs/operations.md) — デプロイ・バージョン・権限などの運用
+- [CONTRIBUTING.md](CONTRIBUTING.md) — 参加・運用ルール
+- [CHANGELOG.md](CHANGELOG.md) — 公開履歴

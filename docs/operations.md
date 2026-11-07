@@ -9,8 +9,7 @@
 - カスタムドメイン `math.nitnc.club` は、リポジトリの **Settings > Pages** で
   設定されています。リポジトリ内に CNAME ファイルはないので、デプロイ方式を
   変えるときはドメイン設定が外れていないか必ず確認してください。
-- 旧手順（`npm run deploy` の gh-pages 方式）は Issue #10 で廃止しました。
-  デプロイは GitHub Actions のみです。
+- デプロイは GitHub Actions のみです（手動のデプロイコマンドはありません）。
 
 ## ブランチ保護
 
@@ -27,13 +26,20 @@
   - MINOR: ページ・機能の追加
   - PATCH: 文言・画像・軽微な修正
 - 手順:
-  1. Milestone（例: `v1.1.0`）の Issue がすべて閉じていることを確認する
+  1. Milestone（例: `v2.0.0`）の Issue がすべて閉じていることを確認する
   2. `CHANGELOG.md` の [Unreleased] を、そのバージョンの節に移す
   3. `package.json` の `version` を上げる PR をマージする
   4. GitHub の Releases から、タグ `vX.Y.Z` を `main` に向けて作成し、
      CHANGELOG の内容を貼る
-- 次にやることは Milestone で管理します。当面の作業は `v1.1.0`、
+- 次にやることは Milestone で管理します。作業中のものは対象バージョンの Milestone、
   時期未定のものは `Backlog` Milestone に入れます。
+
+## 大規模作業の進め方（親 Issue＋子 Issue）
+
+- バージョン単位の大規模作業は、親 Issue を1つ作り、作業を子 Issue に分割します
+  （例: v2.0.0 の親 Issue は #3、子 Issue は Phase ごとの8件）。
+- 子 Issue は GitHub の Sub-issues 機能で親に紐付け、Milestone は親・子とも対象バージョンに揃えます。
+- 親 Issue の本文には、計画の正本（仕様書など）へのリンクと、フェーズ・子 Issue のチェックリストを持たせます。
 
 ## Issue / Project の運用
 

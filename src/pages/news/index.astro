@@ -1,0 +1,19 @@
+---
+import ArticleListPage from "../../components/ArticleListPage.astro";
+import { getNews } from "../../lib/content";
+
+const entries = (await getNews()).filter(({ data }) => !data.draft);
+const tags = [...new Set(entries.flatMap((e) => e.data.tags))];
+---
+
+<ArticleListPage
+  title="お知らせ"
+  subtitle="同好会からのお知らせ一覧です"
+  pageTitle="お知らせ"
+  description="数理同好会からのお知らせ一覧です。"
+  chips={[
+    { label: "すべて", active: true },
+    ...tags.map((t) => ({ label: t, href: `/news/tag/${encodeURIComponent(t)}` })),
+  ]}
+  entries={entries}
+/>

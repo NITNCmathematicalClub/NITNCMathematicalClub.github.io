@@ -1,0 +1,14 @@
+---
+import ReportsPage from "../../../components/ReportsPage.astro";
+import { getReports } from "../../../lib/reports";
+
+export async function getStaticPaths() {
+  const reports = await getReports();
+  const years = [...new Set(reports.map((r) => r.fy))];
+  return years.map((y) => ({ params: { year: String(y) }, props: { year: y } }));
+}
+
+const { year } = Astro.props;
+---
+
+<ReportsPage year={year} />

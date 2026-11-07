@@ -1,0 +1,50 @@
+---
+// 一覧のページネーション（Figma テンプレート: 四角い番号ボタン）
+interface Props {
+  current: number;
+  total: number;
+  hrefFor: (page: number) => string;
+}
+
+const { current, total, hrefFor } = Astro.props;
+const pages = Array.from({ length: total }, (_, i) => i + 1);
+---
+
+{
+  total > 1 && (
+    <nav aria-label="ページ" class="mt-14 flex items-center justify-center gap-2">
+      {current > 1 && (
+        <a
+          href={hrefFor(current - 1)}
+          aria-label="前のページ"
+          class="flex h-9 w-9 items-center justify-center rounded-md border border-line text-sm text-navy hover:bg-band"
+        >
+          ←
+        </a>
+      )}
+      {pages.map((p) =>
+        p === current ? (
+          <span aria-current="page" class="flex h-9 w-9 items-center justify-center rounded-md bg-navy text-sm font-bold text-white">
+            {p}
+          </span>
+        ) : (
+          <a
+            href={hrefFor(p)}
+            class="flex h-9 w-9 items-center justify-center rounded-md border border-line text-sm text-navy hover:bg-band"
+          >
+            {p}
+          </a>
+        ),
+      )}
+      {current < total && (
+        <a
+          href={hrefFor(current + 1)}
+          aria-label="次のページ"
+          class="flex h-9 w-9 items-center justify-center rounded-md border border-line text-sm text-navy hover:bg-band"
+        >
+          →
+        </a>
+      )}
+    </nav>
+  )
+}
