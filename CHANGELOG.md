@@ -3,11 +3,13 @@
 このサイトの公開履歴です。形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準じ、
 バージョンは Semantic Versioning に従います。
 
-> v1 系（React + Vite）の履歴は、`main` ブランチの `CHANGELOG.md` を参照してください。
+> v1 系（React + Vite）の履歴は、移行前のコミットに残る `CHANGELOG.md` を参照してください。
 
 ## [Unreleased]
 
-v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `docs/article-spec.md` §12 と親 Issue #3 を参照してください。
+## [2.0.0] - 2026-11-07
+
+Astro への移行と記事機能の追加を行った、v2 系の最初のリリースです。計画は `docs/article-spec.md` §12 と親 Issue #3 を参照してください。
 
 ### Added
 
