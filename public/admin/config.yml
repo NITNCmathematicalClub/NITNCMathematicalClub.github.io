@@ -19,7 +19,7 @@
 backend:
   name: github
   repo: NITNCmathematicalClub/NITNCMathematicalClub.github.io
-  branch: feat/astro-migration
+  branch: main
 
 publish_mode: editorial_workflow
 
