@@ -35,6 +35,7 @@ v2.0.0（Astro 移行＋記事機能）に向けて作業中です。計画は `
 
 ### Changed
 
+- 公開画像8点を最適化した v1 側の変更を取り込んだ（最大幅1920pxへのリサイズとJPEG再圧縮。合計 約20.5MB → 約2.3MB）
 - 画像フォルダの名前を統一（`public/img/Activities` → `public/img/reports`）し、CMS の画像保存先をコレクション別のフォルダ（articles / news / reports）に分けた
 - 活動記録（records.json の3件）を活動報告の Markdown に移行し、JSON との統合処理と専用ページ（/reports/records/…）を廃止した。詳細ページの URL は /articles/… に統一
 - 活動報告の URL を `/activities` から `/reports` に変更し、名称を reports に統一した（ページのフォルダ名、活動記録データのファイル名 records.json もあわせて整理）
